@@ -1,0 +1,8 @@
+.DS_Store
+node_modules
+/.svelte
+/build
+tmp
+.firebase
+*.log
+/infra/github-actions-sa.json
