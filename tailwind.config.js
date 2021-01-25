@@ -1,4 +1,4 @@
-// const colors = require('tailwindcss/colors');
+const colors = require('tailwindcss/colors');
 
 module.exports = {
   purge: ["./src/**/*.svelte", "./static/*.html"],
@@ -8,6 +8,9 @@ module.exports = {
       // colors: {
       //   cyan: colors.violet,
       // }
+      colors: {
+        rose: colors.rose,
+      }
     },
   },
   variants: {

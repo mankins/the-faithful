@@ -1,0 +1,8 @@
+@layer components {
+  .ns {
+    @apply bg-indigo-600 text-white hover:text-white hover:bg-indigo-600;
+  }
+  .nsoff {
+    @apply text-indigo-300 hover:text-white hover:bg-indigo-600;
+  }
+}

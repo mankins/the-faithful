@@ -1,0 +1,17 @@
+main {
+  background-color: var(--theme-background);
+  color: var(--theme-text);
+}
+
+.spin {
+  animation: spin-360 infinite 2s ease;
+}
+
+@keyframes spin-360 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
