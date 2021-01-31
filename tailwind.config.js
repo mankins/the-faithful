@@ -4,12 +4,19 @@ module.exports = {
   purge: ["./src/**/*.svelte", "./static/*.html"],
   darkMode: "class", // or 'media' or 'class'
   theme: {
+    // fontFamily: {
+    //   'serif': ['Domine', 'ui-serif'],
+    //   'sans': ['Domine', 'ui-serif']
+    // },
     extend: {
       // colors: {
       //   cyan: colors.violet,
       // }
       colors: {
         rose: colors.rose,
+        faithful: {
+          '500': '#FBC9BD'
+        }
       }
     },
   },
