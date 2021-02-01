@@ -39,21 +39,10 @@
   });
 </script>
 
-<style>
-  .toast-wrapper {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    text-align: center;
-    z-index: 9999;
-  }
-</style>
-
-<div class="absolute top-10 left-0 right-0 text-center w-3/6 m-auto z-50">
+<div class="fixed top-10 left-0 right-0 text-center w-5/6 sm:w-3/6 m-auto z-50">
   {#each toasts as toast (toast._id)}
     <div
-      class="toast-item"
+      class="toast-item mb-4"
       in:fly={{ delay: 0, duration: 300, x: 0, y: -50, opacity: 0.1, easing: backOut }}
       out:fade={{ duration: 500, opacity: 0 }}>
       {#if toast.type === 'success'}

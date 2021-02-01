@@ -1,10 +1,15 @@
 <script>
-  //	  import Toast from "$components/Toast.svelte";
+  import Toast from '$components/Toast.svelte';
+  import firebase from 'firebase/app';
+  import 'firebase/auth';
+  import 'firebase/firestore';
+
   import Visibility from '$components/Visibility.svelte';
 
   import { onMount } from 'svelte';
   import { fade, crossfade } from 'svelte/transition';
   let loaded = false;
+  let user = {};
 
   const [send, receive] = crossfade({
     duration: 250,
@@ -18,34 +23,113 @@
     '/the-faithful-elvis.jpg',
   ];
   let hero = Math.floor(Math.random() * icons.length);
-  let lastHero = -1;
+  let email = '';
+  onMount(async () => {
+    const firebaseConfig = {
+      apiKey: 'AIzaSyC75bagJGvDb5_2FJOT1yE2RV-97FGvYVs',
+      authDomain: 'the-faithful.firebaseapp.com',
+      projectId: 'the-faithful',
+      storageBucket: 'the-faithful.appspot.com',
+      messagingSenderId: '505590894387',
+      appId: '1:505590894387:web:573695e14e3f14cee77846',
+      databaseURL: 'https://the-faithful.firebaseio.com',
+    };
 
-  //   {#each [icons[hero]] as heroUrl (heroUrl)}
-  // 			src={heroUrl}
-  // 			{/each}
-
-  let ogImage = 'https://www.the-faitfhful.com/the-faithful-a-movie-by-annie-berman.png';
-  onMount(() => {
-    setTimeout(() => {
+    if (firebase.apps.length === 0) {
+      await firebase.initializeApp(firebaseConfig);
       loaded = true;
-    }, 25);
+    }
 
+    await import('firebase/functions');
+    if (window && window.location.href.indexOf('localhost') !== -1) {
+      // dev mode
+      firebase.functions().useEmulator('localhost', 5001);
+    }
+
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    firebase.auth().onAuthStateChanged(function (u) {
+      if (u) {
+        // User is signed in.
+        console.log({ u }, 'aaa');
+        if (u && !u.isAnonymous) {
+          // dispatch("auth-success", { user, firebase });
+          user = u;
+        } else {
+          // dispatch("auth-success-anonymous", { user, firebase });
+          user = u;
+        }
+      } else {
+        console.log('no-auth');
+        firebase
+          .auth()
+          .signInAnonymously()
+          .then(() => {
+            // Signed in..
+            // dispatch("auth-success-anonymous", { user, firebase });
+            console.log('signed in anonymously', { u });
+            user = u;
+          })
+          .catch((error) => {
+            console.error({ error });
+            // dispatch("auth-failure", { firebase, error });
+          });
+      }
+    });
+
+    // TODO: kill this on unload
     setInterval(() => {
-      lastHero = hero;
       hero = Math.floor(Math.random() * icons.length);
     }, 5500);
   });
-</script>
-<svelte:head>
-  <title>The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman.</title>
-<meta property="og:image" content={ogImage} />
-<meta property="og:image" content={ogImage} />
-<meta
-  property="twitter:image"
-  content={ogImage}
-/>
-<meta property="twitter:card" content="summary_large_image" />
 
+  const announceSignup = async () => {
+    console.log({ email, uid: user.uid });
+    const er = /^\S+@\S+$/;
+
+    try {
+      if (er.test(email)) {
+        const db = firebase.firestore();
+        email = email.toLowerCase();
+
+        const docRef = db.collection('announce').doc(email);
+        const doc = await docRef.get();
+        if (!doc.exists) {
+          // add if it's not there
+          await db.doc(`announce/${email}`).set({
+            email: `${email}`,
+            uid: `${user.uid}`,
+          });
+        }
+
+        window.pushToast(`Email ${email}`, 'success');
+      } else {
+        window.pushToast(`Please enter a valid email address.`, 'alert');
+        return;
+      }
+    } catch (e) {
+      window.pushToast(
+        `Error adding email ${e.message} Try again later.`,
+        'alert'
+      );
+      return;
+    }
+  };
+</script>
+
+<svelte:head>
+  <title
+    >The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman.</title
+  >
+  <meta
+    property="og:image"
+    content="https://www.the-faitfhful.com/the-faithful-a-movie-by-annie-berman.png"
+  />
+
+  <meta
+    property="twitter:image"
+    content="https://www.the-faitfhful.com/the-faithful-a-movie-by-annie-berman.png"
+  />
+  <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <div class="bg-faithful-500">
@@ -108,16 +192,12 @@
                   Princess Diana in this meditation on fans, faith, and image.
                 </p>
               </div>
-              <form
-                method="POST"
-                action="https://docs.google.com/forms/u/0/d/e/1FAIpQLScKO79aNMhPsZq2LB1EPDA8RyygBu2T0bod4seu89XKtNdAbw/formResponse"
-                class="mt-12 sm:max-w-lg sm:w-full sm:flex"
-              >
+              <aside class="mt-12 sm:max-w-lg sm:w-full sm:flex">
                 <div class="min-w-0 flex-1">
                   <label for="hero_email" class="sr-only">Email address</label>
                   <input
                     id="hero_email"
-                    name="YPqjbf"
+                    bind:value={email}
                     type="email"
                     class="block w-full border border-gray-300 rounded-md px-5 py-3 text-base text-gray-900 placeholder-gray-500 shadow-sm focus:border-rose-500 focus:ring-rose-500"
                     placeholder="Enter your email"
@@ -125,12 +205,12 @@
                 </div>
                 <div class="mt-4 sm:mt-0 sm:ml-3">
                   <button
-                    type="submit"
+                    on:click={announceSignup}
                     class="block w-full rounded-md border border-transparent px-5 py-3 bg-gray-800 text-base font-medium text-white shadow hover:bg-rose-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10"
                     >Notify me when tickets go on sale</button
                   >
                 </div>
-              </form>
+              </aside>
             </div>
           </div>
         </div>
@@ -400,8 +480,8 @@
                   href="https://www.grantfortheweb.org/"
                   class="underline text-rose-500"
                   target="_blank">Grant for the Web</a
-                >. Grant for the Web aims to boost open, fair, and
-                inclusive standards and innovation in Web Monetization.
+                >. Grant for the Web aims to boost open, fair, and inclusive
+                standards and innovation in Web Monetization.
               </p>
               <div class="mt-6 invisible">
                 <a href="#" class="text-base font-medium text-rose-500">
@@ -648,11 +728,12 @@
                   details about our virtual cinema release.
                 </p>
               </div>
-              <form action="#" class="mt-12 sm:mx-auto sm:max-w-lg sm:flex">
+              <aside class="mt-12 sm:mx-auto sm:max-w-lg sm:flex">
                 <div class="min-w-0 flex-1">
                   <label for="cta_email" class="sr-only">Email address</label>
                   <input
                     id="cta_email"
+                    bind:value={email}
                     type="email"
                     class="block w-full border border-transparent rounded-md px-5 py-3 text-base text-gray-900 placeholder-gray-500 shadow-sm focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-rose-500"
                     placeholder="Enter your email"
@@ -660,17 +741,21 @@
                 </div>
                 <div class="mt-4 sm:mt-0 sm:ml-3">
                   <button
-                    type="submit"
+                    on:click={announceSignup}
                     class="block w-full rounded-md border border-transparent px-5 py-3 bg-gray-900 text-base font-medium text-white shadow hover:bg-rose-900 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-rose-500 sm:px-10"
                     >Notify me</button
                   >
                 </div>
-              </form>
+              </aside>
             </div>
           </div>
         </div>
       </div>
     </main>
+
+    <aside class="z-40">
+      <Toast />
+    </aside>
 
     <footer class="mt-24 bg-gray-900 sm:mt-12">
       <div

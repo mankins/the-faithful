@@ -15,7 +15,7 @@ module.exports = {
       colors: {
         rose: colors.rose,
         faithful: {
-          '500': '#FBC9BD'
+          '500': '#FFFFFF' 
         }
       }
     },
