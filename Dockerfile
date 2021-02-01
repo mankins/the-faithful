@@ -6,6 +6,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install python -y
 
 WORKDIR /app
 COPY . .
+COPY svelte.config.js svelte.config.cjs
+COPY snowpack.config.js snowpack.config.cjs
 RUN npm install --no-audit --unsafe-perm
 RUN npm run build
 
