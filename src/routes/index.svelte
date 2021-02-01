@@ -12,13 +12,18 @@
 	});
 
   const icons = [
-    "/the-faithful-a-movie-by-annie-berman.png",
-    "/the-faithful-pope.jpg",
+    "/the-faithful-a-movie-by-annie-berman-640x640.png",
+    "/the-faithful-pope-640x640.jpg",
     "/the-faithful-icons.jpg",
     "/the-faithful-elvis.jpg",
   ];
   let hero = Math.floor(Math.random() * icons.length);
   let lastHero = -1;
+
+//   {#each [icons[hero]] as heroUrl (heroUrl)}
+// 			src={heroUrl}
+// 			{/each}
+
 
   onMount(() => {
     setTimeout(() => {
@@ -42,7 +47,7 @@
         >
           <div>
             <div class="flex flex-row" />
-            <div class="mt-20">
+            <div class="mt-4 sm:mt-20">
               <div>
                 <a href="#" class="inline-flex space-x-4">
                   <span
@@ -70,7 +75,7 @@
               </div>
               <div class="mt-6 sm:max-w-xl">
                 <h1
-                  class="text-7xl -ml-4 font-extrabold text-black tracking-tight md:text-7xl md:ml-0 lg:text-8xl sm:text-8xl"
+                  class="text-7xl -ml-0 sm:-ml-4 font-extrabold text-black tracking-tight md:text-7xl md:ml-0 lg:text-8xl sm:text-8xl"
                 >The Faithful</h1>
                 <h1
                   class="text-2xl font-extrabold text-gray-800 tracking-tight sm:text-4xl"
@@ -143,19 +148,27 @@
                   fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)"
                 />
               </svg>
-            </div>
+			</div>
+			<Visibility
+			steps={100}
+			let:percent
+			let:unobserve
+		  >
+			{#if percent > 50}
             <div
-			class="relative overflow-hidden pl-4 -mr-40 sm:mx-auto sm:max-w-3xl sm:px-0 lg:max-w-none lg:h-full lg:pl-12"
-            >
-			{#each [icons[hero]] as heroUrl (heroUrl)}
-			<img
-			transition:fade={{ delay: 100 }}
+			class="relative overflow-hidden pl-0 pr-6 -ml-3 -mr-40 w-screen sm:-mr-40 sm:mx-auto sm:max-w-3xl sm:px-0 sm:pl-4 sm:pr lg:max-w-none lg:h-full lg:pl-12"
+			>
+		  <img
+			in:receive={{key:hero}}
+			out:send={{key:hero}}
+			use:unobserve
                 class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:h-full lg:w-auto lg:max-w-none"
-                src={heroUrl}
-                alt="The Faithful: A film on fans and followings by Annie Berman"
+				src={icons[hero]}
+				alt="The Faithful: A film on fans and followings by Annie Berman"
 			  />
-			  {/each}
-            </div>
+			</div>
+			{/if}
+			</Visibility>
           </div>
         </div>
       </div>
@@ -203,7 +216,7 @@
               </svg>
             </div>
             <div
-              class="relative mx-auto max-w-md px-3 sm:max-w-3xl sm:px-6 lg:px-0 lg:max-w-none lg:py-20"
+              class="relative mx-auto pt-40 sm:pt-0 max-w-md px-3 sm:max-w-3xl sm:px-6 lg:px-0 lg:max-w-none lg:py-20"
             >
               <Visibility
                 steps={100}
@@ -211,7 +224,7 @@
                 let:unobserve
                 let:intersectionObserverSupport
               >
-                {#if percent > 50}
+                {#if percent > 60}
                   <div
                     use:unobserve
                     transition:fade={{ delay: 10 }}
@@ -357,7 +370,7 @@
               </div>
             </div>
             <div
-              class="mt-12 mb-24 grid grid-cols-3 gap-6 md:grid-cols-3 lg:mt-0 lg:grid-cols-3"
+              class="mt-12 mb-24 grid grid-cols-1 sm:grid-cols-3 gap-6 md:grid-cols-3 lg:mt-0 lg:grid-cols-3"
             >
               <div
                 class="col-span-1 flex justify-center py-8 px-8  rounded-2xl"
