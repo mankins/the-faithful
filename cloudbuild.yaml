@@ -44,5 +44,5 @@ steps:
       ]
 
 substitutions:
-  _SERVICE_NAME: v1-svelte-ssr
+  _SERVICE_NAME: the-faithful-ssr
   _REGION: us-central1

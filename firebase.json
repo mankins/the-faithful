@@ -22,7 +22,7 @@
       {
         "source": "**",
         "run": {
-          "serviceId": "v1-svelte-ssr",
+          "serviceId": "the-faithful-ssr",
           "region": "us-central1"
         }
       }
