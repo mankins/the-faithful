@@ -1,6 +1,7 @@
 <script>
     import "$styles/tailwind.css";
     import "$styles/main.scss";
+    import "$styles/recoleta.css";
     import { afterUpdate } from "svelte";
     import { page as pageStore } from "$components/stores";
   //  import ThemeToggle from "$components/ThemeToggle.svelte";

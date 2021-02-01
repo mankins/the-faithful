@@ -13,8 +13,8 @@ module.exports = {
       //   cyan: colors.violet,
       // }
       fontFamily: {
-        'serif': ['Domine', 'ui-serif'],
-        'sans': ['Domine', 'ui-serif']
+        'serif': ['Recoleta-RegularDEMO', 'zzzDomine', 'ui-serif'],
+        'sans': ['Recoleta-RegularDEMO', 'zzzDomine', 'ui-serif']
       },
         colors: {
         rose: colors.rose,
