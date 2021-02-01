@@ -132,7 +132,7 @@
   <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
 
-<div class="bg-faithful-500">
+<div class="bg-white">
   {#if loaded}
     <main>
       <section class="pt-8 overflow-hidden sm:pt-12 lg:relative lg:py-48">
@@ -173,7 +173,7 @@
               </div>
               <div class="mt-6 sm:max-w-xl">
                 <h1
-                  class="text-7xl -ml-0 sm:-ml-4 font-extrabold text-black tracking-tight md:text-7xl md:ml-0 lg:text-8xl sm:text-8xl"
+                  class="text-7xl uppercase -ml-0 sm:-ml-4 font-extrabold text-black tracking-tight md:text-7xl md:ml-0 lg:text-8xl sm:text-8xl"
                 >
                   The Faithful
                 </h1>
