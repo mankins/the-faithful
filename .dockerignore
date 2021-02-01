@@ -1,0 +1,11 @@
+.svelte
+.firebase
+node_modules
+.dockerignore
+node_modules
+npm-debug.log
+.gitignore
+.git
+Dockerfile
+ui-debug.log
+functions
