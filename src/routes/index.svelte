@@ -352,8 +352,8 @@
                       alt=""
                     />
                     <div
-                      class="absolute inset-0 bg-faithful-500"
-                      style="mix-blend-mode: multiply;"
+                      zclass="absolute inset-0 bg-faithful-500"
+                      zstyle="mix-blend-mode: multiply;"
                     />
                     <div class="relative px-8">
                       <blockquote class="mt-8" style="font-family: Domine">
