@@ -127,12 +127,12 @@
   >
   <meta
     property="og:image"
-    content="https://www.the-faitfhful.com/the-faithful-a-movie-by-annie-berman.png"
+    content="https://www.the-faithful.com/the-faithful-a-movie-by-annie-berman.png"
   />
 
   <meta
     property="twitter:image"
-    content="https://www.the-faitfhful.com/the-faithful-a-movie-by-annie-berman.png"
+    content="https://www.the-faithful.com/the-faithful-a-movie-by-annie-berman.png"
   />
   <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
@@ -320,6 +320,7 @@
               <div class="mt-10 invisible">
                 <a
                   href="http://www.annieberman.net/about"
+                  rel="noopener"
                   class="text-base font-medium text-rose-500"
                 >
                   Learn more about our filmmaker &nbsp&rarr;
@@ -411,6 +412,7 @@
               <div class="mt-10">
                 <a
                   href="http://annieberman.net/about"
+                  rel="noopener"
                   target="_blank"
                   class="text-base font-medium text-faithful-50"
                 >
@@ -446,6 +448,7 @@
               <p class="mt-6 max-w-3xl text-lg leading-7 text-gray-500">
                 We're honored to have our distribution sponsored by <a
                   href="https://www.grantfortheweb.org/"
+                  rel="noopener"
                   class="underline text-faithful-50"
                   target="_blank">Grant for the Web</a
                 >. Grant for the Web aims to boost open, fair, and inclusive
@@ -600,6 +603,7 @@
           <a
             href="https://www.facebook.com/thefaithfulfilm/"
             target="_blank"
+            rel="noopener"
             class="text-gray-400 hover:text-gray-300"
           >
             <span class="sr-only">Facebook</span>
@@ -620,6 +624,7 @@
           <a
             href="https://www.instagram.com/thefaithful/"
             target="_blank"
+            rel="noopener"
             class="text-gray-400 hover:text-gray-300"
           >
             <span class="sr-only">Instagram</span>
@@ -640,6 +645,7 @@
           <a
             href="https://twitter.com/thefaithful"
             target="_blank"
+            rel="noopener"
             class="text-gray-400 hover:text-gray-300"
           >
             <span class="sr-only">Twitter</span>
