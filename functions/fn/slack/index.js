@@ -2,22 +2,21 @@ const get = require('lodash.get');
 
 const functions = require('firebase-functions');
 
-const fetch = require("node-fetch");
+const fetch = require('node-fetch');
 
-const getSecrets  = require('../../lib/env'); // load environment config
+const getSecrets = require('../../lib/env'); // load environment config
 
 const secrets = getSecrets();
 
-const sendToSlack = ((url, payload) => {
-
+const sendToSlack = (url, payload) => {
   return fetch(url, {
     method: 'post',
     body: JSON.stringify(payload),
     headers: { 'Content-Type': 'application/json' },
   })
-    .then(res => res.text())
-    .catch(err => console.error(err));
-  });
+    .then((res) => res.text())
+    .catch((err) => console.error(err));
+};
 
 // Relay from Github to Slack Webhooks
 exports.slackRelay = functions.https.onRequest(async (req, res) => {
@@ -48,7 +47,8 @@ exports.slackRelay = functions.https.onRequest(async (req, res) => {
 
     let ua = req.header('User-Agent');
     ua = ua.toLowerCase();
-    if (ua.indexOf('github') === -1) { // GitHub-Hookshot/7905f48 
+    if (ua.indexOf('github') === -1) {
+      // GitHub-Hookshot/7905f48
       res.set('Content-type', 'application/json');
       return res
         .status(403)
@@ -64,10 +64,34 @@ exports.slackRelay = functions.https.onRequest(async (req, res) => {
     let text;
     let response = '';
 
+    // get these by looking for the data-id on the github project page
+    let columnMap = {};
+    columnMap['12726477'] = 'Todo';
+    columnMap['12726478'] = 'In progress';
+    columnMap['12726479'] = 'Done';
+
     if (projectCard) {
       let template = {};
       template.blocks = [];
-      template.text = `${get(projectCard, 'creator.login', '')} ${type} a card`;
+      let place = '';
+      let to = columnMap['' + get(projectCard, 'column_id')];
+
+      if (type === 'deleted') {
+        place = `in *${to}*`;
+      }
+      if (type === 'create') {
+        place = `in *${to}*`;
+      }
+      if (type === 'moved') {
+        let from = columnMap['' + get(payload, 'changes.column_id.from')];
+        place = `from *${from}* to *${to}*`;
+      }
+
+      template.text = `> *${get(
+        projectCard,
+        'creator.login',
+        ''
+      )}* _${type}_ a card ${place}`;
 
       // template.blocks.push(
       //   {
@@ -84,29 +108,32 @@ exports.slackRelay = functions.https.onRequest(async (req, res) => {
       //   });
 
       if (get(projectCard, 'note')) {
-        template.blocks.push(
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": `<https://github.com/orgs/fishinthehand/projects/1|${get(projectCard, 'creator.login', '')} ${type} a card>
-              
-              ${get(projectCard, 'note')}`
-            }
-          }
-        );         
+        template.blocks.push({
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `> <https://github.com/orgs/fishinthehand/projects/1|${get(
+              projectCard,
+              'creator.login',
+              ''
+            )} *${get(
+              projectCard,
+              'creator.login',
+              ''
+            )}* _${type}_ a card ${place}>
+> ${get(projectCard, 'note')}`,
+          },
+        });
         text = template;
       }
       response = await sendToSlack(config.SLACK_ENDPOINT, text);
       // console.log(response);
     }
 
-   // relay to slack
+    // relay to slack
     res.set('Content-type', 'text/plain');
     res.send(response);
   } else {
-    return res
-        .status(400)
-        .send(JSON.stringify({ err: { message: 'bad' } }));
+    return res.status(400).send(JSON.stringify({ err: { message: 'bad' } }));
   }
 });
