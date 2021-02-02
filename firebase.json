@@ -30,10 +30,10 @@
   },
   "emulators": {
     "functions": {
-      "port": 5001
+      "port": 15001
     },
     "hosting": {
-      "port": 5000
+      "port": 15000
     },
     "pubsub": {
       "port": 18081

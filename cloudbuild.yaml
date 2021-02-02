@@ -1,4 +1,16 @@
-steps:    
+steps:
+  - id: "cloud functions install"
+    name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
+    waitFor: ['-']
+    dir: 'functions'
+
+  - id: "cloud functions deploy - slackRelay"
+    name: 'gcr.io/cloud-builders/gcloud'
+    args: ['functions', 'deploy', 'slackRelay', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=slackRelay', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=256']
+    waitFor: ["cloud functions install"]
+    dir: 'functions'
+    
   - id: "build image"
     name: "gcr.io/cloud-builders/docker"
     waitFor: ['-']
