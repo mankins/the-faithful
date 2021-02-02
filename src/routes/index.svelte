@@ -322,7 +322,7 @@
                   href="http://www.annieberman.net/about"
                   class="text-base font-medium text-rose-500"
                 >
-                  Learn more about our film maker &nbsp&rarr;
+                  Learn more about our filmmaker &nbsp&rarr;
                 </a>
               </div>
             </div>
@@ -407,7 +407,6 @@
               </div>
             </div>
 
-            <!-- Stats section -->
             <div class="mt-10">
               <div class="mt-10">
                 <a
@@ -415,7 +414,7 @@
                   target="_blank"
                   class="text-base font-medium text-faithful-50"
                 >
-                  Learn more about our film maker &nbsp&rarr;
+                  Learn more about our filmmaker &nbsp&rarr;
                 </a>
               </div>
             </div>
