@@ -29,7 +29,7 @@
     '/pope-3.jpg',
     '/diana-1.jpg',
     '/diana-2.jpg',
-    '/diana-3a.jpg',
+    '/diana-3.jpg',
   ];
   let hero = Math.floor(Math.random() * icons.length);
   let email = '';
@@ -110,14 +110,14 @@
           });
         }
 
-        window.pushToast(`Email ${email}`, 'success');
+        window.pushToast("Success. We'll write soon.", 'success');
       } else {
         window.pushToast(`Please enter a valid email address.`, 'alert');
         return;
       }
     } catch (e) {
       window.pushToast(
-        `Error adding email ${e.message} Try again later.`,
+       'Already signed up?', // Error adding email ${e.message} Try again later.
         'alert'
       );
       return;
