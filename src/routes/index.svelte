@@ -348,7 +348,7 @@
                     <img
                       style="filter: grayscale(1);"
                       class="absolute inset-0 h-full w-full object-cover"
-                      src="/annie-jerry-the-faithful.jpg"
+                      src="/photo-pope-bust.jpg"
                       alt=""
                     />
                     <div
@@ -379,7 +379,7 @@
                             target="_blank"
                           >
                             <p
-                              class="text-xl font-serif font-semibold tracking-tight text-rose-200 uppercase"
+                              class="text-xl font-serif font-semibold tracking-tight text-faithful-800 uppercase"
                             >
                               The Independent
                             </p>
@@ -462,77 +462,6 @@
         </div>
       </section>
 
-      <!-- Logo cloud section -->
-      <div class="mt-32">
-        <div
-          class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl"
-        >
-          <div class="lg:grid lg:grid-cols-2 lg:gap-24 lg:items-center  ">
-            <aside>
-              <h2
-                class="text-2xl font-serif font-extrabold text-gray-900 tracking-tight sm:text-4xl"
-              >
-                Thank you very much
-              </h2>
-              <p class="mt-6 max-w-3xl text-lg leading-7 text-gray-500">
-                This project is made possible with funds from the New York State
-                Council on the Arts in Partnership with Wave Farm: Media Arts
-                Assistance Fund, a regrant program of the New York State Council
-                on the Arts, Electronic Media and Film Program, with the support
-                of Governor Andrew Cuomo and the New York State Legislature.
-                With additional support from: The Puffin Foundation, UnionDocs,
-                The Somerville arts Council, Signal Culture, Kopkind Colony and
-                Individual Contributors and Kickstarter backers.
-              </p>
-              <p class="mt-6 max-w-3xl text-lg leading-7 text-gray-500">
-                We're honored to have our distribution sponsored by <a
-                  href="https://www.grantfortheweb.org/"
-                  class="underline text-faithful-50"
-                  target="_blank">Grant for the Web</a
-                >. Grant for the Web aims to boost open, fair, and inclusive
-                standards and innovation in Web Monetization.
-              </p>
-              <div class="mt-6 invisible">
-                <a href="#" class="text-base font-medium text-rose-500">
-                  Meet our investors and advisors&nbsp&rarr;
-                </a>
-              </div>
-            </aside>
-            <div
-              class="mt-12 mb-24 grid grid-cols-1 sm:grid-cols-3 gap-6 md:grid-cols-3 lg:mt-0 lg:grid-cols-3"
-            >
-              <div
-                class="col-span-1 flex justify-center py-8 px-8  rounded-2xl"
-              >
-                <img
-                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-500"
-                  src="/elvis-circle.min.svg"
-                  alt="Elvis Presley"
-                />
-              </div>
-              <div
-                class="col-span-1 flex justify-center py-8 px-8   rounded-2xl"
-              >
-                <img
-                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-500"
-                  src="/pope-john-paul.min.svg"
-                  alt="Pope John Paul II"
-                />
-              </div>
-              <div
-                class="col-span-1 flex justify-center py-8 px-8   rounded-2xl"
-              >
-                <img
-                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-500"
-                  src="/diana-princess-of-wales.min.svg"
-                  alt="Diana Princess of Wales"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="relative mt-2 md:mt-20">
         <div
           class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:gap-24 lg:items-start"
@@ -543,40 +472,8 @@
               class="hidden sm:block lg:absolute lg:inset-y-0 lg:right-0 lg:w-screen"
             >
               <div
-                class="absolute inset-y-0 right-1/2 w-full bg-gray-50 rounded-r-3xl lg:right-72"
+                class="absolute inset-y-0 right-1/2 w-full bg-faithful-500 rounded-r-3xl lg:right-72"
               />
-              <svg
-                class="absolute top-8 left-1/2 -ml-3 lg:-right-8 lg:left-auto lg:top-12"
-                width="404"
-                height="392"
-                fill="none"
-                viewBox="0 0 404 392"
-              >
-                <defs>
-                  <pattern
-                    id="02f20b47-fd69-4224-a62a-4c9de5c763f7"
-                    x="0"
-                    y="0"
-                    width="20"
-                    height="20"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <rect
-                      x="0"
-                      y="0"
-                      width="4"
-                      height="4"
-                      class="text-gray-200"
-                      fill="none"
-                    />
-                  </pattern>
-                </defs>
-                <rect
-                  width="404"
-                  height="392"
-                  fill="url(#02f20b47-fd69-4224-a62a-4c9de5c763f7)"
-                />
-              </svg>
             </div>
             <div
               class="relative mx-auto max-w-md px-3 sm:max-w-3xl sm:px-6 lg:px-0 lg:max-w-none lg:py-20"
@@ -591,23 +488,19 @@
                   <div
                     use:unobserve
                     transition:fade={{ delay: 10 }}
-                    class="relative pt-64 pb-10 rounded-2xl shadow-xl overflow-hidden"
+                    class="relative pt-64 pb-10 rounded-2xl overflow-hidden"
                   >
                     <img
                       style="filter: grayscale(1);"
-                      class="absolute inset-0 h-full w-full object-cover"
+                      class="absolute inset-0 h-96 w-96 object-cover rounded-full"
                       src="/annie-berman.png"
                       alt="Annie Berman"
                     />
-                    <div
-                      class="absolute inset-0 bg-faithful-500"
-                      style="mix-blend-mode: multiply;"
-                    />                    
                     <div class="relative px-8">
-                      <blockquote class="mt-8" style="font-family: Domine">
+                      <blockquote class="mt-8">
                         <footer class="mt-4 pt-20">
                           <p
-                            class="text-xl font-serif font-semibold tracking-tight text-faithful-500 uppercase"
+                            class="invisible text-xl font-serif font-semibold tracking-tight text-faithful-500 uppercase"
                           >
                             Annie Berman, Filmmaker
                           </p>
@@ -656,6 +549,77 @@
           </div>
         </div>
       </div>
+
+      <div class="mt-32">
+        <div
+          class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl"
+        >
+          <div class="lg:grid lg:grid-cols-2 lg:gap-24 lg:items-center  ">
+            <aside>
+              <h2
+                class="text-2xl font-serif font-extrabold text-gray-900 tracking-tight sm:text-4xl"
+              >
+                Thank you very much
+              </h2>
+              <p class="mt-6 max-w-3xl text-lg leading-7 text-gray-500">
+                This project is made possible with funds from the New York State
+                Council on the Arts in Partnership with Wave Farm: Media Arts
+                Assistance Fund, a regrant program of the New York State Council
+                on the Arts, Electronic Media and Film Program, with the support
+                of Governor Andrew Cuomo and the New York State Legislature.
+                With additional support from: The Puffin Foundation, UnionDocs,
+                The Somerville arts Council, Signal Culture, Kopkind Colony and
+                Individual Contributors and Kickstarter backers.
+              </p>
+              <p class="mt-6 max-w-3xl text-lg leading-7 text-gray-500">
+                We're honored to have our distribution sponsored by <a
+                  href="https://www.grantfortheweb.org/"
+                  class="underline text-faithful-50"
+                  target="_blank">Grant for the Web</a
+                >. Grant for the Web aims to boost open, fair, and inclusive
+                standards and innovation in Web Monetization.
+              </p>
+              <div class="mt-6 invisible">
+                <a href="#" class="text-base font-medium text-rose-500">
+                  Meet our investors and advisors&nbsp&rarr;
+                </a>
+              </div>
+            </aside>
+            <div
+              class="mt-12 mb-24 grid grid-cols-1 sm:grid-cols-3 gap-6 md:grid-cols-3 lg:mt-0 lg:grid-cols-3"
+            >
+              <div
+                class="col-span-1 flex justify-center py-8 px-8  rounded-2xl"
+              >
+                <img
+                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-800"
+                  src="/elvis-circle.min.svg"
+                  alt="Elvis Presley"
+                />
+              </div>
+              <div
+                class="col-span-1 flex justify-center py-8 px-8   rounded-2xl"
+              >
+                <img
+                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-800"
+                  src="/pope-john-paul.min.svg"
+                  alt="Pope John Paul II"
+                />
+              </div>
+              <div
+                class="col-span-1 flex justify-center py-8 px-8   rounded-2xl"
+              >
+                <img
+                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-800"
+                  src="/diana-princess-of-wales.min.svg"
+                  alt="Diana Princess of Wales"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
       <!-- CTA section -->
       <div class="relative mt-24 sm:mt-32 sm:py-16">
@@ -802,7 +766,7 @@
           >
             <span class="sr-only">Facebook</span>
             <svg
-              class="h-6 w-6"
+              class="h-12 w-12"
               fill="currentColor"
               viewBox="0 0 24 24"
               aria-hidden="true"
@@ -822,7 +786,7 @@
           >
             <span class="sr-only">Instagram</span>
             <svg
-              class="h-6 w-6"
+              class="h-12 w-12"
               fill="currentColor"
               viewBox="0 0 24 24"
               aria-hidden="true"
@@ -842,7 +806,7 @@
           >
             <span class="sr-only">Twitter</span>
             <svg
-              class="h-6 w-6"
+              class="h-12 w-12"
               fill="currentColor"
               viewBox="0 0 24 24"
               aria-hidden="true"
@@ -857,7 +821,7 @@
             <a href="#" class="text-gray-400 hover:text-gray-300">
               <span class="sr-only">GitHub</span>
               <svg
-                class="h-6 w-6"
+                class="h-12 w-12"
                 fill="currentColor"
                 viewBox="0 0 24 24"
                 aria-hidden="true"
