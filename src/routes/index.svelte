@@ -17,10 +17,19 @@
   });
 
   const icons = [
-    '/the-faithful-a-movie-by-annie-berman-640x640.png',
-    '/the-faithful-pope-640x640.jpg',
-    '/the-faithful-icons.jpg',
-    '/the-faithful-elvis.jpg',
+    // '/the-faithful-a-movie-by-annie-berman-640x640.png',
+    // '/the-faithful-pope-640x640.jpg',
+    // '/the-faithful-icons.jpg',
+    // '/the-faithful-elvis.jpg',
+    '/elvis-1.jpg',
+    '/elvis-2.jpg',
+    '/elvis-3.jpg',
+    '/pope-1.jpg',
+    '/pope-2.jpg',
+    '/pope-3.jpg',
+    '/diana-1.jpg',
+    '/diana-2.jpg',
+    '/diana-3a.jpg',
   ];
   let hero = Math.floor(Math.random() * icons.length);
   let email = '';
@@ -136,86 +145,7 @@
   {#if loaded}
     <main>
       <section class="pt-8 overflow-hidden sm:pt-12 lg:relative lg:py-48">
-        <div
-          class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24"
-        >
-          <div>
-            <div class="flex flex-row" />
-            <div class="mt-4 sm:mt-20">
-              <div>
-                <a href="#" class="inline-flex space-x-4">
-                  <span
-                    class="rounded bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-500 tracking-wide uppercase"
-                  >
-                    Coming March 2021
-                  </span>
-                  <span
-                    class="inline-flex items-center text-sm font-medium text-rose-500 space-x-1"
-                  >
-                    <span>Reserve your ticket today</span>
-
-                    <!-- Heroicon name: chevron-right -->
-                    <svg
-                      class="h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                </a>
-              </div>
-              <div class="mt-6 sm:max-w-xl">
-                <h1
-                  class="text-7xl uppercase -ml-0 sm:-ml-4 font-extrabold text-black tracking-tight md:text-7xl md:ml-0 lg:text-8xl sm:text-8xl"
-                >
-                  The Faithful
-                </h1>
-                <h1
-                  class="text-2xl font-extrabold text-gray-800 tracking-tight sm:text-4xl"
-                >
-                  The King, The Pope, The Princess
-                </h1>
-                <p
-                  class="mt-6 max-w-3xl text-lg leading-7 text-gray-600"
-                  itemProp="description"
-                >
-                  The discovery of the image of Pope John Paul II on a lollipop
-                  for sale at the Vatican inspires a twenty-year voyage deep
-                  into the worlds of Elvis Presley, Pope John Paul II, and
-                  Princess Diana in this meditation on fans, faith, and image.
-                </p>
-              </div>
-              <aside class="mt-12 sm:max-w-lg sm:w-full sm:flex">
-                <div class="min-w-0 flex-1">
-                  <label for="hero_email" class="sr-only">Email address</label>
-                  <input
-                    id="hero_email"
-                    bind:value={email}
-                    type="email"
-                    class="block w-full border border-gray-300 rounded-md px-5 py-3 text-base text-gray-900 placeholder-gray-500 shadow-sm focus:border-rose-500 focus:ring-rose-500"
-                    placeholder="Enter your email"
-                  />
-                </div>
-                <div class="mt-4 sm:mt-0 sm:ml-3">
-                  <button
-                    on:click={announceSignup}
-                    class="block w-full rounded-md border border-transparent px-5 py-3 bg-gray-800 text-base font-medium text-white shadow hover:bg-rose-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10"
-                    >Notify me when tickets go on sale</button
-                  >
-                </div>
-              </aside>
-            </div>
-          </div>
-        </div>
-
-        <div class="sm:mx-auto sm:max-w-3xl sm:px-6 mr-48 ml-6">
+        <div class="sm:mx-auto sm:max-w-3xl sm:px-6 mr-48 ml-6 -mt-12">
           <div
             class="py-12 sm:relative sm:mt-12 sm:py-16 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2"
           >
@@ -265,13 +195,92 @@
                     in:receive={{ key: hero }}
                     out:send={{ key: hero }}
                     use:unobserve
-                    class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:h-full lg:w-auto lg:max-w-none"
+                    class="w-full rounded-xl shadow-xl ring-1 ring-white ring-opacity-5 lg:h-full lg:w-auto lg:max-w-none"
                     src={icons[hero]}
                     alt="The Faithful: A film on fans and followings by Annie Berman"
                   />
                 </div>
               {/if}
             </Visibility>
+          </div>
+        </div>
+
+        <div
+          class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24"
+        >
+          <div>
+            <div class="flex flex-row" />
+            <div class="mt-4 sm:mt-20">
+              <div>
+                <a href="#" class="inline-flex space-x-4">
+                  <span
+                    class="rounded bg-faithful-500 px-2.5 py-1 text-xs font-semibold text-gray-600 tracking-wide uppercase"
+                  >
+                    Coming March 2021
+                  </span>
+                  <span
+                    class="inline-flex items-center text-sm font-medium text-gray-400 space-x-1"
+                  >
+                    <span>Reserve your ticket today</span>
+
+                    <!-- Heroicon name: chevron-right -->
+                    <svg
+                      class="h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                </a>
+              </div>
+              <div class="mt-6 sm:max-w-xl">
+                <h1
+                  class="text-7xl font-serif uppercase -ml-0 sm:-ml-4 font-extrabold text-black tracking-tight md:text-7xl md:ml-0 lg:text-8xl sm:text-8xl"
+                >
+                  The Faithful
+                </h1>
+                <h1
+                  class="text-2xl font-serif font-extrabold text-gray-800 tracking-tight sm:text-4xl"
+                >
+                  The King, The Pope, The Princess
+                </h1>
+                <p
+                  class="  mt-6 max-w-3xl text-lg leading-7 text-gray-600"
+                  itemProp="description"
+                >
+                  The discovery of the image of Pope John Paul II on a lollipop
+                  for sale at the Vatican inspires a twenty-year voyage deep
+                  into the worlds of Elvis Presley, Pope John Paul II, and
+                  Princess Diana in this meditation on fans, faith, and image.
+                </p>
+              </div>
+              <aside class="mt-12 sm:max-w-lg sm:w-full sm:flex">
+                <div class="min-w-0 flex-1">
+                  <label for="hero_email" class="sr-only">Email address</label>
+                  <input
+                    id="hero_email"
+                    bind:value={email}
+                    type="email"
+                    class="block w-full border border-gray-300 rounded-md px-5 py-3 text-base text-gray-900 placeholder-gray-500 shadow-sm focus:border-rose-500 focus:ring-rose-500"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                <div class="mt-4 sm:mt-0 sm:ml-3  ">
+                  <button
+                    on:click={announceSignup}
+                    class="block w-full rounded-md border border-transparent px-5 py-3 bg-gray-800 text-base font-medium text-white shadow hover:bg-rose-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10"
+                    >Notify me when tickets go on sale</button
+                  >
+                </div>
+              </aside>
+            </div>
           </div>
         </div>
       </section>
@@ -343,7 +352,7 @@
                       alt=""
                     />
                     <div
-                      class="absolute inset-0 bg-rose-100"
+                      class="absolute inset-0 bg-faithful-500"
                       style="mix-blend-mode: multiply;"
                     />
                     <div class="relative px-8">
@@ -352,7 +361,7 @@
                           class="relative text-xl font-medium text-white md:flex-grow"
                         >
                           <svg
-                            class="absolute top-0 left-0 transform -translate-x-3 -translate-y-8 h-8 w-8 text-white"
+                            class="absolute top-0 left-0 transform -translate-x-3 -translate-y-6 h-6 w-6 text-white"
                             fill="currentColor"
                             viewBox="0 0 32 32"
                             aria-hidden="true"
@@ -361,16 +370,16 @@
                               d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z"
                             />
                           </svg>
-                          <p class="relative">One of 10 Filmmakers to Watch</p>
+                          <p class="relative font-serif">One of 10 Filmmakers to Watch</p>
                         </div>
 
-                        <footer class="mt-4">
+                        <footer class="mt-4  ">
                           <a
                             href="https://independent-magazine.org/2016/03/25/10-to-watch-annie-berman/"
                             target="_blank"
                           >
                             <p
-                              class="text-xl font-semibold tracking-tight text-rose-200 uppercase"
+                              class="text-xl font-serif font-semibold tracking-tight text-rose-200 uppercase"
                             >
                               The Independent
                             </p>
@@ -387,9 +396,9 @@
           <div
             class="relative mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-0"
           >
-            <div class="pt-12 sm:pt-16 lg:pt-20">
+            <div class="pt-12 sm:pt-16 lg:pt-20  ">
               <h2
-                class="text-2xl text-gray-900 font-extrabold tracking-tight sm:text-3xl"
+                class="text-2xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-4xl"
               >
                 Follow the journey from the discovery of a lollipop at the
                 Vatican to Graceland and the gates of Kensington Palace
@@ -416,10 +425,10 @@
               </div>
             </div>
 
-            <div class="mt-10">
+            <div class="mt-10  ">
               <dl class="grid grid-cols-2 gap-x-4 gap-y-8">
                 <div class="border-t-2 border-gray-100 pt-6">
-                  <dt class="text-base font-medium text-gray-500">
+                  <dt class="text-base font-medium text-faithful-800">
                     Filming Began
                   </dt>
                   <dd
@@ -430,7 +439,7 @@
                 </div>
 
                 <div class="border-t-2 border-gray-100 pt-6">
-                  <dt class="text-base font-medium text-gray-500">
+                  <dt class="text-base font-medium text-faithful-800">
                     Cinematic Release
                   </dt>
                   <dd
@@ -458,10 +467,10 @@
         <div
           class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl"
         >
-          <div class="lg:grid lg:grid-cols-2 lg:gap-24 lg:items-center">
+          <div class="lg:grid lg:grid-cols-2 lg:gap-24 lg:items-center  ">
             <aside>
               <h2
-                class="text-2xl font-extrabold text-gray-900 tracking-tight sm:text-4xl"
+                class="text-2xl font-serif font-extrabold text-gray-900 tracking-tight sm:text-4xl"
               >
                 Thank you very much
               </h2>
@@ -478,7 +487,7 @@
               <p class="mt-6 max-w-3xl text-lg leading-7 text-gray-500">
                 We're honored to have our distribution sponsored by <a
                   href="https://www.grantfortheweb.org/"
-                  class="underline text-rose-500"
+                  class="underline text-faithful-50"
                   target="_blank">Grant for the Web</a
                 >. Grant for the Web aims to boost open, fair, and inclusive
                 standards and innovation in Web Monetization.
@@ -496,7 +505,7 @@
                 class="col-span-1 flex justify-center py-8 px-8  rounded-2xl"
               >
                 <img
-                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-rose-100"
+                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-500"
                   src="/elvis-circle.min.svg"
                   alt="Elvis Presley"
                 />
@@ -505,7 +514,7 @@
                 class="col-span-1 flex justify-center py-8 px-8   rounded-2xl"
               >
                 <img
-                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-rose-100"
+                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-500"
                   src="/pope-john-paul.min.svg"
                   alt="Pope John Paul II"
                 />
@@ -514,7 +523,7 @@
                 class="col-span-1 flex justify-center py-8 px-8   rounded-2xl"
               >
                 <img
-                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-rose-100"
+                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-500"
                   src="/diana-princess-of-wales.min.svg"
                   alt="Diana Princess of Wales"
                 />
@@ -591,14 +600,14 @@
                       alt="Annie Berman"
                     />
                     <div
-                      class="absolute inset-0 bg-rose-100"
+                      class="absolute inset-0 bg-faithful-500"
                       style="mix-blend-mode: multiply;"
-                    />
+                    />                    
                     <div class="relative px-8">
                       <blockquote class="mt-8" style="font-family: Domine">
                         <footer class="mt-4 pt-20">
                           <p
-                            class="text-xl font-semibold tracking-tight text-rose-200 uppercase"
+                            class="text-xl font-serif font-semibold tracking-tight text-faithful-500 uppercase"
                           >
                             Annie Berman, Filmmaker
                           </p>
@@ -616,12 +625,12 @@
           >
             <div class="pt-12 sm:pt-16 lg:pt-20">
               <h2
-                class="text-3xl text-gray-900 font-extrabold tracking-tight sm:text-4xl"
+                class="text-3xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-4xl"
               >
                 About the Filmmaker
               </h2>
               <div class="mt-6 text-gray-500 space-y-6">
-                <p class="text-lg">
+                <p class="text-lg  ">
                   Annie Berman is a NYC based media artist. Her work has shown
                   internationally including MoMA, Spring/Break Art Show, and the
                   Rome Independent Film Festival where she was awarded Best
@@ -638,7 +647,7 @@
                 <a
                   href="http://annieberman.net/about"
                   target="_blank"
-                  class="text-base font-medium text-rose-500"
+                  class="text-base font-medium text-faithful-50"
                 >
                   Learn more about our film maker &nbsp&rarr;
                 </a>
@@ -691,7 +700,7 @@
           class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:max-w-7xl lg:px-8"
         >
           <div
-            class="relative rounded-2xl px-6 py-10 bg-gray-500 overflow-hidden shadow-xl sm:px-12 sm:py-20"
+            class="relative rounded-2xl px-6 py-10 bg-faithful-500 overflow-hidden shadow-xl sm:px-12 sm:py-20"
           >
             <div
               aria-hidden="true"
@@ -705,12 +714,12 @@
                 viewBox="0 0 1463 360"
               >
                 <path
-                  class="text-gray-400 text-opacity-40"
+                  class="text-faithful-900 text-opacity-40"
                   fill="currentColor"
                   d="M-82.673 72l1761.849 472.086-134.327 501.315-1761.85-472.086z"
                 />
                 <path
-                  class="text-gray-800 text-opacity-40"
+                  class="text-faithful-800 text-opacity-40"
                   fill="currentColor"
                   d="M-217.088 544.086L1544.761 72l134.327 501.316-1761.849 472.086z"
                 />
@@ -719,11 +728,11 @@
             <div class="relative">
               <div class="sm:text-center">
                 <h2
-                  class="text-4xl font-extrabold text-white tracking-tight lg:text-6xl"
+                  class="text-4xl font-serif font-extrabold text-black tracking-tight lg:text-6xl"
                 >
                   Attend our world premiere event
                 </h2>
-                <p class="mt-6 mx-auto max-w-2xl text-lg text-rose-100">
+                <p class="mt-6 mx-auto max-w-2xl text-lg text-gray-700  ">
                   We'll notify you when our tickets come on sale with all the
                   details about our virtual cinema release.
                 </p>
@@ -735,14 +744,14 @@
                     id="cta_email"
                     bind:value={email}
                     type="email"
-                    class="block w-full border border-transparent rounded-md px-5 py-3 text-base text-gray-900 placeholder-gray-500 shadow-sm focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-rose-500"
+                    class="block w-full border border-transparent rounded-md px-5 py-3 text-base text-gray-900 placeholder-gray-500 shadow-sm focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-faithful-800"
                     placeholder="Enter your email"
                   />
                 </div>
-                <div class="mt-4 sm:mt-0 sm:ml-3">
+                <div class="mt-4 sm:mt-0 sm:ml-3  ">
                   <button
                     on:click={announceSignup}
-                    class="block w-full rounded-md border border-transparent px-5 py-3 bg-gray-900 text-base font-medium text-white shadow hover:bg-rose-900 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-rose-500 sm:px-10"
+                    class="block w-full rounded-md border border-transparent px-5 py-3 bg-gray-900 text-base font-medium text-white shadow hover:bg-faithful-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-faithful-800 sm:px-10"
                     >Notify me</button
                   >
                 </div>
@@ -757,7 +766,7 @@
       <Toast />
     </aside>
 
-    <footer class="mt-24 bg-gray-900 sm:mt-12">
+    <footer class="mt-24 bg-gray-900 sm:mt-12  ">
       <div
         class="mx-auto max-w-md py-12 px-4 overflow-hidden sm:max-w-3xl sm:px-6 lg:max-w-7xl lg:px-8"
       >
