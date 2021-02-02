@@ -17,10 +17,6 @@
   });
 
   const icons = [
-    // '/the-faithful-a-movie-by-annie-berman-640x640.png',
-    // '/the-faithful-pope-640x640.jpg',
-    // '/the-faithful-icons.jpg',
-    // '/the-faithful-elvis.jpg',
     '/elvis-1.jpg',
     '/elvis-2.jpg',
     '/elvis-3.jpg',
@@ -92,7 +88,7 @@
   });
 
   const announceSignup = async () => {
-    console.log({ email, uid: user.uid });
+    // console.log({ email, uid: user.uid });
     const er = /^\S+@\S+$/;
 
     try {
@@ -117,7 +113,7 @@
       }
     } catch (e) {
       window.pushToast(
-       'Already signed up?', // Error adding email ${e.message} Try again later.
+        'Already signed up?', // Error adding email ${e.message} Try again later.
         'alert'
       );
       return;
@@ -126,9 +122,7 @@
 </script>
 
 <svelte:head>
-  <title
-    >The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman.</title
-  >
+  <title>The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman.</title>
   <meta
     property="og:image"
     content="https://www.the-faitfhful.com/the-faithful-a-movie-by-annie-berman.png"
@@ -144,58 +138,25 @@
 <div class="bg-white">
   {#if loaded}
     <main>
-      <section class="pt-8 overflow-hidden sm:pt-12 lg:relative lg:py-48">
-        <div class="sm:mx-auto sm:max-w-3xl sm:px-6 mr-48 ml-6 -mt-12">
+      <section
+        class="pt-4 overflow-hidden sm:overflow-auto sm:pt-8 lg:relative lg:py-36"
+      >
+        <div
+          class="sm:mx-auto sm:max-w-3xl sm:px-6 mr-48 ml-6 -mt-12 -mb-12 lg:-mb-24"
+        >
           <div
-            class="py-12 sm:relative sm:mt-12 sm:py-16 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2"
+            class="py-12 sm:relative md:mt-12 md:py-16 lg:absolute lg:-inset-y-12 lg:right-0 lg:w-1/2"
           >
-            <div class="hidden sm:block">
-              <div
-                class="absolute inset-y-0 left-1/2 w-screen bg-gray-50 rounded-l-3xl lg:left-40 lg:right-0 lg:w-full"
-              />
-              <svg
-                class="absolute top-8 right-1/2 -mr-3 lg:m-0 lg:left-0"
-                width="404"
-                height="392"
-                fill="none"
-                viewBox="0 0 404 392"
-              >
-                <defs>
-                  <pattern
-                    id="837c3e70-6c3a-44e6-8854-cc48c737b659"
-                    x="0"
-                    y="0"
-                    width="20"
-                    height="20"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <rect
-                      x="0"
-                      y="0"
-                      width="4"
-                      height="4"
-                      class="text-gray-200"
-                      fill="none"
-                    />
-                  </pattern>
-                </defs>
-                <rect
-                  width="404"
-                  height="392"
-                  fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)"
-                />
-              </svg>
-            </div>
             <Visibility steps={100} let:percent let:unobserve>
               {#if percent > 50}
                 <div
-                  class="relative overflow-hidden pl-0 pr-6 -ml-3 -mr-40 w-screen sm:-mr-40 sm:mx-auto sm:max-w-3xl sm:px-0 sm:pl-4 sm:pr lg:max-w-none lg:h-full lg:pl-12"
+                  class="relative overflow-hidden sm:overflow-auto pl-0 pr-6 -ml-3 -mr-40 w-screen md:mx-auto sm:max-w-3xl sm:px-0 sm:pl-4 sm:pr-8 lg:max-w-none lg:h-full lg:pl-12"
                 >
                   <img
                     in:receive={{ key: hero }}
                     out:send={{ key: hero }}
                     use:unobserve
-                    class="w-full rounded-xl shadow-xl ring-1 ring-white ring-opacity-5 lg:h-full lg:w-auto lg:max-w-none"
+                    class="w-full rounded-xl shadow-xl mb-8 ring-1 ring-white ring-opacity-5 lg:h-full lg:w-auto lg:max-w-none"
                     src={icons[hero]}
                     alt="The Faithful: A film on fans and followings by Annie Berman"
                   />
@@ -210,44 +171,25 @@
         >
           <div>
             <div class="flex flex-row" />
-            <div class="mt-4 sm:mt-20">
+            <div class="mt-1 mb-10 sm:mt-8 md:mt-20">
               <div>
-                <a href="#" class="inline-flex space-x-4">
-                  <span
-                    class="rounded bg-faithful-500 px-2.5 py-1 text-xs font-semibold text-gray-600 tracking-wide uppercase"
+                <div class="inline-flex space-x-4">
+                  <div
+                    class="rounded-full bg-faithful-800 px-2.5 py-1 text-xs font-semibold text-gray-50 tracking-wide uppercase"
                   >
-                    Coming March 2021
-                  </span>
-                  <span
-                    class="inline-flex items-center text-sm font-medium text-gray-400 space-x-1"
-                  >
-                    <span>Reserve your ticket today</span>
-
-                    <!-- Heroicon name: chevron-right -->
-                    <svg
-                      class="h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                </a>
+                    <span class="hidden sm:block">Coming March 2021</span>
+                    <span class="block sm:hidden normal-case">March 2021</span>
+                  </div>
+                </div>
               </div>
-              <div class="mt-6 sm:max-w-xl">
+              <div class="mt-6 sm:mt-12 sm:max-w-xl">
                 <h1
-                  class="text-7xl font-serif uppercase -ml-0 sm:-ml-4 font-extrabold text-black tracking-tight md:text-7xl md:ml-0 lg:text-8xl sm:text-8xl"
+                  class="text-6xl font-serif uppercase -ml-0 sm:-ml-4 font-extrabold text-black tracking-tight md:text-7xl md:ml-0 lg:text-8xl sm:text-8xl"
                 >
                   The Faithful
                 </h1>
                 <h1
-                  class="text-2xl font-serif font-extrabold text-gray-800 tracking-tight sm:text-4xl"
+                  class="text-2xl font-serif font-extrabold text-gray-800 tracking-tighter sm:text-4xl"
                 >
                   The King, The Pope, The Princess
                 </h1>
@@ -268,14 +210,14 @@
                     id="hero_email"
                     bind:value={email}
                     type="email"
-                    class="block w-full border border-gray-300 rounded-md px-5 py-3 text-base text-gray-900 placeholder-gray-500 shadow-sm focus:border-rose-500 focus:ring-rose-500"
+                    class="block w-full border border-gray-300 rounded-md px-5 py-3 text-xs text-gray-900 placeholder-gray-500 shadow-sm focus:border-rose-500 focus:ring-rose-500"
                     placeholder="Enter your email"
                   />
                 </div>
                 <div class="mt-4 sm:mt-0 sm:ml-3  ">
                   <button
                     on:click={announceSignup}
-                    class="block w-full rounded-md border border-transparent px-5 py-3 bg-gray-800 text-base font-medium text-white shadow hover:bg-rose-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10"
+                    class="block w-full rounded-md border border-transparent px-5 py-3 bg-gray-800 text-xs font-medium text-white shadow hover:bg-rose-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10"
                     >Notify me when tickets go on sale</button
                   >
                 </div>
@@ -291,47 +233,7 @@
         >
           <div class="relative sm:py-16 lg:py-0">
             <div
-              aria-hidden="true"
-              class="hidden sm:block lg:absolute lg:inset-y-0 lg:right-0 lg:w-screen"
-            >
-              <div
-                class="absolute inset-y-0 right-1/2 w-full bg-gray-50 rounded-r-3xl lg:right-72"
-              />
-              <svg
-                class="absolute top-8 left-1/2 -ml-3 lg:-right-8 lg:left-auto lg:top-12"
-                width="404"
-                height="392"
-                fill="none"
-                viewBox="0 0 404 392"
-              >
-                <defs>
-                  <pattern
-                    id="02f20b47-fd69-4224-a62a-4c9de5c763f7"
-                    x="0"
-                    y="0"
-                    width="20"
-                    height="20"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <rect
-                      x="0"
-                      y="0"
-                      width="4"
-                      height="4"
-                      class="text-gray-200"
-                      fill="none"
-                    />
-                  </pattern>
-                </defs>
-                <rect
-                  width="404"
-                  height="392"
-                  fill="url(#02f20b47-fd69-4224-a62a-4c9de5c763f7)"
-                />
-              </svg>
-            </div>
-            <div
-              class="relative mx-auto pt-40 sm:pt-0 max-w-md px-3 sm:max-w-3xl sm:px-6 lg:px-0 lg:max-w-none lg:py-20"
+              class="relative mx-auto pt-20 md:pt-36 sm:pt-0 max-w-md px-3 sm:max-w-3xl sm:px-6 lg:px-0 lg:max-w-none lg:py-20"
             >
               <Visibility
                 steps={100}
@@ -343,50 +245,18 @@
                   <div
                     use:unobserve
                     transition:fade={{ delay: 10 }}
-                    class="relative pt-64 pb-10 rounded-2xl shadow-xl overflow-hidden"
+                    class="relative pt-96 pb-24 rounded-2xl shadow-xl overflow-hidden"
                   >
                     <img
-                      style="filter: grayscale(1);"
+                      zstyle="filter: grayscale(1);"
                       class="absolute inset-0 h-full w-full object-cover"
-                      src="/photo-pope-bust.jpg"
+                      src="/PopeLollipopSky_still02.jpg"
                       alt=""
                     />
                     <div
                       zclass="absolute inset-0 bg-faithful-500"
                       zstyle="mix-blend-mode: multiply;"
                     />
-                    <div class="relative px-8">
-                      <blockquote class="mt-8" style="font-family: Domine">
-                        <div
-                          class="relative text-xl font-medium text-white md:flex-grow"
-                        >
-                          <svg
-                            class="absolute top-0 left-0 transform -translate-x-3 -translate-y-6 h-6 w-6 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 32 32"
-                            aria-hidden="true"
-                          >
-                            <path
-                              d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z"
-                            />
-                          </svg>
-                          <p class="relative font-serif">One of 10 Filmmakers to Watch</p>
-                        </div>
-
-                        <footer class="mt-4  ">
-                          <a
-                            href="https://independent-magazine.org/2016/03/25/10-to-watch-annie-berman/"
-                            target="_blank"
-                          >
-                            <p
-                              class="text-xl font-serif font-semibold tracking-tight text-faithful-800 uppercase"
-                            >
-                              The Independent
-                            </p>
-                          </a>
-                        </footer>
-                      </blockquote>
-                    </div>
                   </div>
                 {/if}
               </Visibility>
@@ -491,14 +361,19 @@
                     class="relative pt-64 pb-10 rounded-2xl overflow-hidden"
                   >
                     <img
-                      style="filter: grayscale(1);"
+                      zstyle="filter: grayscale(1);"
                       class="absolute inset-0 h-96 w-96 object-cover rounded-full"
                       src="/annie-berman.png"
                       alt="Annie Berman"
+                      id="annie_berman"
                     />
+
                     <div class="relative px-8">
                       <blockquote class="mt-8">
                         <footer class="mt-4 pt-20">
+                          <label for="annie_berman" class="sr-only"
+                            >Annie Berman, Filmmaker</label
+                          >
                           <p
                             class="invisible text-xl font-serif font-semibold tracking-tight text-faithful-500 uppercase"
                           >
@@ -514,9 +389,9 @@
           </div>
 
           <div
-            class="relative mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-0"
+            class="relative mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-0 pt-0 -mt-8 sm:mt-1"
           >
-            <div class="pt-12 sm:pt-16 lg:pt-20">
+            <div class="sm:pt-16 lg:pt-20">
               <h2
                 class="text-3xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-4xl"
               >
@@ -585,80 +460,46 @@
                 </a>
               </div>
             </aside>
-            <div
-              class="mt-12 mb-24 grid grid-cols-1 sm:grid-cols-3 gap-6 md:grid-cols-3 lg:mt-0 lg:grid-cols-3"
-            >
+            <div class="relative sm:py-16 lg:py-0">
               <div
-                class="col-span-1 flex justify-center py-8 px-8  rounded-2xl"
+                class="relative mx-auto pt-20 md:pt-36 sm:pt-0 max-w-md px-3 sm:max-w-3xl sm:px-6 lg:px-0 lg:max-w-none lg:py-20"
               >
-                <img
-                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-800"
-                  src="/elvis-circle.min.svg"
-                  alt="Elvis Presley"
-                />
-              </div>
-              <div
-                class="col-span-1 flex justify-center py-8 px-8   rounded-2xl"
-              >
-                <img
-                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-800"
-                  src="/pope-john-paul.min.svg"
-                  alt="Pope John Paul II"
-                />
-              </div>
-              <div
-                class="col-span-1 flex justify-center py-8 px-8   rounded-2xl"
-              >
-                <img
-                  class="max-h-24 rounded-full flex items-center justify-center ring-8 bg-white ring-faithful-800"
-                  src="/diana-princess-of-wales.min.svg"
-                  alt="Diana Princess of Wales"
-                />
+                <Visibility
+                  steps={100}
+                  let:percent
+                  let:unobserve
+                  let:intersectionObserverSupport
+                >
+                  {#if percent > 60}
+                    <div
+                      use:unobserve
+                      transition:fade={{ delay: 10 }}
+                      class="relative pt-96 pb-24 rounded-2xl shadow-xl overflow-hidden"
+                    >
+                      <img
+                        zstyle="filter: grayscale(1);"
+                        class="absolute inset-0 h-full w-full object-cover"
+                        src="/annie-jerry-the-faithful.jpg"
+                        alt=""
+                      />
+                      <div
+                        zclass="absolute inset-0 bg-faithful-500"
+                        zstyle="mix-blend-mode: multiply;"
+                      />
+                    </div>
+                  {/if}
+                </Visibility>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-
-      <!-- CTA section -->
       <div class="relative mt-24 sm:mt-32 sm:py-16">
         <div aria-hidden="true" class="hidden sm:block">
           <div
             class="absolute inset-y-0 left-0 w-1/2 bg-gray-50 rounded-r-3xl"
           />
-          <svg
-            class="absolute top-8 left-1/2 -ml-3"
-            width="404"
-            height="392"
-            fill="none"
-            viewBox="0 0 404 392"
-          >
-            <defs>
-              <pattern
-                id="8228f071-bcee-4ec8-905a-2a059a2cc4fb"
-                x="0"
-                y="0"
-                width="20"
-                height="20"
-                patternUnits="userSpaceOnUse"
-              >
-                <rect
-                  x="0"
-                  y="0"
-                  width="4"
-                  height="4"
-                  class="text-gray-200"
-                  fill="currentColor"
-                />
-              </pattern>
-            </defs>
-            <rect
-              width="404"
-              height="392"
-              fill="url(#8228f071-bcee-4ec8-905a-2a059a2cc4fb)"
-            />
-          </svg>
         </div>
         <div
           class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:max-w-7xl lg:px-8"
@@ -836,7 +677,7 @@
           {/if}
         </div>
         <p class="mt-8 text-center text-base text-gray-400">
-          &copy; 2021 The Faithful Movie, LLC.
+          &copy; 2021 The Faithful, Llc.
         </p>
       </div>
     </footer>

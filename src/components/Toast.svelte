@@ -46,12 +46,12 @@
       in:fly={{ delay: 0, duration: 300, x: 0, y: -50, opacity: 0.1, easing: backOut }}
       out:fade={{ duration: 500, opacity: 0 }}>
       {#if toast.type === 'success'}
-      <div class="rounded-md bg-green-50 p-4">
+      <div class="rounded-md border-2 bg-white border-faithful-500 p-4">
         <div class="flex">
           <div class="flex-shrink-0">
             <!-- Heroicon name: check-circle -->
             <svg
-              class="h-5 w-5 text-green-400"
+              class="h-5 w-5 text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -88,7 +88,7 @@
         </div>
       </div>
       {:else if toast.type === 'alert'}
-      <div class="rounded-md bg-red-50 p-4">
+      <div class="rounded-md p-4  border-2 bg-white border-faithful-500 ">
         <div class="flex">
           <div class="flex-shrink-0">
       <!-- Heroicon name: x-circle -->
@@ -97,12 +97,12 @@
         </svg>
                   </div>
           <div class="ml-3">
-            <p class="text-sm font-medium text-red-800">{toast.msg}</p>
+            <p class="text-sm font-medium text-gray-800">{toast.msg}</p>
           </div>
           <div class="ml-auto pl-3">
             <div class="-mx-1.5 -my-1.5">
               <button
-                class="inline-flex bg-red-50 rounded-md p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-red-50 focus:ring-red-600">
+                class="inline-flex bg-gray-50 rounded-md p-1.5 text-gray-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-red-50 focus:ring-red-600">
                 <span class="sr-only">Dismiss</span>
                 <!-- Heroicon name: x -->
                 <svg
