@@ -122,7 +122,9 @@
 </script>
 
 <svelte:head>
-  <title>The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman.</title>
+  <title
+    >The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman.</title
+  >
   <meta
     property="og:image"
     content="https://www.the-faitfhful.com/the-faithful-a-movie-by-annie-berman.png"
@@ -197,10 +199,11 @@
                   class="  mt-6 max-w-3xl text-lg leading-7 text-gray-600"
                   itemProp="description"
                 >
-                  The discovery of the image of Pope John Paul II on a lollipop
-                  for sale at the Vatican inspires a twenty-year voyage deep
-                  into the worlds of Elvis Presley, Pope John Paul II, and
-                  Princess Diana in this meditation on fans, faith, and image.
+                  A lollipop officially licensed by the Vatican sparks filmmaker
+                  Annie Berman’s 20-year exploration of fandom, memorabilia,
+                  memory, and legacy within the orbits of three of the biggest
+                  cultural icons of our time: Pope John Paul II, Elvis Presley,
+                  and Diana, Princess of Wales.
                 </p>
               </div>
               <aside class="mt-12 sm:max-w-lg sm:w-full sm:flex">
@@ -275,22 +278,17 @@
               </h2>
               <div class="mt-6 text-gray-500 space-y-6">
                 <p class="text-lg">
-                  The Faithful is a feature-length essay film exploring the
-                  fanatical veneration of three global icons: Elvis Presley,
-                  Pope John Paul II and Princess Diana.
-                </p>
-                <p class="text-base leading-7">
-                  After discovering a Pope lollipop on sale at the Vatican, the
-                  filmmaker embarks on a twenty-year exploration of iconography
-                  and grief. She attends annual memorials to Elvis, Diana and
-                  the Pope, documenting the rites and rituals of their
-                  followers.
-                </p>
-                <p class="text-base leading-7">
-                  What begins as a voyeuristic undertaking soon becomes an
-                  obsession, a pilgrimage, an act of faith. She captures ever
-                  more footage, in the hope – the belief – that the right image
-                  can answer her question: 'Why?'.
+                  A Pope John Paul II lollipop. An Elvis Presley shower curtain. A
+                  Princess Diana teacup. These are just some of the countless
+                  pieces of memorabilia that these pop culture icons’ most devoted
+                  fans collect and cherish – but why? The Faithful‘s director,
+                  Annie Berman, explores the deep veneration and legacies of the
+                  Pope, the Princess, and the King. Over the course of 20 years,
+                  Berman profiles these figures’ biggest fans and makes numerous
+                  pilgrimages to Vatican City, Graceland, and Kensington Palace.
+                  As the years go by, the film itself becomes increasingly
+                  entwined with Berman’s daily life and identity, much like how
+                  the officially licensed knick-knacks define the fans she filmed.
                 </p>
               </div>
             </div>
