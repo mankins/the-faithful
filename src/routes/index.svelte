@@ -17,15 +17,15 @@
   });
 
   const icons = [
-    '/elvis-1.jpg',
-    '/elvis-2.jpg',
-    '/elvis-3.jpg',
-    '/pope-1.jpg',
-    '/pope-2.jpg',
-    '/pope-3.jpg',
-    '/diana-1.jpg',
-    '/diana-2.jpg',
-    '/diana-3.jpg',
+    '/img/elvis-1.jpg',
+    '/img/elvis-2.jpg',
+    '/img/elvis-3.jpg',
+    '/img/pope-1.jpg',
+    '/img/pope-2.jpg',
+    '/img/pope-3.jpg',
+    '/img/diana-1.jpg',
+    '/img/diana-2.jpg',
+    '/img/diana-3.jpg',
   ];
   let hero = Math.floor(Math.random() * icons.length);
   let email = '';
@@ -55,7 +55,7 @@
     firebase.auth().onAuthStateChanged(function (u) {
       if (u) {
         // User is signed in.
-        console.log({ u }, 'aaa');
+        // console.log({ u }, 'aaa');
         if (u && !u.isAnonymous) {
           // dispatch("auth-success", { user, firebase });
           user = u;
@@ -196,7 +196,7 @@
                   The King, The Pope, The Princess
                 </h1>
                 <p
-                  class="  mt-6 max-w-3xl text-lg leading-7 text-gray-600"
+                  class="mt-6 max-w-3xl text-lg leading-7 text-gray-600"
                   itemProp="description"
                 >
                   A lollipop officially licensed by the Vatican sparks filmmaker
@@ -253,7 +253,7 @@
                     <img
                       zstyle="filter: grayscale(1);"
                       class="absolute inset-0 h-full w-full object-cover"
-                      src="/PopeLollipopSky_still02.jpg"
+                      src="/img/PopeLollipopSky_still02.jpg"
                       alt=""
                     />
                     <div
@@ -362,7 +362,7 @@
                     <img
                       zstyle="filter: grayscale(1);"
                       class="absolute inset-0 h-96 w-96 object-cover rounded-full"
-                      src="/annie-berman.png"
+                      src="/img/annie-berman.png"
                       alt="Annie Berman"
                       id="annie_berman"
                     />
@@ -479,7 +479,7 @@
                       <img
                         zstyle="filter: grayscale(1);"
                         class="absolute inset-0 h-full w-full object-cover"
-                        src="/annie-jerry-the-faithful.jpg"
+                        src="/img/annie-jerry-the-faithful.jpg"
                         alt=""
                       />
                       <div
