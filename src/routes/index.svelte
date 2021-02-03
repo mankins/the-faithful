@@ -186,12 +186,12 @@
               </div>
               <div class="mt-6 sm:mt-12 sm:max-w-xl">
                 <h1
-                  class="text-6xl font-serif uppercase -ml-0 sm:-ml-4 font-extrabold text-black tracking-tight md:text-7xl md:ml-0 lg:text-8xl sm:text-8xl"
+                  class="text-6xl font-serif uppercase -ml-0 sm:-ml-4 font-regular text-black tracking-tight md:text-7xl md:ml-0 lg:text-8xl sm:text-8xl"
                 >
                   The Faithful
                 </h1>
                 <h1
-                  class="text-2xl font-serif font-extrabold text-gray-800 tracking-tighter sm:text-4xl"
+                  class="text-2xl font-serif font-regular text-gray-800 tracking-tighter sm:text-4xl"
                 >
                   The King, The Pope, The Princess
                 </h1>

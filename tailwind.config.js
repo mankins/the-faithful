@@ -13,9 +13,9 @@ module.exports = {
       //   cyan: colors.violet,
       // }
       fontFamily: {
-        'serif': ['Recoleta-RegularDEMO', 'zzzDomine', 'ui-serif'],
+        'serif': ['recoleta', 'ui-serif'],
         'sans': [
-            '"Inter"',
+            'Inter',
             'system-ui',
             '-apple-system',
             'BlinkMacSystemFont',
@@ -51,7 +51,7 @@ module.exports = {
   plugins: [
     require("@tailwindcss/typography"),
     require('@tailwindcss/forms'),
-//    require("tailwindcss-font-inter")(),
+    require("tailwindcss-font-inter")(),
   ],
 };
 
