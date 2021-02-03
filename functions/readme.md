@@ -20,6 +20,12 @@ cat .env | gcloud secrets create env-production \
     --data-file=-
 ```
 
+To update a secret
+
+```
+ cat .env | gcloud secrets versions add env-dev --data-file=-
+```
+
 You'll need IAM permissions on `the-faithful@appspot.gserviceaccount.com` of `Secret Manager Secret Accessor`.
 
 ### Emulator Config

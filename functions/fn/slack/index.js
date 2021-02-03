@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 
 const getSecrets = require('../../lib/env'); // load environment config
 
-const secrets = getSecrets();
+const secrets = getSecrets('the-faithful');
 
 const sendToSlack = (url, payload) => {
   return fetch(url, {
@@ -23,6 +23,13 @@ exports.slackRelay = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
 
   const config = await secrets;
+
+  // get these by looking for the data-id on the github project page
+  const columnMap = JSON.parse(config.GITHUB_PROJECT_COLUMNS_JSON || '');
+  // console.log({ columnMap });
+  // columnMap['12726477'] = 'Todo';
+  // columnMap['12726478'] = 'In progress';
+  // columnMap['12726479'] = 'Done';
 
   if (req.method === 'OPTIONS') {
     // Send response to OPTIONS requests
@@ -64,12 +71,6 @@ exports.slackRelay = functions.https.onRequest(async (req, res) => {
     let text;
     let response = '';
 
-    // get these by looking for the data-id on the github project page
-    let columnMap = {};
-    columnMap['12726477'] = 'Todo';
-    columnMap['12726478'] = 'In progress';
-    columnMap['12726479'] = 'Done';
-
     if (projectCard) {
       let template = {};
       template.blocks = [];
@@ -84,6 +85,11 @@ exports.slackRelay = functions.https.onRequest(async (req, res) => {
       }
       if (type === 'moved') {
         let from = columnMap['' + get(payload, 'changes.column_id.from')];
+        if (from === to) {
+          res.set('Content-type', 'text/plain');
+          res.send('ok nop');
+          return;
+        }
         place = `from *${from}* to *${to}*`;
       }
 
@@ -112,11 +118,7 @@ exports.slackRelay = functions.https.onRequest(async (req, res) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `> <https://github.com/orgs/fishinthehand/projects/1|${get(
-              projectCard,
-              'creator.login',
-              ''
-            )} *${get(
+            text: `> <https://github.com/orgs/fishinthehand/projects/1|*${get(
               projectCard,
               'creator.login',
               ''

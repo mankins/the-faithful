@@ -7,7 +7,7 @@ const environment = process.env.NODE_ENV || 'dev';
 
 let _env;
 
-const getSecrets = () => {
+const getSecrets = (project = "") => {
   return new Promise((resolve) => {
     if (typeof _env !== 'undefined') {
       return resolve(_env);
@@ -24,7 +24,7 @@ const getSecrets = () => {
     }
 
     // try to get from our secrets manager
-    const secretPath = `projects/the-faithful/secrets/env-${environment}/versions/latest`;
+    const secretPath = `projects/${project}/secrets/env-${environment}/versions/latest`;
     console.log(`loading secrets from ${environment} / ${secretPath}`);
 
     return secrets
