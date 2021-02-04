@@ -17,15 +17,15 @@
   });
 
   const icons = [
-    '/img/elvis-1.jpg',
-    '/img/elvis-2.jpg',
-    '/img/elvis-3.jpg',
-    '/img/pope-1.jpg',
-    '/img/pope-2.jpg',
-    '/img/pope-3.jpg',
-    '/img/diana-1.jpg',
-    '/img/diana-2.jpg',
-    '/img/diana-3.jpg',
+    '/img/elvis-1',
+    '/img/elvis-2',
+    '/img/elvis-3',
+    '/img/pope-1',
+    '/img/pope-2',
+    '/img/pope-3',
+    '/img/diana-1',
+    '/img/diana-2',
+    '/img/diana-3',
   ];
   let hero = Math.floor(Math.random() * icons.length);
   let email = '';
@@ -154,14 +154,20 @@
                 <div
                   class="relative overflow-hidden sm:overflow-auto pl-0 pr-6 -ml-3 -mr-40 w-screen md:mx-auto sm:max-w-3xl sm:px-0 sm:pl-4 sm:pr-8 lg:max-w-none lg:h-full lg:pl-12"
                 >
+                <picture>
+                  <source
+                    type="image/webp"
+                    srcset={`${icons[hero]}.webp`}
+                  />
                   <img
                     in:receive={{ key: hero }}
                     out:send={{ key: hero }}
                     use:unobserve
                     class="w-full rounded-xl shadow-xl mb-8 ring-1 ring-white ring-opacity-5 lg:h-full lg:w-auto lg:max-w-none"
-                    src={icons[hero]}
+                    src={`${icons[hero]}.jpg`}
                     alt="The Faithful: A film on fans and followings by Annie Berman"
                   />
+                  </picture>
                 </div>
               {/if}
             </Visibility>
@@ -250,16 +256,17 @@
                     transition:fade={{ delay: 10 }}
                     class="relative pt-96 pb-24 rounded-2xl shadow-xl overflow-hidden"
                   >
-                    <img
-                      zstyle="filter: grayscale(1);"
-                      class="absolute inset-0 h-full w-full object-cover"
-                      src="/img/PopeLollipopSky_still02.jpg"
-                      alt=""
-                    />
-                    <div
-                      zclass="absolute inset-0 bg-faithful-500"
-                      zstyle="mix-blend-mode: multiply;"
-                    />
+                    <picture>
+                      <source
+                        type="image/webp"
+                        srcset="/img/PopeLollipopSky_still02.webp"
+                      />
+                      <img
+                        class="absolute inset-0 h-full w-full object-cover"
+                        src="/img/PopeLollipopSky_still02.jpg"
+                        alt=""
+                      />
+                    </picture>
                   </div>
                 {/if}
               </Visibility>
@@ -278,17 +285,18 @@
               </h2>
               <div class="mt-6 text-gray-500 space-y-6">
                 <p class="text-lg">
-                  A Pope John Paul II lollipop. An Elvis Presley shower curtain. A
-                  Princess Diana teacup. These are just some of the countless
-                  pieces of memorabilia that these pop culture icons’ most devoted
-                  fans collect and cherish – but why? The Faithful‘s director,
-                  Annie Berman, explores the deep veneration and legacies of the
-                  Pope, the Princess, and the King. Over the course of 20 years,
-                  Berman profiles these figures’ biggest fans and makes numerous
-                  pilgrimages to Vatican City, Graceland, and Kensington Palace.
-                  As the years go by, the film itself becomes increasingly
-                  entwined with Berman’s daily life and identity, much like how
-                  the officially licensed knick-knacks define the fans she filmed.
+                  A Pope John Paul II lollipop. An Elvis Presley shower curtain.
+                  A Princess Diana teacup. These are just some of the countless
+                  pieces of memorabilia that these pop culture icons’ most
+                  devoted fans collect and cherish – but why? The Faithful‘s
+                  director, Annie Berman, explores the deep veneration and
+                  legacies of the Pope, the Princess, and the King. Over the
+                  course of 20 years, Berman profiles these figures’ biggest
+                  fans and makes numerous pilgrimages to Vatican City,
+                  Graceland, and Kensington Palace. As the years go by, the film
+                  itself becomes increasingly entwined with Berman’s daily life
+                  and identity, much like how the officially licensed
+                  knick-knacks define the fans she filmed.
                 </p>
               </div>
             </div>
@@ -359,13 +367,18 @@
                     transition:fade={{ delay: 10 }}
                     class="relative pt-64 pb-10 rounded-2xl overflow-hidden"
                   >
-                    <img
-                      zstyle="filter: grayscale(1);"
-                      class="absolute inset-0 h-96 w-96 object-cover rounded-full"
-                      src="/img/annie-berman.jpg"
-                      alt="Annie Berman"
-                      id="annie_berman"
-                    />
+                    <picture>
+                      <source
+                        type="image/webp"
+                        srcset="/img/annie-berman.webp"
+                      />
+                      <img
+                        class="absolute inset-0 h-96 w-96 object-cover rounded-full"
+                        src="/img/annie-berman.jpg"
+                        alt="Annie Berman"
+                        id="annie_berman"
+                      />
+                    </picture>
 
                     <div class="relative px-8">
                       <blockquote class="mt-8">
@@ -476,16 +489,17 @@
                       transition:fade={{ delay: 10 }}
                       class="relative pt-96 pb-24 rounded-2xl shadow-xl overflow-hidden"
                     >
+                    <picture>
+                      <source
+                        type="image/webp"
+                        srcset="/img/annie-jerry-the-faithful.webp"
+                      />
                       <img
-                        zstyle="filter: grayscale(1);"
                         class="absolute inset-0 h-full w-full object-cover"
                         src="/img/annie-jerry-the-faithful.jpg"
                         alt=""
                       />
-                      <div
-                        zclass="absolute inset-0 bg-faithful-500"
-                        zstyle="mix-blend-mode: multiply;"
-                      />
+                      </picture>
                     </div>
                   {/if}
                 </Visibility>
