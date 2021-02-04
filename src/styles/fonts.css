@@ -10,17 +10,20 @@
   font-family:"Recoleta";
   font-style: normal;
   font-weight: 100;
+  font-display: swap;
   src:url("/fonts/recoleta/thin/411a3a35-b349-450a-9265-c8eb7d8e2a31.woff2") format("woff2"),url("/fonts/recoleta/thin/a2c6b38c-af8c-4af9-b4c6-96b302a00c24.woff") format("woff");
 }
 @font-face{
   font-family:"Recoleta";
   font-style: normal;
+  font-display: swap;
   font-weight: 200;
   src:url("/fonts/recoleta/light/9fa94dcd-7199-4950-96f9-64d4a2c8956d.woff2") format("woff2"),url("/fonts/recoleta/light/ae806a08-3dbf-488d-98be-9a095e667942.woff") format("woff");
 }
 @font-face{
   font-family:"Recoleta";
   font-style: normal;
+  font-display: swap;
   font-weight: 300;
   src:url("/fonts/recoleta/regular/15e8c7c9-adff-4b2a-a27e-5b8f7f3896d6.woff2") format("woff2"),url("/fonts/recoleta/regular/92cd2256-c74e-421f-bd64-a207c4063918.woff") format("woff");
 }
@@ -28,29 +31,34 @@
   font-family:"Recoleta";
   font-style: normal;
   font-weight: normal;
+  font-display: swap;
   src:url("/fonts/recoleta/regular/15e8c7c9-adff-4b2a-a27e-5b8f7f3896d6.woff2") format("woff2"),url("/fonts/recoleta/regular/92cd2256-c74e-421f-bd64-a207c4063918.woff") format("woff");
 }
 @font-face{
   font-family:"Recoleta";
   font-style: normal;
+  font-display: swap;
   font-weight: 400;
   src:url("/fonts/recoleta/medium/dc6d46b5-4860-426e-b694-829311406cb2.woff2") format("woff2"),url("/fonts/recoleta/medium/e6710639-8b79-4a63-a860-ae77c0a544b8.woff") format("woff");
 }
 @font-face{
   font-family:"Recoleta";
   font-style: normal;
+  font-display: swap;
   font-weight: 500;
   src:url("/fonts/recoleta/semibold/04fcbeb4-c15e-4fb4-86cd-74884e678645.woff2") format("woff2"),url("/fonts/recoleta/semibold/371e1726-ae12-4456-90a5-eb4d427383ad.woff") format("woff");
 }
 @font-face{
   font-family:"Recoleta";
   font-style: bold;
+  font-display: swap;
   font-weight: 700;
   src:url("/fonts/recoleta/bold/c4a44dcc-fce2-4dbb-9339-b82aa3e60d20.woff2") format("woff2"),url("/fonts/recoleta/bold/e0e9d6be-89c5-4575-9fa7-e5fbb9f2806e.woff") format("woff");
 }
 @font-face{
   font-family:"Recoleta";
   font-style: normal;
+  font-display: swap;
   font-weight: 900;
   src:url("/fonts/recoleta/black/ffaaea62-113a-4b9f-a428-346cecb4d58e.woff2") format("woff2"),url("/fonts/recoleta/black/5bd4d989-3af2-463a-9533-02dc7b4e6df3.woff") format("woff");
 }
