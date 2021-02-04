@@ -4,7 +4,8 @@
 	"scripts": {
 		"dev": "svelte-kit dev -p 5000",
 		"build": "svelte-kit build",
-		"start": "svelte-kit start"
+		"start": "svelte-kit start",
+		"start:proxy": "./infra/run.sh"
 	},
 	"devDependencies": {
 		"@snowpack/plugin-build-script": "^2.1.0",
