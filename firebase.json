@@ -22,7 +22,7 @@
       {
         "source": "**",
         "run": {
-          "serviceId": "the-faithful-ssr",
+          "serviceId": "the-faithful-ssr-ingress",
           "region": "us-central1"
         }
       }
