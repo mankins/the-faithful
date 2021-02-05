@@ -455,7 +455,7 @@
                 on the Arts, Electronic Media and Film Program, with the support
                 of Governor Andrew Cuomo and the New York State Legislature.
                 With additional support from: The Puffin Foundation, UnionDocs,
-                The Somerville arts Council, Signal Culture, Kopkind Colony and
+                The Somerville Arts Council, Signal Culture, Kopkind Colony and
                 Individual Contributors and Kickstarter backers.
               </p>
               <p class="mt-6 max-w-3xl text-lg leading-7 text-gray-500">
