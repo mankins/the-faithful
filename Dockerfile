@@ -2,7 +2,7 @@
 # Use the official lightweight Node.js 14 image.
 # https://hub.docker.com/_/node
 FROM node:14-slim as build-app
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install python nginx -y
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install python -y
 
 WORKDIR /app
 COPY . .
@@ -12,4 +12,4 @@ RUN npm install --no-audit --unsafe-perm
 RUN NODE_ENV=production npm run build
 
 EXPOSE 3000
-CMD ["npm", "run", "start:proxy"]
+CMD ["npm", "run", "start"]

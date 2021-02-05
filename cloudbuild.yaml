@@ -11,15 +11,25 @@ steps:
     waitFor: ["cloud functions install"]
     dir: 'functions'
     
-  - id: "build image"
+  - id: "build image - ssr"
     name: "gcr.io/cloud-builders/docker"
     waitFor: ['-']
     args: ["build", "-t", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}", "."]
 
   - id: "push image"
     name: "gcr.io/cloud-builders/docker"
-    waitFor: ['build image']
+    waitFor: ['build image - ssr']
     args: ["push", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}"]
+
+  - id: "build image - ingress"
+    name: "gcr.io/cloud-builders/docker"
+    waitFor: ['-']
+    args: ["build", "-t", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}-ingress", "infra/ingress"]
+
+  - id: "push image - ingress"
+    name: "gcr.io/cloud-builders/docker"
+    waitFor: ['build image - ingress']
+    args: ["push", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}-ingress"]
 
   - id: "deploy prod service"
     name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
