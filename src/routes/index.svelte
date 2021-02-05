@@ -150,7 +150,7 @@
             class="py-12 sm:relative md:mt-12 md:py-16 lg:absolute lg:-inset-y-12 lg:right-0 lg:w-1/2"
           >
             <Visibility steps={100} let:percent let:unobserve>
-              {#if percent > 50}
+              {#if percent > 10}
                 <div
                   class="relative overflow-hidden sm:overflow-auto pl-0 pr-6 -ml-3 -mr-40 w-screen md:mx-auto sm:max-w-3xl sm:px-0 sm:pl-4 sm:pr-8 lg:max-w-none lg:h-full lg:pl-12"
                 >
@@ -250,7 +250,7 @@
                 let:unobserve
                 let:intersectionObserverSupport
               >
-                {#if percent > 60}
+                {#if percent > 10}
                   <div
                     use:unobserve
                     transition:fade={{ delay: 10 }}
@@ -361,7 +361,7 @@
                 let:unobserve
                 let:intersectionObserverSupport
               >
-                {#if percent > 50}
+                {#if percent > 10}
                   <div
                     use:unobserve
                     transition:fade={{ delay: 10 }}
@@ -483,7 +483,7 @@
                   let:unobserve
                   let:intersectionObserverSupport
                 >
-                  {#if percent > 60}
+                  {#if percent > 10}
                     <div
                       use:unobserve
                       transition:fade={{ delay: 10 }}
