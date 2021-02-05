@@ -2,7 +2,7 @@
 FROM nginx:alpine
 
 WORKDIR /app/infra/ingress
-COPY nginx.conf .
+COPY nginx.conf.template .
 
 ENV PORT 3000
 ENV HOST 0.0.0.0
