@@ -34,6 +34,7 @@ steps:
   - id: "deploy prod service"
     name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gcloud"
+    waitFor: ['push image']
     args:
       [
         "run",
@@ -52,12 +53,49 @@ steps:
   - id: "ensure prod service live"
     name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gcloud"
+    waitFor: ['deploy prod service']
     args:
       [
         "run",
         "services",
         "update-traffic",
         "${_SERVICE_NAME}",
+        "--to-latest",
+        "--platform",
+        "managed",
+        "--region",
+        "${_REGION}",
+      ]
+
+  - id: "deploy prod service - ingress"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    waitFor: ['push image - ingress']
+    args:
+      [
+        "run",
+        "deploy",
+        "${_SERVICE_NAME}-ingress",
+        "--platform",
+        "managed",
+        "--region",
+        "${_REGION}",
+        "--allow-unauthenticated",
+        "--image",
+        "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}-ingress",
+      ]
+
+  # Force the new revision to serve 100% of traffic.
+  - id: "ensure prod service live - ingress"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    waitFor: ['deploy prod service - ingress']
+    args:
+      [
+        "run",
+        "services",
+        "update-traffic",
+        "${_SERVICE_NAME}-ingress",
         "--to-latest",
         "--platform",
         "managed",
