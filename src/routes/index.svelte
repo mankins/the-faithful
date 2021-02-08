@@ -127,12 +127,12 @@
   >
   <meta
     property="og:image"
-    content="https://www.the-faithful.com/the-faithful-a-movie-by-annie-berman.jpg"
+    content="https://www.the-faithful.com/img/the-faithful-a-movie-by-annie-berman.jpg"
   />
 
   <meta
     property="twitter:image"
-    content="https://www.the-faithful.com/the-faithful-a-movie-by-annie-berman.jpg"
+    content="https://www.the-faithful.com/img/the-faithful-a-movie-by-annie-berman.jpg"
   />
   <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
