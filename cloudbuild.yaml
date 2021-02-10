@@ -38,7 +38,7 @@ steps:
   - id: "deploy prod service"
     name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gcloud"
-    waitFor: ['push image']
+    waitFor: ['build image - ssr']
     args:
       [
         "run",
