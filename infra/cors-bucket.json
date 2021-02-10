@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["https://video.the-faithful.com/", "http://localhost:5000", "https://www.the-faithful.com"],
+    "responseHeader": ["*"],
+    "method": ["GET", "POST", "HEAD"],
+    "maxAgeSeconds": 60
+  }
+]
