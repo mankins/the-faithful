@@ -80,6 +80,14 @@
     rel="stylesheet"
     href="https://cdn.plyr.io/3.6.4/plyr.css"
   />
+  <meta name="twitter:card" content="player" />
+  <meta name="twitter:site" content="@TheFaithful">
+  <meta name="twitter:player" content="https://www.thefaithful.com/trailer" />
+  <meta name="twitter:player:width" content="320" />
+  <meta name="twitter:player:height" content="180" />
+  <title
+    >Trailer for The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman.</title>
+
 </svelte:head>
 <div class="w-7/8">
   <video playsinline controls id="video-player" {poster}>
