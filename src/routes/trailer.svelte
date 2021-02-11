@@ -83,8 +83,8 @@
 </svelte:head>
 <div class="w-7/8">
   <video playsinline controls id="video-player" {poster}>
-    <track kind="captions" />
-  </video>
+    <track kind="captions" label="English captions" src="/subtitles/faithful-trailer.mp4.vtt" srclang="en" default />
+</video>
 </div>
 
 <style>
