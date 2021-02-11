@@ -23,8 +23,9 @@
 
     const video = document.querySelector('video');
 
-    var videoSrc =
-      'https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-10/manifest.m3u8?abc';
+   const videoBase = 'https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-11';
+
+    var videoSrc = `${videoBase}/manifest.m3u8`;
     if (true && Hls.isSupported()) {
       var hls = new Hls();
       hls.loadSource(videoSrc);
@@ -39,15 +40,29 @@
         sources: [
           {
             src:
-              'https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-10/sd.mp4',
+              `${videoBase}/400kbs.mp4`,
             type: 'video/mp4',
-            size: 720,
+            size: 1280,
           },
           {
-            src:
-              'https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-10/hd.mp4',
+            src:  `${videoBase}/700kbs.mp4`,
             type: 'video/mp4',
-            size: 1080,
+            size: 1920,
+          },
+          {
+            src:  `${videoBase}/1400kbs.mp4`,
+            type: 'video/mp4',
+            size: 1920,
+          },
+          {
+            src:  `${videoBase}/2100kbs.mp4`,
+            type: 'video/mp4',
+            size: 1920,
+          },
+          {
+            src:  `${videoBase}/4200kbs.mp4`,
+            type: 'video/mp4',
+            size: 1920,
           },
         ],
         poster,
