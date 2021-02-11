@@ -85,6 +85,8 @@
   <meta name="twitter:player" content="https://www.thefaithful.com/trailer" />
   <meta name="twitter:player:width" content="320" />
   <meta name="twitter:player:height" content="180" />
+  <meta name="twitter:player:stream" content="https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-10/sd.mp4">
+  <meta name="twitter:player:stream:content_type" content="video/mp4">
   <title
     >Trailer for The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman.</title>
 
