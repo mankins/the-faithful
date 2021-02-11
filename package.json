@@ -32,7 +32,9 @@
 		"firebase": "8.2.2",
 		"lodash.get": "^4.4.2",
 		"node-fetch": "^2.6.1",
+		"node-timecodes": "^2.5.0",
 		"postcss": "^8.2.6",
+		"smpte-timecode": "^1.2.3",
 		"uuid": "^8.3.2",
 		"uuid-encoder": "^1.2.0"
 	}

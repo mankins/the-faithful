@@ -12,25 +12,37 @@
 
   // https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-10/manifest.m3u8
 
+  let previewThumbnails = {
+    enabled: true,
+      src: `/trailer/thumbnails.vtt?length=${encodeURIComponent(
+        '00:02:21:00'
+      )}&filename=${encodeURIComponent(
+        'https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-11/large-sprite-sheets0000000000.jpeg'
+      )}`,
+    };
+
   onMount(async () => {
     player = new Plyr('#video-player', {
       debug: false,
       keyboard: { focused: true, global: true },
       ratio: '16:9',
       title,
+     previewThumbnails
     });
     window.player = player; // debugging
 
     const video = document.querySelector('video');
 
-   const videoBase = 'https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-11';
+    const videoBase =
+      'https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-11';
 
     var videoSrc = `${videoBase}/manifest.m3u8`;
+
     if (true && Hls.isSupported()) {
+      console.log('hls');
       var hls = new Hls();
       hls.loadSource(videoSrc);
       hls.attachMedia(video);
-      console.log('hls');
     } else {
       //         src="https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-10/hd.mp4"
       console.log('not hls');
@@ -39,36 +51,33 @@
         title,
         sources: [
           {
-            src:
-              `${videoBase}/400kbs.mp4`,
+            src: `${videoBase}/400kbs.mp4`,
             type: 'video/mp4',
             size: 1280,
           },
           {
-            src:  `${videoBase}/700kbs.mp4`,
+            src: `${videoBase}/700kbs.mp4`,
             type: 'video/mp4',
             size: 1920,
           },
           {
-            src:  `${videoBase}/1400kbs.mp4`,
+            src: `${videoBase}/1400kbs.mp4`,
             type: 'video/mp4',
             size: 1920,
           },
           {
-            src:  `${videoBase}/2100kbs.mp4`,
+            src: `${videoBase}/2100kbs.mp4`,
             type: 'video/mp4',
             size: 1920,
           },
           {
-            src:  `${videoBase}/4200kbs.mp4`,
+            src: `${videoBase}/4200kbs.mp4`,
             type: 'video/mp4',
             size: 1920,
           },
         ],
         poster,
-        //   previewThumbnails: {
-        //     src: '/path/to/thumbnails.vtt',
-        //   },
+       previewThumbnails,
         //   tracks: [
         //     {
         //       kind: 'captions',
@@ -96,20 +105,30 @@
     href="https://cdn.plyr.io/3.6.4/plyr.css"
   />
   <meta name="twitter:card" content="player" />
-  <meta name="twitter:site" content="@TheFaithful">
+  <meta name="twitter:site" content="@TheFaithful" />
   <meta name="twitter:player" content="https://www.thefaithful.com/trailer" />
   <meta name="twitter:player:width" content="320" />
   <meta name="twitter:player:height" content="180" />
-  <meta name="twitter:player:stream" content="https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-10/sd.mp4">
-  <meta name="twitter:player:stream:content_type" content="video/mp4">
+  <meta
+    name="twitter:player:stream"
+    content="https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-10/sd.mp4"
+  />
+  <meta name="twitter:player:stream:content_type" content="video/mp4" />
   <title
-    >Trailer for The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman.</title>
-
+    >Trailer for The Faithful: The King, The Pope, The Princess – A Movie by
+    Annie Berman.</title
+  >
 </svelte:head>
 <div class="w-7/8">
   <video playsinline controls id="video-player" {poster}>
-    <track kind="captions" label="English captions" src="/subtitles/faithful-trailer.mp4.vtt" srclang="en" default />
-</video>
+    <track
+      kind="captions"
+      label="English captions"
+      src="/subtitles/faithful-trailer.mp4.vtt"
+      srclang="en"
+      default
+    />
+  </video>
 </div>
 
 <style>
