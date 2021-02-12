@@ -31,6 +31,6 @@ exports.transcoderIn = functions.storage
       const inputUri = `gs://${fileBucket}/${filePath}`;
       const outputUri = `gs://${fileBucket}/${filePath.replace('input/','output/')}`;
       
-      const result = await createTranscodeJob(projectId, location, inputUri, outputUri);
+        const result = await createTranscodeJob({ projectId, location, inputUri, outputUri });
       console.log(result);
   });
