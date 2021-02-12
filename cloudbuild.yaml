@@ -10,7 +10,13 @@ steps:
     args: ['functions', 'deploy', 'slackRelay', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=slackRelay', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=256']
     waitFor: ["cloud functions install"]
     dir: 'functions'
-    
+
+  - id: "cloud functions deploy - transcoderIn"
+    name: 'gcr.io/cloud-builders/gcloud'
+    args: ['functions', 'deploy', 'transcoderIn', '--source=.', '--trigger-resource', 'video.the-faithful.com', '--trigger-event', 'google.storage.object.finalize', '--runtime', 'nodejs14', '--entry-point=transcoderIn', '--region', "${_REGION}", '--memory=256']
+    waitFor: ["cloud functions install"]
+    dir: 'functions'
+
   # - id: "build image - ssr"
   #   name: "gcr.io/cloud-builders/docker"
   #   waitFor: ['-']
