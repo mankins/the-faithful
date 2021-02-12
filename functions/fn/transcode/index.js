@@ -6,7 +6,10 @@ const { createTranscodeJob } = require('../../lib/transcode');
 exports.transcoderIn = functions.storage
   .bucket('video.the-faithful.com')
   .object()
-  .onFinalize(async (object) => {
+    .onFinalize(async (object) => {
+      
+        console.log({ object });
+
     const fileBucket = object.bucket; // The Storage bucket that contains the file.
     const filePath = object.name; // File path in the bucket.
     // const fileDir = path.dirname(filePath);

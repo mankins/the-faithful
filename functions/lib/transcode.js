@@ -9,6 +9,9 @@ const createTranscodeJob = async ({
   inputUri,
   outputUri,
 }) => {
+
+    console.log('create transcode', { projectId, location, inputUri, outputUri });
+    
   // Construct request
   // https://cloud.google.com/transcoder/docs/reference/rest/v1beta1/JobConfig#SpriteSheet
   // https://support.video.ibm.com/hc/en-us/articles/207852117-Internet-connection-and-recommended-encoding-settings
