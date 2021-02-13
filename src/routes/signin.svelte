@@ -31,7 +31,7 @@
           </h2>
           <p class="mt-2 text-sm text-gray-600 max-w">
             Or
-            <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
+            <a href="/login" class="font-medium text-faithful-600 hover:text-faithful-500">
               login to an existing account
             </a>
           </p>
@@ -44,7 +44,36 @@
                 Sign in with
               </p>
   
-              <div class="mt-1 grid grid-cols-3 gap-3">
+              <div class="mt-1 grid grid-cols-4 gap-4">
+                <div>
+                  <button
+                    on:click={() => authActions.clickFacebookSignin()}
+                    class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  >
+                    <span class="sr-only">Sign in with Coil</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="h-5 w-5"
+                      ><defs
+                        ><style>
+                          .cls-1 {
+                            fill: #fff;
+                          }
+                        </style></defs
+                      ><title>coil-icon-black-white</title><g
+                        id="Layer_2"
+                        data-name="Layer 2"
+                        ><g
+                          id="Coil_icon_black_and_white"
+                          data-name="Coil icon black and white"
+                          ><circle cx="24" cy="24" r="24" /><path
+                            class="cls-1"
+                            d="M31.27,29.43c.65,0,1.49.33,2.07,1.72a1.46,1.46,0,0,1,.14.6c0,2.29-5.34,4.36-8.44,4.52l-.7,0A12.76,12.76,0,0,1,13.24,30a11.8,11.8,0,0,1-1.54-5.88,12.17,12.17,0,0,1,2.07-6.78,12.39,12.39,0,0,1,6.77-5,14.59,14.59,0,0,1,4.39-.71,9.12,9.12,0,0,1,5.51,1.66c2.43,1.77,2.93,3.71,2.93,5a3.69,3.69,0,0,1-.17,1.2,5.54,5.54,0,0,1-4.61,3.81,11.35,11.35,0,0,1-1.31.11c-2,0-2.66-.82-2.66-1.74,0-1.25,1.2-2.73,2.07-2.73a.56.56,0,0,1,.31.09,1.52,1.52,0,0,0,.75.19.53.53,0,0,0,.22,0A1.1,1.1,0,0,0,29,18.1C29,17,27.75,15.6,25,15.6a10.57,10.57,0,0,0-3.1.49,8.24,8.24,0,0,0-4.53,3.51A8,8,0,0,0,16,24.1,7.89,7.89,0,0,0,17,28a8.47,8.47,0,0,0,7.38,4.12h.48c4-.22,4.92-2.18,5.81-2.56A3.06,3.06,0,0,1,31.27,29.43Z"
+                          /></g
+                        ></g
+                      ></svg
+                    >
+                  </button>
+                </div>
+
                 <div>
                   <button
                     on:click={() => authActions.clickFacebookSignin()}
@@ -118,7 +147,7 @@
                 <div class="mt-1">
                   <input id="email" 
                   bind:value={email}
-                  name="email" type="email" autocomplete="email" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  name="email" type="email" autocomplete="email" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-faithful-500 focus:border-faithful-500 sm:text-sm">
                 </div>
               </div>
   
@@ -129,19 +158,19 @@
                 <div class="mt-1">
                   <input id="password" 
                   bind:value={password}
-                  name="password" type="password" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  name="password" type="password" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-faithful-500 focus:border-faithful-500 sm:text-sm">
                 </div>
               </div>
   
               <div class="flex items-center justify-between">
                 <div class="flex items-center invisible">
-                  <input id="remember_me" name="remember_me" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                  <input id="remember_me" name="remember_me" type="checkbox" class="h-4 w-4 text-faithful-600 focus:ring-faithful-500 border-gray-300 rounded">
                   <label for="remember_me" class="ml-2 block text-sm text-gray-900">
                     Remember me
                   </label>
                 </div>
                 <div class="text-sm">
-                  <a href="#" on:click={() => { authActions.forgotPassword(email); return false; }} class="font-medium text-indigo-600 hover:text-indigo-500">
+                  <a href="#" on:click={() => { authActions.forgotPassword(email); return false; }} class="font-medium text-faithful-600 hover:text-faithful-500">
                     Forgot your password?
                   </a>
                 </div>
@@ -151,7 +180,7 @@
                 <button type="submit" 
                 on:click={() => { authActions.clickUserPassSignup(email, password); return false; }}
 
-                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500">
                   Sign up
                 </button>
               </div>
