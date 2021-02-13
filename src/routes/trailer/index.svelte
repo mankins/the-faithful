@@ -10,16 +10,12 @@
   let title = 'The Faithful: The King, The Pope, The Princess';
   let poster = '/img/trailer-cover-1b.jpg';
 
-  // https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-10/manifest.m3u8
+  const videoId = 't2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE'; // 'f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE';
 
-  let previewThumbnails = {
+let previewThumbnails = {
     enabled: true,
-      src: `/trailer/thumbnails.vtt?length=${encodeURIComponent(
-        '00:02:21:00'
-      )}&filename=${encodeURIComponent(
-        'https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-11/large-sprite-sheets0000000000.jpeg'
-      )}`,
-    };
+    src: `https://image.mux.com/${videoId}/storyboard.vtt`
+};
 
   onMount(async () => {
     player = new Plyr('#video-player', {
@@ -33,94 +29,37 @@
 
     const video = document.querySelector('video');
 
-    const videoBase =
-      'https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-11';
+    const videoSrc = `https://stream.mux.com/${videoId}.m3u8`;
 
-    var videoSrc = `${videoBase}/manifest.m3u8`;
-
-    if (true && Hls.isSupported()) {
+  // Let native HLS support handle it if possible
+  if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    console.log('native');
+      video.src = videoSrc;
+  } else if (Hls.isSupported()) {
       console.log('hls');
       var hls = new Hls();
       hls.loadSource(videoSrc);
       hls.attachMedia(video);
-    } else {
-      //         src="https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-10/hd.mp4"
-      console.log('not hls');
-      player.source = {
-        type: 'video',
-        title,
-        sources: [
-          {
-            src: `${videoBase}/400kbs.mp4`,
-            type: 'video/mp4',
-            size: 1280,
-          },
-          {
-            src: `${videoBase}/700kbs.mp4`,
-            type: 'video/mp4',
-            size: 1920,
-          },
-          {
-            src: `${videoBase}/1400kbs.mp4`,
-            type: 'video/mp4',
-            size: 1920,
-          },
-          {
-            src: `${videoBase}/2100kbs.mp4`,
-            type: 'video/mp4',
-            size: 1920,
-          },
-          {
-            src: `${videoBase}/4200kbs.mp4`,
-            type: 'video/mp4',
-            size: 1920,
-          },
-        ],
-        poster,
-       previewThumbnails,
-        //   tracks: [
-        //     {
-        //       kind: 'captions',
-        //       label: 'English',
-        //       srclang: 'en',
-        //       src: '/path/to/captions.en.vtt',
-        //       default: true,
-        //     },
-        //     {
-        //       kind: 'captions',
-        //       label: 'French',
-        //       srclang: 'fr',
-        //       src: '/path/to/captions.fr.vtt',
-        //     },
-        //   ],
-      };
-    }
+    }    
   });
 </script>
 
-<svelte:head
-  ><script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script><script
-    src="https://cdn.plyr.io/3.6.4/plyr.polyfilled.js"></script><link
-    rel="stylesheet"
+<svelte:head>
+
+  <script
+    src="https://cdn.plyr.io/3.6.4/plyr.js"></script>
+    <link rel="stylesheet"
     href="https://cdn.plyr.io/3.6.4/plyr.css"
   />
-  <meta name="twitter:card" content="player" />
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <meta name="twitter:site" content="@TheFaithful" />
-  <meta name="twitter:player" content="https://www.thefaithful.com/trailer" />
-  <meta name="twitter:player:width" content="320" />
-  <meta name="twitter:player:height" content="180" />
-  <meta
-    name="twitter:player:stream"
-    content="https://storage.googleapis.com/video.the-faithful.com/output/trailer-2021-02-10/sd.mp4"
-  />
-  <meta name="twitter:player:stream:content_type" content="video/mp4" />
   <title
     >Trailer for The Faithful: The King, The Pope, The Princess – A Movie by
     Annie Berman.</title
   >
 </svelte:head>
-<div class="w-7/8">
-  <video playsinline controls id="video-player" {poster}>
+<div class="flex flex-col h-screen bg-black">
+  <video controls id="video-player" {poster}>
     <track
       kind="captions"
       label="English captions"

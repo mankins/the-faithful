@@ -6,3 +6,5 @@ tmp
 .firebase
 *.log
 credentials
+.env
+utils/.env
