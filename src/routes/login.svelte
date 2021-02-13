@@ -255,11 +255,17 @@
       </div>
     </div>
     <div class="hidden lg:block relative w-0 flex-1">
+      <picture>
+        <source
+          type="image/webp"
+          srcset="/img/Pope-Snowglobes2.webp"
+        />
       <img
         class="absolute inset-0 h-full w-full object-cover"
         src="/img/Pope-Snowglobes2.jpg"
         alt="Pope John Paul and some Snow globes"
       />
+      </picture>
     </div>
   </div>
 </FirebaseProvider>
