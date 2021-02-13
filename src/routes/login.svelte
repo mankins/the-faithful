@@ -24,7 +24,7 @@
     >
       <div class="mx-auto w-full max-w-sm lg:w-96">
         <div>
-          <a href="/">
+          <a href="/" target="_parent">
             <img class="h-12 w-auto" src="/svg/logo.svg" alt="Faithful Logo" />
           </a>
           <Toast />
