@@ -11,7 +11,7 @@ const createTranscodeJob = async ({
 }) => {
 
     console.log('create transcode', { projectId, location, inputUri, outputUri });
-    
+
   // Construct request
   // https://cloud.google.com/transcoder/docs/reference/rest/v1beta1/JobConfig#SpriteSheet
   // https://support.video.ibm.com/hc/en-us/articles/207852117-Internet-connection-and-recommended-encoding-settings
@@ -26,8 +26,8 @@ const createTranscodeJob = async ({
             key: 'video-stream0',
             videoStream: {
               codec: 'h264',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 720,
               widthPixels: 1280,
@@ -39,8 +39,8 @@ const createTranscodeJob = async ({
             key: 'video-stream0-vp9',
             videoStream: {
               codec: 'vp9',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 720,
               widthPixels: 1280,
@@ -52,8 +52,8 @@ const createTranscodeJob = async ({
             key: 'video-stream0-h265',
             videoStream: {
               codec: 'h265',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 720,
               widthPixels: 1280,
@@ -65,8 +65,8 @@ const createTranscodeJob = async ({
             key: 'video-stream1',
             videoStream: {
               codec: 'h264',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
@@ -78,8 +78,8 @@ const createTranscodeJob = async ({
             key: 'video-stream1-vp9',
             videoStream: {
               codec: 'vp9',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
@@ -91,8 +91,8 @@ const createTranscodeJob = async ({
             key: 'video-stream1-h265',
             videoStream: {
               codec: 'h265',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
@@ -104,8 +104,8 @@ const createTranscodeJob = async ({
             key: 'video-stream2',
             videoStream: {
               codec: 'h264',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
@@ -117,8 +117,8 @@ const createTranscodeJob = async ({
             key: 'video-stream2-vp9',
             videoStream: {
               codec: 'vp9',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
@@ -130,8 +130,8 @@ const createTranscodeJob = async ({
             key: 'video-stream2-h265',
             videoStream: {
               codec: 'h265',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
@@ -143,8 +143,8 @@ const createTranscodeJob = async ({
             key: 'video-stream3',
             videoStream: {
               codec: 'h264',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
@@ -156,8 +156,8 @@ const createTranscodeJob = async ({
             key: 'video-stream3-vp9',
             videoStream: {
               codec: 'vp9',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
@@ -169,8 +169,8 @@ const createTranscodeJob = async ({
             key: 'video-stream3-h265',
             videoStream: {
               codec: 'h265',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
@@ -182,8 +182,8 @@ const createTranscodeJob = async ({
             key: 'video-stream4',
             videoStream: {
               codec: 'h264',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
@@ -195,8 +195,8 @@ const createTranscodeJob = async ({
             key: 'video-stream4-vp9',
             videoStream: {
               codec: 'vp9',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
@@ -208,8 +208,8 @@ const createTranscodeJob = async ({
             key: 'video-stream4-h265',
             videoStream: {
               codec: 'h265',
-              preset: 'medium',
-              tune: 'grain', // film?
+              preset: 'veryfast',
+             // tune: 'grain', // film?
               enableTwoPass: true,
               heightPixels: 1080,
               widthPixels: 1920,
