@@ -107,6 +107,7 @@
         }
 
         window.pushToast("Success. We'll write soon.", 'success');
+        window.fathom.trackGoal('A99HAGDM', 0); // Announce Email Signup
       } else {
         window.pushToast(`Please enter a valid email address.`, 'alert');
         return;
