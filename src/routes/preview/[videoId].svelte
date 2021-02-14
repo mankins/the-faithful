@@ -58,6 +58,11 @@
     entitled = await productsEntitle(userProducts, `video:${videoId}:preview`);
     console.log({ entitled });
     loaded = true;
+
+    const goal = 'W6DQW4K3';
+    if (entitled) {
+      window.fathom.trackGoal(goal, 0);
+    }
   });
 </script>
 
