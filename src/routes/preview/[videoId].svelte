@@ -9,6 +9,7 @@
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
 
   // import Toast from '$components/Toast.svelte';
+  import Footer from '$components/nav/Footer.svelte';
 
   import AccessDenied from '$components/AccessDenied.svelte';
   import VideoPlayer from '$components/VideoPlayer.svelte';
@@ -81,5 +82,6 @@
     {:else}
       <AccessDenied message="Sorry you don't have access to this video." />
     {/if}
-  {/if}
+    <Footer />
+    {/if}
 </FirebaseProvider>
