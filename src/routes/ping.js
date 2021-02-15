@@ -5,6 +5,6 @@ export async function get(req, res, next) {
       "content-type": "text/plain",
       "cache-control": "no-cache; max-age=0",
     },
-    body: 'pong'
+    body: 'ponger'
   });
 };
