@@ -1,0 +1,55 @@
+steps:
+  - id: "build image - ssr"
+    name: 'gcr.io/kaniko-project/executor:latest'
+    waitFor: ['-']
+    args: ["--destination=gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}",    
+       '--build-arg',
+         '_pr_number=${_PR_NUMBER}',
+        '--build-arg',
+         'short_sha=${SHORT_SHA}'
+    ]
+
+  - id: "deploy revision with tag"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      [
+        "beta",
+        "run",
+        "deploy",
+        "${_SERVICE_NAME}",
+        "--platform",
+        "managed",
+        "--region",
+        "${_REGION}",
+        "--allow-unauthenticated",
+        "--image",
+        "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}",
+        "--tag",
+        "pr-${_PR_NUMBER}",
+        "--no-traffic",
+      ]
+
+  - id: "link revision on pull request"
+    name: "gcr.io/${PROJECT_ID}/deployment-previews" # our custom builder
+    args:
+      [
+        "set",
+        "--project-id",
+        "${PROJECT_ID}",
+        "--region",
+        "${_REGION}",
+        "--service",
+        "${_SERVICE_NAME}",
+        "--pull-request",
+        "${_PR_NUMBER}",
+        "--repo-name",
+        "${_GITHUB_REPO}",
+        "--commit-sha",
+        "${SHORT_SHA}",
+      ]
+
+substitutions:
+  _SERVICE_NAME: the-faithful-ssr
+  _REGION: us-central1
+  _GITHUB_REPO: $(pull_request.pull_request.head.repo.full_name)
