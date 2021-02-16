@@ -1,18 +1,17 @@
 <script>
   import Nav from '$components/nav/Nav.svelte';
   import Footer from '$components/nav/Footer.svelte';
-import Arrow from '../components/nav/Arrow.svelte';
 
 </script>
 
 <div class="min-h-screen bg-faithful-500">
-  <div class="border-t-2 mb h-full">
+  <div class="absolute top-0 mb h-full">
     <Nav />
   </div>
 
   <div class="container ml-6">
     <h1
-      class="mt-24 text-4xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-6xl"
+      class="pt-24 text-4xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-6xl"
     >
       Schedule
     </h1>
@@ -93,7 +92,7 @@ import Arrow from '../components/nav/Arrow.svelte';
 
 
 			  <li class="flex space-x-3 pt-6">
-				<span class="text-sm font-extrabold text-gray-500">Sneak Peek brought to you by <a href="https://www.coil.com/" class="text-faithful-900 underline">Coil</a>. Coil created <a href="https://webmonetization.org/" class="text-faithful-900 underline">web monetization</a> to support content creators on sites like ours.</span>
+				<span class="text-sm font-extrabold text-gray-500">Sneak Peek brought to you by <a href="https://www.coil.com/" class="text-faithful-900 underline">Coil</a>. Coil created <a href="https://webmonetization.org/" class="text-faithful-900 underline">web monetization</a> to support content creators on sites like ours via a monthly subscription.</span>
 			  </li>
 
 
@@ -204,6 +203,7 @@ import Arrow from '../components/nav/Arrow.svelte';
 		  </div>
 		</div>
   
+		{#if false}
 		<div class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-white">
 		  <div class="p-6">
 			<h2 class="text-lg leading-6 font-medium text-gray-900">Streaming</h2>
@@ -227,6 +227,7 @@ import Arrow from '../components/nav/Arrow.svelte';
 				</ul>
 		  </div>
 		</div>
+		{/if}
 	  </div>
 	</div>
   </div>

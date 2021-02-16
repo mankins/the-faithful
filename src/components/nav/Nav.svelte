@@ -89,10 +89,9 @@ console.log({section});
         </a>
         </div>
         <div class="hidden md:ml-6 md:flex md:space-x-8">
-          <!-- Current: "border-faithful-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
           <a
             href={`/`}
-            class=" text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium"
+            class="border-transparent text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
             class:border-b-4={section === 'home'}
             class:border-faithful-500={section === 'home'}
           >
