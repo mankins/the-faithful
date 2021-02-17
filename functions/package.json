@@ -2,7 +2,7 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "serve": "firebase emulators:start",
+    "serve": "firebase emulators:start --project the-faithful",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
@@ -26,7 +26,8 @@
     "firebase-functions": "^3.13.1",
     "lodash.get": "^4.4.2",
     "node-fetch": "^2.6.1",
-    "qs": "^6.9.6"
+    "qs": "^6.9.6",
+    "stripe": "^8.136.0"
   },
   "devDependencies": {
     "eslint": "^7.18.0",

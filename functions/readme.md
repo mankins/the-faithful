@@ -36,6 +36,13 @@ firebase functions:config:get > .runtimeconfig.json
 vi .runtimeconfig.json
 ```
 
+### Run Emulator
+
+```
+npm run serve
+```
+
+
 ## Create Functions
 
 https://console.cloud.google.com/functions/add?authuser=0&project=the-faithful
