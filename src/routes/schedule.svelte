@@ -3,19 +3,26 @@
   import Nav from '$components/nav/Nav.svelte';
   import Footer from '$components/nav/Footer.svelte';
 
-let cartOpened = false;
+  import { PRODUCTS } from '$components/data.js';
 
-const handleAddCart = () => {
-	cartOpened = true;
-};
+  let cartOpened = false;
+  let items = [];
 
+  const handleAddCart = (item) => {
+    cartOpened = true;
+    items.push(item);
+  };
+
+
+  const products = (type) => {
+    return PRODUCTS[type];
+  };
 </script>
-
 
 <div class="min-h-screen bg-faithful-500 overscroll-x-contain overflow-hidden">
   <div class="absolute top-0 mb h-full z-10">
     <Nav />
-	<Cart bind:opened={cartOpened} />
+    <Cart bind:opened={cartOpened} bind:items />
   </div>
 
   <div class="container ml-6">
@@ -32,213 +39,455 @@ const handleAddCart = () => {
         are video on demand and can be watched at your leisure.
       </p>
     </div>
+  </div>
+
+  <!-- This example requires Tailwind CSS v2.0+ -->
+  <div
+    class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8 bg-faithful-500 pb-16"
+  >
+    <div class="sm:flex sm:flex-col sm:align-center">
+      <div
+        class="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-4"
+      >
+        <div
+          class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-white mt-0"
+        >
+          <div class="p-6">
+            <h2 class="text-lg leading-6 font-medium text-gray-900">
+              Sneak Peek
+            </h2>
+            <p class="mt-4 text-sm text-gray-500">March 18, 2021</p>
+            <p class="mt-8">
+              <span class="text-4xl font-extrabold text-gray-900">$5</span>
+              <span class="text-base font-medium text-gray-500">/ month</span>
+            </p>
+            <a
+              href="https://help.coil.com/docs/general-info/intro-to-coil/index.html"
+              class="mt-8 block w-full bg-gray-600 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
+              >Learn about Coil</a
+            >
+          </div>
+          <div class="pt-6 pb-8 px-6">
+            <h3
+              class="text-xs font-medium text-gray-900 tracking-wide uppercase"
+            >
+              What's included
+            </h3>
+            <ul class="mt-6 space-y-4">
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500 font-bold"
+                  >World premiere event</span
+                >
+              </li>
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500">Live Event</span>
+              </li>
+
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500"
+                  >Multiple timezone friendly</span
+                >
+              </li>
+
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500"
+                  >Q&A with the filmmakers</span
+                >
+              </li>
+
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500"
+                  >Digital movie theatre experience</span
+                >
+              </li>
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500"
+                  >Includes access to all events listed</span
+                >
+              </li>
+
+              <li class="flex space-x-3 pt-6">
+                <span class="text-sm font-extrabold text-gray-500"
+                  >Sneak Peek brought to you by <a
+                    href="https://www.coil.com/"
+                    class="text-faithful-900 underline">Coil</a
+                  >. Coil created
+                  <a
+                    href="https://webmonetization.org/"
+                    class="text-faithful-900 underline">web monetization</a
+                  > to support content creators on sites like ours via a monthly
+                  subscription.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-white"
+        >
+          <div class="p-6">
+            <h2 class="text-lg leading-6 font-medium text-gray-900">
+              Cinema Premiere
+            </h2>
+            <p class="mt-4 text-sm text-gray-500">March 19, 2021</p>
+            <p class="mt-8">
+              <span class="text-4xl font-extrabold text-gray-900">$12.50</span>
+              <span class="text-base font-medium text-gray-500">/ticket</span>
+            </p>
+            <button
+              on:click={() => handleAddCart(products('cinema-premiere'))}
+              class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
+              >Add Ticket</button
+            >
+          </div>
+          <div class="pt-6 pb-8 px-6">
+            <h3
+              class="text-xs font-medium text-gray-900 tracking-wide uppercase"
+            >
+              What's included
+            </h3>
+            <ul class="mt-6 space-y-4">
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500 font-bold"
+                  >World premiere event</span
+                >
+              </li>
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500">Live event</span>
+              </li>
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500"
+                  >Multiple timezone friendly</span
+                >
+              </li>
+
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500"
+                  >Q&A with the filmmakers</span
+                >
+              </li>
+
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500"
+                  >Digital movie theatre experience</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-white"
+        >
+          <div class="p-6">
+            <h2 class="text-lg leading-6 font-medium text-gray-900">
+              Virtual Viewing Event
+            </h2>
+            <p class="mt-4 text-sm text-gray-500">March 20-22, 2021</p>
+            <p class="mt-8">
+              <span class="text-4xl font-extrabold text-gray-900">$7.50</span>
+              <span class="text-base font-medium text-gray-500">/ ticket</span>
+            </p>
+            <button
+			on:click={() => handleAddCart(products('cinema-virtual'))}
+              class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
+              >Add Ticket</button
+            >
+          </div>
+          <div class="pt-6 pb-8 px-6">
+            <h3
+              class="text-xs font-medium text-gray-900 tracking-wide uppercase"
+            >
+              What's included
+            </h3>
+            <ul class="mt-6 space-y-4">
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500">Live Event</span>
+              </li>
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500"
+                  >Multiple timezone friendly</span
+                >
+              </li>
+
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500"
+                  >Q&A with the filmmakers</span
+                >
+              </li>
+
+              <li class="flex space-x-3">
+                <!-- Heroicon name: solid/check -->
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="text-sm text-gray-500"
+                  >Digital movie theatre experience</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {#if false}
+          <div
+            class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-white"
+          >
+            <div class="p-6">
+              <h2 class="text-lg leading-6 font-medium text-gray-900">
+                Streaming
+              </h2>
+              <p class="mt-4 text-sm text-gray-500">April 2021</p>
+              <p class="mt-8">
+                <span class="text-4xl font-extrabold text-gray-900">$7.50</span>
+                <span class="text-base font-medium text-gray-500">/ stream</span
+                >
+              </p>
+              <a
+                href="#"
+                class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
+                >Add Ticket</a
+              >
+            </div>
+            <div class="pt-6 pb-8 px-6">
+              <h3
+                class="text-xs font-medium text-gray-900 tracking-wide uppercase"
+              >
+                What's included
+              </h3>
+              <ul class="mt-6 space-y-4">
+                <li class="flex space-x-3">
+                  <!-- Heroicon name: solid/check -->
+                  <svg
+                    class="flex-shrink-0 h-5 w-5 text-green-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <span class="text-sm text-gray-500"
+                    >Streaming, watch at your leisure</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        {/if}
+      </div>
+    </div>
+  </div>
+  <Footer />
 </div>
-
-<!-- This example requires Tailwind CSS v2.0+ -->
-	<div class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8 bg-faithful-500 pb-16">
-		<div class="sm:flex sm:flex-col sm:align-center">
-
-	  <div class="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-4">
-  	 
-		<div class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-white mt-0">
-		  <div class="p-6">
-			<h2 class="text-lg leading-6 font-medium text-gray-900">Sneak Peek</h2>
-			<p class="mt-4 text-sm text-gray-500">March 18, 2021</p>
-			<p class="mt-8">
-			  <span class="text-4xl font-extrabold text-gray-900">$5</span>
-			  <span class="text-base font-medium text-gray-500">/ month</span>
-			</p>
-			<a href="https://help.coil.com/docs/general-info/intro-to-coil/index.html" class="mt-8 block w-full bg-gray-600 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900">Learn about Coil</a>
-		  </div>
-		  <div class="pt-6 pb-8 px-6">
-			<h3 class="text-xs font-medium text-gray-900 tracking-wide uppercase">What's included</h3>
-			<ul class="mt-6 space-y-4">
-			  <li class="flex space-x-3">
-				<!-- Heroicon name: solid/check -->
-				<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-				<span class="text-sm text-gray-500 font-bold">World premiere event</span>
-			  </li>
-			  <li class="flex space-x-3">
-				<!-- Heroicon name: solid/check -->
-				<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-				<span class="text-sm text-gray-500">Live Event</span>
-			  </li>
-
-			  <li class="flex space-x-3">
-				<!-- Heroicon name: solid/check -->
-				<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-				<span class="text-sm text-gray-500">Multiple timezone friendly</span>
-			  </li>
-
-			  <li class="flex space-x-3">
-				<!-- Heroicon name: solid/check -->
-				<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-				<span class="text-sm text-gray-500">Q&A with the filmmakers</span>
-			  </li>
-  
-			  <li class="flex space-x-3">
-				<!-- Heroicon name: solid/check -->
-				<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-				<span class="text-sm text-gray-500">Digital movie theatre experience</span>
-			  </li>
-			  <li class="flex space-x-3">
-				<!-- Heroicon name: solid/check -->
-				<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-				<span class="text-sm text-gray-500">Includes access to all events listed</span>
-			  </li>
-
-
-			  <li class="flex space-x-3 pt-6">
-				<span class="text-sm font-extrabold text-gray-500">Sneak Peek brought to you by <a href="https://www.coil.com/" class="text-faithful-900 underline">Coil</a>. Coil created <a href="https://webmonetization.org/" class="text-faithful-900 underline">web monetization</a> to support content creators on sites like ours via a monthly subscription.</span>
-			  </li>
-
-
-			</ul>
-		  </div>
-		</div>
-  
-		<div class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-white">
-		  <div class="p-6">
-			<h2 class="text-lg leading-6 font-medium text-gray-900">Cinema Premiere</h2>
-			<p class="mt-4 text-sm text-gray-500">March 19, 2021</p>
-			<p class="mt-8">
-			  <span class="text-4xl font-extrabold text-gray-900">$12.50</span>
-			  <span class="text-base font-medium text-gray-500">/ticket</span>
-			</p>
-			<button on:click={() => handleAddCart({product: 'cinema-premiere', 'productTitle': 'Cinema Premiere', 'price': {currency:'usd', amount: 1250}})} class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900">Add Ticket</button>
-		  </div>
-		  <div class="pt-6 pb-8 px-6">
-			<h3 class="text-xs font-medium text-gray-900 tracking-wide uppercase">What's included</h3>
-			<ul class="mt-6 space-y-4">
-
-			  <li class="flex space-x-3">
-				<!-- Heroicon name: solid/check -->
-				<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-				<span class="text-sm text-gray-500 font-bold">World premiere event</span>
-			  </li>
-			  <li class="flex space-x-3">
-				<!-- Heroicon name: solid/check -->
-				<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-				<span class="text-sm text-gray-500">Live event</span>
-			  </li>
-			  <li class="flex space-x-3">
-				<!-- Heroicon name: solid/check -->
-				<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-				<span class="text-sm text-gray-500">Multiple timezone friendly</span>
-			  </li>
-
-			  <li class="flex space-x-3">
-				<!-- Heroicon name: solid/check -->
-				<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-				<span class="text-sm text-gray-500">Q&A with the filmmakers</span>
-			  </li>
-  
-			  <li class="flex space-x-3">
-				<!-- Heroicon name: solid/check -->
-				<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-				  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-				<span class="text-sm text-gray-500">Digital movie theatre experience</span>
-			  </li>
-			</ul>
-		  </div>
-		</div>
-  
-		<div class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-white">
-		  <div class="p-6">
-			<h2 class="text-lg leading-6 font-medium text-gray-900">Virtual Viewing Event</h2>
-			<p class="mt-4 text-sm text-gray-500">March 20-22, 2021</p>
-			<p class="mt-8">
-			  <span class="text-4xl font-extrabold text-gray-900">$7.50</span>
-			  <span class="text-base font-medium text-gray-500">/ ticket</span>
-			</p>
-			<a href="#" class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900">Add Ticket</a>
-		  </div>
-		  <div class="pt-6 pb-8 px-6">
-			<h3 class="text-xs font-medium text-gray-900 tracking-wide uppercase">What's included</h3>
-			<ul class="mt-6 space-y-4">
-				<li class="flex space-x-3">
-					<!-- Heroicon name: solid/check -->
-					<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-					  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-					</svg>
-					<span class="text-sm text-gray-500">Live Event</span>
-				  </li>
-				  <li class="flex space-x-3">
-					<!-- Heroicon name: solid/check -->
-					<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-					  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-					</svg>
-					<span class="text-sm text-gray-500">Multiple timezone friendly</span>
-				  </li>
-	
-				  <li class="flex space-x-3">
-					<!-- Heroicon name: solid/check -->
-					<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-					  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-					</svg>
-					<span class="text-sm text-gray-500">Q&A with the filmmakers</span>
-				  </li>
-	  
-				  <li class="flex space-x-3">
-					<!-- Heroicon name: solid/check -->
-					<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-					  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-					</svg>
-					<span class="text-sm text-gray-500">Digital movie theatre experience</span>
-				  </li>
-	
-				</ul>
-		  </div>
-		</div>
-  
-		{#if false}
-		<div class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-white">
-		  <div class="p-6">
-			<h2 class="text-lg leading-6 font-medium text-gray-900">Streaming</h2>
-			<p class="mt-4 text-sm text-gray-500">April 2021</p>
-			<p class="mt-8">
-			  <span class="text-4xl font-extrabold text-gray-900">$7.50</span>
-			  <span class="text-base font-medium text-gray-500">/ stream</span>
-			</p>
-			<a href="#" class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900">Add Ticket</a>
-		  </div>
-		  <div class="pt-6 pb-8 px-6">
-			<h3 class="text-xs font-medium text-gray-900 tracking-wide uppercase">What's included</h3>
-			<ul class="mt-6 space-y-4">
-				<li class="flex space-x-3">
-					<!-- Heroicon name: solid/check -->
-					<svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-					  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-					</svg>
-					<span class="text-sm text-gray-500">Streaming, watch at your leisure</span>
-				  </li>
-				</ul>
-		  </div>
-		</div>
-		{/if}
-	  </div>
-	</div>
-  </div>
-<Footer />  
-  </div>
