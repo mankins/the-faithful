@@ -10,6 +10,9 @@
   import Footer from '$components/nav/Footer.svelte';
   import Nav from '$components/nav/Nav.svelte';
 
+  import Cart from '$components/cart/Cart.svelte';
+  import { getProduct } from '$components/data.js';
+
   import { onMount, createEventDispatcher } from 'svelte';
   import { fade, crossfade } from 'svelte/transition';
 
@@ -18,6 +21,14 @@
   let loaded = false;
   let user = {};
   let loggedIn = false;
+
+  let cartOpened = false;
+  let items = [];
+
+  const handleAddCart = (item) => {
+    cartOpened = true;
+    items.push(item);
+  };
 
   export let logout = false;
 
@@ -151,8 +162,35 @@
 </svelte:head>
 
 <div class="bg-white">
-  <Nav {loggedIn} {user} />
-  {#if loaded}
+  <Nav {loggedIn} {user}>
+    <button
+		on:click={() => handleAddCart(getProduct('cinema-premiere'))}
+
+		type="button"
+		class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-faithful-600 shadow-sm hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+	  >
+		<!-- Heroicon name: ticket -->
+		<svg
+		  class="-ml-1 mr-2 h-5 w-5"
+		  xmlns="http://www.w3.org/2000/svg"
+		  fill="none"
+		  viewBox="0 0 24 24"
+		  stroke="currentColor"
+		>
+		  <path
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			stroke-width="2"
+			d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+		  />
+		</svg>
+		<span>Buy a Ticket</span>
+	  </button>
+
+    </Nav>
+    <Cart bind:opened={cartOpened} bind:items />
+
+  {#if loaded && !cartOpened}
     <main class="pt-16 md:pt-1 lg:pt-8">
       <section
         class="pt-4 overflow-hidden sm:overflow-auto sm:pt-8 lg:relative lg:py-36"
@@ -592,6 +630,9 @@
       </div>
     </main>
 
+    <aside class="z-40">
+      <Toast />
+    </aside>
 
     <Footer />
 

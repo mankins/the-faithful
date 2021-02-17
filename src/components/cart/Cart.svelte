@@ -42,7 +42,7 @@
 <div id="cart">
   {#if opened}
     <div
-      class="fixed inset-0 overflow-hidden"
+      class="fixed inset-0 overflow-hidden z-100"
       class:hidden={!opened}
       transition:fade={{ duration: 250 }}
     >

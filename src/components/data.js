@@ -33,4 +33,8 @@ const PRODUCTS = {
   },
 };
 
-export { PRODUCTS };
+const getProduct = (type) => {
+  return PRODUCTS[type];
+};
+
+export { PRODUCTS, getProduct };

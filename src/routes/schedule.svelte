@@ -3,7 +3,7 @@
   import Nav from '$components/nav/Nav.svelte';
   import Footer from '$components/nav/Footer.svelte';
 
-  import { PRODUCTS } from '$components/data.js';
+  import { getProduct } from '$components/data.js';
 
   let cartOpened = false;
   let items = [];
@@ -13,15 +13,36 @@
     items.push(item);
   };
 
-
-  const products = (type) => {
-    return PRODUCTS[type];
-  };
 </script>
 
 <div class="min-h-screen bg-faithful-500 overscroll-x-contain overflow-hidden">
   <div class="absolute top-0 mb h-full z-10">
-    <Nav />
+    <Nav>
+		<button
+		on:click={() => handleAddCart(getProduct('cinema-premiere'))}
+
+		type="button"
+		class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-faithful-600 shadow-sm hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+	  >
+		<!-- Heroicon name: ticket -->
+		<svg
+		  class="-ml-1 mr-2 h-5 w-5"
+		  xmlns="http://www.w3.org/2000/svg"
+		  fill="none"
+		  viewBox="0 0 24 24"
+		  stroke="currentColor"
+		>
+		  <path
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			stroke-width="2"
+			d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+		  />
+		</svg>
+		<span>Buy a Ticket</span>
+	  </button>
+	</Nav>
+
     <Cart bind:opened={cartOpened} bind:items />
   </div>
 
@@ -220,7 +241,7 @@
               <span class="text-base font-medium text-gray-500">/ticket</span>
             </p>
             <button
-              on:click={() => handleAddCart(products('cinema-premiere'))}
+              on:click={() => handleAddCart(getProduct('cinema-premiere'))}
               class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
               >Add Ticket</button
             >
@@ -344,7 +365,7 @@
               <span class="text-base font-medium text-gray-500">/ ticket</span>
             </p>
             <button
-			on:click={() => handleAddCart(products('cinema-virtual'))}
+			on:click={() => handleAddCart(getProduct('cinema-virtual'))}
               class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
               >Add Ticket</button
             >
