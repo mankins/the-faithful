@@ -29,7 +29,8 @@
 		"svelte": "^3.32.2",
 		"svelte-preprocess": "^4.6.7",
 		"tailwindcss": "^2.0.3",
-		"tailwindcss-font-inter": "^2.0.0"
+		"tailwindcss-font-inter": "^2.0.0",
+		"tinygesture": "^1.1.4"
 	},
 	"dependencies": {
 		"@stripe/stripe-js": "^1.12.1",

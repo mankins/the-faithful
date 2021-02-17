@@ -19,7 +19,7 @@ console.log({section});
 
 </script>
 
-<nav class="bg-white fixed w-full z-50">
+<nav class="bg-white fixed w-screen">
   <div class="mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16">
       <div class="flex">

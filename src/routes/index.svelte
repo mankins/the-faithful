@@ -592,9 +592,6 @@
       </div>
     </main>
 
-    <aside class="z-40">
-      <Toast />
-    </aside>
 
     <Footer />
 

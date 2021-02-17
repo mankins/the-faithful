@@ -1,12 +1,21 @@
 <script>
+  import Cart from '$components/cart/Cart.svelte';
   import Nav from '$components/nav/Nav.svelte';
   import Footer from '$components/nav/Footer.svelte';
 
+let cartOpened = false;
+
+const handleAddCart = () => {
+	cartOpened = true;
+};
+
 </script>
 
-<div class="min-h-screen bg-faithful-500">
-  <div class="absolute top-0 mb h-full">
+
+<div class="min-h-screen bg-faithful-500 overscroll-x-contain overflow-hidden">
+  <div class="absolute top-0 mb h-full z-10">
     <Nav />
+	<Cart bind:opened={cartOpened} />
   </div>
 
   <div class="container ml-6">
@@ -108,7 +117,7 @@
 			  <span class="text-4xl font-extrabold text-gray-900">$12.50</span>
 			  <span class="text-base font-medium text-gray-500">/ticket</span>
 			</p>
-			<a href="#" class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900">Buy Ticket</a>
+			<button on:click={() => handleAddCart({product: 'cinema-premiere', 'productTitle': 'Cinema Premiere', 'price': {currency:'usd', amount: 1250}})} class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900">Add Ticket</button>
 		  </div>
 		  <div class="pt-6 pb-8 px-6">
 			<h3 class="text-xs font-medium text-gray-900 tracking-wide uppercase">What's included</h3>
@@ -163,7 +172,7 @@
 			  <span class="text-4xl font-extrabold text-gray-900">$7.50</span>
 			  <span class="text-base font-medium text-gray-500">/ ticket</span>
 			</p>
-			<a href="#" class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900">Buy Ticket</a>
+			<a href="#" class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900">Add Ticket</a>
 		  </div>
 		  <div class="pt-6 pb-8 px-6">
 			<h3 class="text-xs font-medium text-gray-900 tracking-wide uppercase">What's included</h3>
@@ -212,7 +221,7 @@
 			  <span class="text-4xl font-extrabold text-gray-900">$7.50</span>
 			  <span class="text-base font-medium text-gray-500">/ stream</span>
 			</p>
-			<a href="#" class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900">Buy Ticket</a>
+			<a href="#" class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900">Add Ticket</a>
 		  </div>
 		  <div class="pt-6 pb-8 px-6">
 			<h3 class="text-xs font-medium text-gray-900 tracking-wide uppercase">What's included</h3>
