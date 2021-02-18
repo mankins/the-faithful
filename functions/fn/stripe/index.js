@@ -6,6 +6,14 @@ const { Stripe } = require('stripe');
 // const fetch = require('node-fetch');
 
 const getSecrets = require('../../lib/env'); // load environment config
+const { formatCurrency } = require('../../lib/i18n');
+const { shortId } = require('../../lib/short-uuid');
+const admin = require('../../lib/firebase');
+
+const {
+  getProductName,
+  getProductDescription,
+} = require('../../lib/data');
 
 const secrets = getSecrets('the-faithful');
 
@@ -116,31 +124,121 @@ exports.stripeCheckoutSession = functions.https.onCall(
     //   },
     // ];
 
+    const productIds = {};
+
     items.forEach((item) => {
+      productIds[item.productId] = true;
+
       const stripeItem = {};
       stripeItem.quantity = item.quantity || 1;
       stripeItem.price_data = {};
       stripeItem.price_data.currency = get(item, 'price.currency', 'usd');
       stripeItem.price_data.unit_amount = get(item, 'price.amount', 100);
       stripeItem.price_data.product_data = {};
-      stripeItem.price_data.product_data.name = get(
-        item,
-        'productTitle',
-        'Ticket'
-      );
+
+      const description = getProductDescription(item.product, item.productId);
+      stripeItem.price_data.product_data.description = description;
+
+      const name = getProductName(item.product, item.productId);
+      stripeItem.price_data.product_data.name = name;
+
+      console.log(JSON.stringify(stripeItem, null, 2));
 
       lineItems.push(stripeItem);
     });
 
+    const metadata = {};
+    metadata.products = JSON.stringify(Object.keys(productIds)); // array of video:thing shiro
+
     const session = await _stripe.checkout.sessions.create({
       payment_method_types: ['card'],
+      allow_promotion_codes: true,
       line_items: lineItems,
+      metadata,
       mode: 'payment',
-      success_url: `${baseUrl}/api/stripe/checkout-success`,
-      cancel_url: `${baseUrl}/api/stripe/checkout-cancel`,
+      success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/checkout/cancel?session_id={CHECKOUT_SESSION_ID}`,
     });
-        console.log({ stripeProps: stripeProps.config.pub });
-
+    // console.log({ stripeProps: stripeProps.config.pub });
+    // http://localhost:5000/checkout/success?session_id=cs_test_b1VppFxojQNZyu708HCLeA3UCByepbbsQaf3FJQfvuxZ3jHd3EYluDK12s
+    //http://localhost:5000/checkout/success?session_id=cs_test_b1tsZsr6H1xwb9Wcio5HSXq8i4GEiBYyxecLvb39323VfxTVMb2ZOTP04z
     return { id: session.id, stripePubKey: stripeProps.config.pub };
+  }
+);
+
+exports.stripeCheckoutSuccess = functions.https.onCall(
+  async (data, context) => {
+    const sessionId = get(data, 'sessionId', '');
+
+    const stripeProps = await stripe();
+    const { _stripe } = stripeProps;
+
+    const uid = get(context, 'auth.uid');
+    console.log(`----UID-----${uid}-------UID------`);
+    // verify Firebase Auth ID token and presence of UID
+    if (!context.auth || !uid) {
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        'Request had invalid credentials',
+        {
+          error: 'invalid credentials',
+        }
+      );
+    }
+
+    const session = await _stripe.checkout.sessions.retrieve(sessionId);
+
+    const email = get(session, 'customer_details.email');
+    if (!email) {
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        'Request missing associated email',
+        {
+          error: 'invalid credentials',
+        }
+      );
+    }
+
+    let products = JSON.parse(get(session, 'metadata.products', '[]'));
+
+    // send email receipt?
+    // write to firebase?
+
+    const total = formatCurrency(session.amount_total, session.currency);
+
+    const receipt = {};
+    receipt.id = shortId();
+    receipt.ts = new Date(Date.now()).toISOString();
+    receipt.src = 'stripe';
+
+    receipt.paid = `${total}`;
+    receipt.raw = JSON.stringify(session);
+    receipt.products = products; // this is the most important part
+    receipt.type = 'payment';
+
+    // add products to email table
+    const db = admin.firestore();
+
+    try {
+      await db
+        .doc(`email/${email}/receipts/${receipt.id}`)
+        .set({ receipt, email });
+    } catch (ee) {
+      throw new functions.https.HttpsError('internal', 'Internal Error', {
+        error: 'email store error',
+      });
+    }
+
+    const output = {
+      amount: session.amount_total,
+      currency: session.currency,
+      total,
+      products,
+      customer: { id: session.customer, ...session.customer_details },
+      livemode: session.livemode,
+    };
+    // console.log({ output });
+
+    return output;
   }
 );

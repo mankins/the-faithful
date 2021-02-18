@@ -10,6 +10,7 @@
 
   import Cart from '$components/cart/Cart.svelte';
   import { getProduct } from '$components/data.js';
+  import { firebaseConfig } from '$components/config/index.js';
 
   import { onMount, createEventDispatcher } from 'svelte';
   import { fade, crossfade } from 'svelte/transition';
@@ -50,26 +51,8 @@
   let hero = Math.floor(Math.random() * icons.length);
   let email = '';
   onMount(async () => {
-    try {
-      let c = window.localStorage.getItem('cart');
-      items = c ? JSON.parse(c) : [];
-    } catch (e) {
-      console.log({ e });
-    }
-
-    const firebaseConfig = {
-      apiKey: 'AIzaSyC75bagJGvDb5_2FJOT1yE2RV-97FGvYVs',
-      authDomain: 'the-faithful.firebaseapp.com',
-      projectId: 'the-faithful',
-      storageBucket: 'the-faithful.appspot.com',
-      messagingSenderId: '505590894387',
-      appId: '1:505590894387:web:573695e14e3f14cee77846',
-      databaseURL: 'https://the-faithful.firebaseio.com',
-    };
-
     if (firebase.apps.length === 0) {
       await firebase.initializeApp(firebaseConfig);
-      loaded = true;
     }
 
     await import('firebase/functions');
@@ -109,10 +92,22 @@
       }
     });
 
-    // TODO: kill this on unload
-    setInterval(() => {
+    try {
+      let c = window.localStorage.getItem('cart');
+      items = c ? JSON.parse(c) : [];
+    } catch (e) {
+      console.log({ e });
+    }
+
+    const heroInterval = setInterval(() => {
       hero = Math.floor(Math.random() * icons.length);
     }, 5500);
+
+    loaded = true;
+
+    return () => {
+      clearInterval(heroInterval);
+    };
   });
 
   const announceSignup = async () => {
@@ -167,7 +162,7 @@
   <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
 
-{#if loaded && !cartOpened}
+{#if loaded}
   <main class="pt-16 md:pt-1 lg:pt-8">
     <section
       class="pt-4 overflow-hidden sm:overflow-auto sm:pt-8 lg:relative lg:py-36"
@@ -611,7 +606,13 @@
 <div class="bg-white absolute top-0 mb h-full z-10">
   <Nav {loggedIn} {user}>
     <button
-      on:click={() => { if (items.length) { cartOpened = true; return; } handleAddCart(getProduct('cinema-premiere')) }}
+      on:click={() => {
+        if (items.length) {
+          cartOpened = true;
+          return;
+        }
+        handleAddCart(getProduct('cinema-premiere'));
+      }}
       type="button"
       class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-faithful-600 shadow-sm hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
     >

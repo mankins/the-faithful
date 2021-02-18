@@ -16,6 +16,7 @@
   export let items = [];
 
   let loaded = false;
+  let checkingOut = false;
 
   let saveItems = () => {
     console.log('default');
@@ -47,23 +48,25 @@
   };
 
   const handleCheckout = async () => {
+    checkingOut = true;
+    const base = window.location.origin || 'https://www.the-faithful.com';
     const stripeCheckoutSession = firebase
       .functions()
       .httpsCallable('stripeCheckoutSession');
-    const reply = await stripeCheckoutSession({ items });
     try {
+      const reply = await stripeCheckoutSession({ items, base });
       const session = reply.data;
       const stripe = window.Stripe(session.stripePubKey);
       stripe.redirectToCheckout({ sessionId: session.id });
     } catch (e) {
       window.pushToast(`Error creating cart. ${e.message}`, 'alert');
     }
+    checkingOut = false;
   };
 
   onMount(async () => {
     if (firebase.apps.length === 0) {
       await firebase.initializeApp(firebaseConfig);
-      loaded = true;
     }
 
     await import('firebase/functions');
@@ -73,10 +76,11 @@
     }
 
     saveItems = (i) => {
-      console.log('--------------', i);
-      window &&
-        window.localStorage &&
-        window.localStorage.setItem('cart', JSON.stringify(i));
+      try {
+        window &&
+          window.localStorage &&
+          window.localStorage.setItem('cart', JSON.stringify(i));
+      } catch (e) {}
     };
 
     const target = document.getElementById('cart');
@@ -84,13 +88,15 @@
     gesture.on('swiperight', (event) => {
       opened = false;
     });
+    loaded = true;
+
     return () => {
       gesture.destroy();
     };
   });
 </script>
 
-<div id="cart">
+<div id="cart" style="touch-action: manipulation">
   {#if opened && loaded}
     <div
       class="fixed inset-0 overflow-hidden"
@@ -110,16 +116,6 @@
           class="absolute -mt-8 inset-y-0 right-0 pl-10 max-w-full flex"
           aria-labelledby="slide-over-heading"
         >
-          <!--
-          Slide-over panel, show/hide based on slide-over state.
-  
-          Entering: "transform transition ease-in-out duration-500 sm:duration-700"
-            From: "translate-x-full"
-            To: "translate-x-0"
-          Leaving: "transform transition ease-in-out duration-500 sm:duration-700"
-            From: "translate-x-0"
-            To: "translate-x-full"
-        -->
           <div
             class="w-screen max-w-md"
             transition:fly={{ x: 200, duration: 700 }}
@@ -172,9 +168,9 @@
 
               <div class="mt-1 sm:mt-6 relative flex-1 px-4 sm:px-6">
                 <div
-                  class="absolute inset-0 px-4 sm:px-6 overflow-scroll-y flex-shrink"
+                  class="absolute inset-0 px-4 sm:px-6 overflow-scroll-y flex-shrink h-screen"
                 >
-                  <div class="max-h-full" aria-hidden="true">
+                  <div class="overflow-scroll-y" aria-hidden="true">
                     <ul class="overflow-y-scroll">
                       {#if items.length === 0}
                         <li
@@ -200,13 +196,16 @@
               </div>
               <div class="flex-shrink-0 px-4 py-5 sm:px-6">
                 <div
+                  class="absolute inset-x-0 bottom-0 mr-2 sm:mr-6 ml-10 sm:ml-16 mb-0 space-x-3 flex justify-end bg-faithful-500 p-10"
+                />
+                <div
                   class="absolute inset-x-0 bottom-0 mr-6 ml-16 mb-6 space-x-3 flex justify-end"
                 >
                   <button
                     on:click={() => {
                       handleCheckout();
                     }}
-                    disabled={items.length === 0}
+                    disabled={items.length === 0 || checkingOut}
                     class="inline-flex justify-center w-full py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-900 disabled:opacity-50"
                   >
                     Checkout

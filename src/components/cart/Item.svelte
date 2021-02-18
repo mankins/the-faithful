@@ -19,7 +19,7 @@
   };
   const handleItemTimeSelected = (selected, y) => {
     if (selected && selected.target && selected.target.value) {
-      item.selected = selected.target.value;
+      item.productId = selected.target.value;
       handleItemChange(item, index);
     }
   };
@@ -113,7 +113,7 @@
     {#if item.variations}
       <select
         class="w-full border-0 bg-gray-50 font-light text-sm m-auto"
-        bind:value={item.selected}
+        bind:value={item.productId}
         on:blur={(v) => handleItemTimeSelected(v)}
       >
         {#each item.variations as variation}

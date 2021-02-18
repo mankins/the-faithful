@@ -14,7 +14,24 @@
 
   const handleAddCart = (item) => {
     cartOpened = true;
-    items.push(item);
+    let found = false;
+    items.forEach((currentItem) => {
+      if (item.productId === currentItem.productId) {
+		  console.log(JSON.stringify({item, currentItem},null,2));
+        currentItem.quantity = currentItem.quantity + 1;
+        found = true;
+      }
+    });
+    if (!found) {
+      items.push(item);
+    }
+	try {
+      window &&
+        window.localStorage &&
+        window.localStorage.setItem('cart', JSON.stringify(items));
+      } catch (e) {}
+
+	items = items;
   };
 
   onMount(async () => {
@@ -36,7 +53,7 @@
             cartOpened = true;
             return;
           }
-          handleAddCart(getProduct('cinema-premiere'));
+          handleAddCart(getProduct('cinema-premiere', 'video:thefaithful:20210319:2000'));
         }}
         type="button"
         class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-faithful-600 shadow-sm hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
@@ -258,7 +275,7 @@
               <span class="text-base font-medium text-gray-500">/ticket</span>
             </p>
             <button
-              on:click={() => handleAddCart(getProduct('cinema-premiere'))}
+              on:click={() => handleAddCart(getProduct('cinema-premiere','video:thefaithful:20210319:2000'))}
               class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
               >Add Ticket</button
             >
@@ -382,7 +399,7 @@
               <span class="text-base font-medium text-gray-500">/ ticket</span>
             </p>
             <button
-              on:click={() => handleAddCart(getProduct('cinema-virtual'))}
+              on:click={() => handleAddCart(getProduct('cinema-virtual','video:thefaithful:20210320:2000'))}
               class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
               >Add Ticket</button
             >
@@ -484,14 +501,15 @@
               </h2>
               <p class="mt-4 text-sm text-gray-500">April 2021</p>
               <p class="mt-8">
-                <span class="text-4xl font-extrabold text-gray-900">$7.50</span>
+                <span class="text-4xl font-extrabold text-gray-900">$5.00</span>
                 <span class="text-base font-medium text-gray-500">/ stream</span
                 >
               </p>
-              <a
-                href="#"
+              <button
+			  on:click={() => handleAddCart(getProduct('cinema-stream','video:thefaithful:streaming'))}
+
                 class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
-                >Add Ticket</a
+                >Add Ticket</button
               >
             </div>
             <div class="pt-6 pb-8 px-6">

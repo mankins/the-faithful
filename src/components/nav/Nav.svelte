@@ -6,7 +6,7 @@
   export let user = {};
   export let loggedIn = false;
 
-  let section = 'home';
+  let section = 'other';
   let menuOpen = false;
 
   onMount(() => {
@@ -16,7 +16,9 @@
     if (window.location.href.indexOf('preview') !== -1) {
       section = 'watch';
     }
-
+    if (window.location.pathname === '/') {
+      section = 'home';
+    }
  //   console.log({ section });
   });
 </script>

@@ -1,3 +1,5 @@
+const get = require('lodash.get');
+
 // 19th - 3pm
 //      - 8pm
 // 20th - 3pm
@@ -5,7 +7,6 @@
 // 21st - 3pm
 //      - 8pm
 // 23rd -> 30th anytime
-
 
 const PRODUCTS = {
   'cinema-premiere': {
@@ -82,4 +83,39 @@ const getProduct = (type, variationId) => {
   return { ...product };
 };
 
-export { PRODUCTS, getProduct };
+const getProductDescription = (type, variationId) => {
+
+  let item = getProduct(type, variationId);
+
+  // look for variation description
+  let description = '';
+
+  let variations = get(item, 'variations', []);
+  variations.forEach((variation) => {
+    if (get(variation, 'id') === variationId) {
+      description = get(variation, 'description');
+    }
+  });
+
+  return `${description}`;
+};
+
+const getProductName = (type, variationId) => {
+
+  let item = getProduct(type, variationId);
+
+  // look for variation name
+  let name = '';
+
+  let variations = get(item, 'variations', []);
+  variations.forEach((variation) => {
+    if (get(variation, 'id') === variationId) {
+      name = get(variation, 'name');
+    }
+  });
+
+  return `${name}`;
+};
+
+// export { PRODUCTS, getProduct, getProductDescription, getProductName };
+module.exports = { PRODUCTS, getProduct, getProductDescription, getProductName };
