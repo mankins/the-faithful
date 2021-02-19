@@ -40,6 +40,7 @@
   let entitled = false;
 
   let captionsSrc = '/subtitles/faithful-trailer.mp4.vtt';
+  let goal = 'W6DQW4K3';
 
   let requiredEntitlement = `video:${videoId}:preview`; // 'video:thefaithful:20210320'; // 'video:thefaithful:20210320:2000' `video:${videoId}:preview`;
 
@@ -81,11 +82,6 @@
     console.log('------------------', { userProducts, requiredEntitlement });
     entitled = await productsEntitle(userProducts, requiredEntitlement);
     console.log({ entitled });
-
-    const goal = 'W6DQW4K3';
-    if (entitled) {
-      window.fathom.trackGoal(goal, 0);
-    }
   };
 
   onMount(async () => {
@@ -105,7 +101,7 @@
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   {#if loaded}
     {#if entitled}
-      <VideoPlayer {poster} {videoId} {captionsSrc} />
+      <VideoPlayer {poster} {videoId} {captionsSrc} {goal} />
       <Footer />
     {:else if user && user.email}
       <AccessDenied

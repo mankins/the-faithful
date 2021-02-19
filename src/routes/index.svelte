@@ -7,6 +7,7 @@
   import Visibility from '$components/Visibility.svelte';
   import Footer from '$components/nav/Footer.svelte';
   import Nav from '$components/nav/Nav.svelte';
+  import VideoPlayer from '$components/VideoPlayer.svelte';
 
   import Cart from '$components/cart/Cart.svelte';
   import { getProduct } from '$components/data.js';
@@ -164,8 +165,16 @@
 
 {#if loaded}
   <main class="pt-16 md:pt-1 lg:pt-8">
+    <section class="overflow-hidden sm:overflow-auto">
+      <VideoPlayer
+        poster="/img/trailer-cover-1b.jpg"
+        videoId="t2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE"
+        captionsSrc="/subtitles/faithful-trailer.mp4.vtt"
+        goal="W6DQW4K3"
+      />
+    </section>
     <section
-      class="pt-4 overflow-hidden sm:overflow-auto sm:pt-8 lg:relative lg:py-36"
+      class="pt-4 sm:pt-8 lg:relative lg:py-36"
     >
       <div
         class="sm:mx-auto sm:max-w-3xl sm:px-6 mr-48 ml-6 -mt-12 -mb-12 lg:-mb-24"
@@ -206,7 +215,7 @@
                 <div
                   class="rounded-full bg-faithful-800 px-2.5 py-1 text-xs font-semibold text-gray-50 tracking-wide uppercase"
                 >
-                  <span class="hidden sm:block">Coming March 2021</span>
+                  <span class="hidden sm:block">Coming March 18 2021</span>
                   <span class="block sm:hidden normal-case">March 2021</span>
                 </div>
               </div>
@@ -233,6 +242,7 @@
                 and Diana, Princess of Wales.
               </p>
             </div>
+            {#if false}
             <aside class="mt-12 sm:max-w-lg sm:w-full sm:flex">
               <div class="min-w-0 flex-1">
                 <label for="hero_email" class="sr-only">Email address</label>
@@ -252,6 +262,7 @@
                 >
               </div>
             </aside>
+            {/if}
           </div>
         </div>
       </div>
@@ -484,11 +495,6 @@
               >. Grant for the Web aims to boost open, fair, and inclusive
               standards and innovation in Web Monetization.
             </p>
-            <div class="mt-6 invisible">
-              <a href="#" class="text-base font-medium text-rose-500">
-                Meet our investors and advisors&nbsp&rarr;
-              </a>
-            </div>
           </aside>
           <div class="relative sm:py-16 lg:py-0">
             <div
@@ -564,10 +570,10 @@
               <h2
                 class="text-4xl font-serif font-extrabold text-black tracking-tight lg:text-6xl"
               >
-                Attend our world premiere event
+                Stay up to date
               </h2>
               <p class="mt-6 mx-auto max-w-2xl text-lg text-gray-700  ">
-                We'll notify you when our tickets come on sale with all the
+                We'll notify you when our tickets come on sale in your area as well as update you on
                 details about our virtual cinema release.
               </p>
             </div>
