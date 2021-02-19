@@ -18,7 +18,7 @@
 
         <div class="px-5 py-2">
             <a
-              href="mailto:annie@fishinhand.com?subject=press+the+faithful"
+              href="mailto:info@fishinhand.com?subject=press+the+faithful"
               target="_blank"
               class="text-base text-gray-400 hover:text-gray-300"
             >
@@ -28,7 +28,7 @@
   
         <div class="px-5 py-2">
           <a
-            href="mailto:annie@fishinhand.com"
+            href="mailto:info@fishinhand.com"
             target="_blank"
             class="text-base text-gray-400 hover:text-gray-300"
           >

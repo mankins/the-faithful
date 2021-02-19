@@ -13,7 +13,9 @@
   import LoginModal from '$components/LoginModal.svelte';
 
   import AccessDenied from '$components/AccessDenied.svelte';
+  import Processing from '$components/Processing.svelte';
   import VideoPlayer from '$components/VideoPlayer.svelte';
+
   import { onMount } from 'svelte';
   import { productsEntitle } from '$components/utils/entitles.js';
   import { baseProducts } from '$components/utils/auth.js';
@@ -39,9 +41,28 @@
 
   let captionsSrc = '/subtitles/faithful-trailer.mp4.vtt';
 
+  let requiredEntitlement = `video:${videoId}:preview`; // 'video:thefaithful:20210320'; // 'video:thefaithful:20210320:2000' `video:${videoId}:preview`;
+
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
     db = firebase.firestore();
+
+    const userProductsFn = firebase
+      .functions()
+      .httpsCallable('userEntitlements');
+    try {
+      const reply = await userProductsFn({});
+      const products = reply.data;
+      console.log({ products });
+      products.userProducts.forEach((product) => {
+        userProducts.push(`${product}`);
+      });
+      await checkEntitlement();
+    } catch (e) {
+      console.log(e);
+    }
+
+    loaded = true;
   };
 
   let handleLogin = async (profile) => {
@@ -56,18 +77,20 @@
     db = db || firebase.firestore();
   };
 
-  onMount(async () => {
-    console.log({ userProducts });
-    entitled = await productsEntitle(userProducts, `video:${videoId}:preview`);
+  const checkEntitlement = async () => {
+    console.log('------------------', { userProducts, requiredEntitlement });
+    entitled = await productsEntitle(userProducts, requiredEntitlement);
     console.log({ entitled });
-    loaded = true;
-
-    nextUrl = window.location.href;
 
     const goal = 'W6DQW4K3';
     if (entitled) {
       window.fathom.trackGoal(goal, 0);
     }
+  };
+
+  onMount(async () => {
+    nextUrl = window.location.href;
+    await checkEntitlement();
   });
 </script>
 
@@ -84,12 +107,14 @@
     {#if entitled}
       <VideoPlayer {poster} {videoId} {captionsSrc} />
       <Footer />
-      {:else}
-      {#if user && user.email}
-      <AccessDenied message={`Sorry you don't have access to this video as ${user.email}`} />
-      {:else}
-      <LoginModal nextUrl={nextUrl} />
-      {/if}
+    {:else if user && user.email}
+      <AccessDenied
+        message={`Sorry you don't have access to this video as ${user.email}`}
+      />
+    {:else}
+      <LoginModal {nextUrl} />
     {/if}
-    {/if}
+  {/if}
 </FirebaseProvider>
+
+<Processing processing={!loaded} />

@@ -58,7 +58,7 @@
     await import('firebase/functions');
     if (window && window.location.href.indexOf('localhost') !== -1) {
       // dev mode
-      firebase.functions().useEmulator('localhost', 5001);
+      firebase.functions().useEmulator('localhost', 15001);
     }
 
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
