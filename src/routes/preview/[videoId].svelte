@@ -10,6 +10,7 @@
 
   // import Toast from '$components/Toast.svelte';
   import Footer from '$components/nav/Footer.svelte';
+  import LoginModal from '$components/LoginModal.svelte';
 
   import AccessDenied from '$components/AccessDenied.svelte';
   import VideoPlayer from '$components/VideoPlayer.svelte';
@@ -22,6 +23,7 @@
   let loaded = false;
   let user = {};
   let userProducts = [...baseProducts]; // these are the products that the user has
+  let nextUrl = '/';
   // f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE vs t2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE
 
   // require logged in user
@@ -60,6 +62,8 @@
     console.log({ entitled });
     loaded = true;
 
+    nextUrl = window.location.href;
+
     const goal = 'W6DQW4K3';
     if (entitled) {
       window.fathom.trackGoal(goal, 0);
@@ -79,9 +83,13 @@
   {#if loaded}
     {#if entitled}
       <VideoPlayer {poster} {videoId} {captionsSrc} />
-    {:else}
-      <AccessDenied message="Sorry you don't have access to this video." />
+      <Footer />
+      {:else}
+      {#if user && user.email}
+      <AccessDenied message={`Sorry you don't have access to this video as ${user.email}`} />
+      {:else}
+      <LoginModal nextUrl={nextUrl} />
+      {/if}
     {/if}
-    <Footer />
     {/if}
 </FirebaseProvider>

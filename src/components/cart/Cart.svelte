@@ -1,7 +1,7 @@
 <script>
   import TinyGesture from 'tinygesture';
 
-  import { createEventDispatcher, onMount, setContext } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import Item from '$components/cart/Item.svelte';
 
@@ -17,7 +17,7 @@
 
   let loaded = false;
   let checkingOut = false;
-
+   
   let saveItems = () => {
     console.log('default');
   };
@@ -205,7 +205,7 @@
                     on:click={() => {
                       handleCheckout();
                     }}
-                    disabled={items.length === 0 || checkingOut}
+                    disabled={items.length === 0 || checkingOut || !loaded}
                     class="inline-flex justify-center w-full py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-900 disabled:opacity-50"
                   >
                     Checkout
