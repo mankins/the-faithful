@@ -66,7 +66,7 @@
               cartOpened = true;
               return;
             }
-            handleAddCart(getProduct('cinema-premiere', 'video:thefaithful:20210319:2000'));
+            handleAddCart(getProduct('cinema-premiere', 'video:thefaithful:20210319:1900'));
           }}
           type="button"
           class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-faithful-600 shadow-sm hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
@@ -122,11 +122,11 @@
           {/if}
 
           {#if focusType.includes('opening')}
-          <Opening action={() => handleAddCart(getProduct('cinema-premiere','video:thefaithful:20210319:2000'))} />
+          <Opening action={() => handleAddCart(getProduct('cinema-premiere','video:thefaithful:20210319:1900'))} />
           {/if}
 
           {#if focusType.includes('virtual')}
-          <Virtual action={() => handleAddCart(getProduct('cinema-virtual','video:thefaithful:20210320:2000'))} />
+          <Virtual action={() => handleAddCart(getProduct('cinema-virtual','video:thefaithful:20210320:1900'))} />
           {/if}
 
           {#if focusType.includes('stream')}
