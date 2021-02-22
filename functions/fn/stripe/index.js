@@ -10,10 +10,7 @@ const { formatCurrency } = require('../../lib/i18n');
 const { shortId } = require('../../lib/short-uuid');
 const admin = require('../../lib/firebase');
 
-const {
-  getProductName,
-  getProductDescription,
-} = require('../../lib/data');
+const { getProductName, getProductDescription } = require('../../lib/data');
 
 const secrets = getSecrets('the-faithful');
 
@@ -205,6 +202,7 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
     // write to firebase?
 
     const total = formatCurrency(session.amount_total, session.currency);
+    const amount_decimal = parseInt(session.amount_total, 10) / 100;
 
     const receipt = {};
     receipt.id = shortId();
@@ -231,6 +229,7 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
 
     const output = {
       amount: session.amount_total,
+      amount_decimal,
       currency: session.currency,
       total,
       products,

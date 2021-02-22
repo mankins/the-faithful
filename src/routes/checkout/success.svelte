@@ -57,11 +57,15 @@
 
         if (session.livemode && session.amount && session.currency === 'usd') {
           window.fathom.trackGoal('YJQPVOAW', session.amount || 0);
+          window.fbq('track', 'Purchase', {
+            currency: session.currency.toUpperCase(),
+            value: parseFloat(session.amount_decimal),
+          });
         }
         processing = false;
-    } catch (e) {
+      } catch (e) {
         window.pushToast(`Error completing transaction. ${e.message}`, 'alert');
-        waiter = `Bummer: error completing your request. [${e.message}] Email support?`;        
+        waiter = `Bummer: error completing your request. [${e.message}] Email support?`;
       }
 
       clearInterval(waitTimer);
@@ -109,7 +113,10 @@
 <Footer />
 
 {#if processing}
-  <div transition:fade={{ duration: 250 }} class="fixed z-10 inset-0 overflow-y-auto">
+  <div
+    transition:fade={{ duration: 250 }}
+    class="fixed z-10 inset-0 overflow-y-auto"
+  >
     <div
       class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
     >
