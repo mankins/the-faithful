@@ -1,9 +1,9 @@
 <script>
-  import { createEventDispatcher, onMount, setContext } from "svelte";
+  import { createEventDispatcher, onMount, setContext } from 'svelte';
 
-  import firebase from "firebase/app";
-  import "firebase/auth";
-  import "firebase/firestore";
+  import firebase from 'firebase/app';
+  import 'firebase/auth';
+  import 'firebase/firestore';
 
   export let logout = false;
 
@@ -13,55 +13,56 @@
 
   onMount(async () => {
     const firebaseConfig = {
-      apiKey: "AIzaSyC75bagJGvDb5_2FJOT1yE2RV-97FGvYVs",
-      authDomain: "the-faithful.firebaseapp.com",
-      projectId: "the-faithful",
-      storageBucket: "the-faithful.appspot.com",
-      messagingSenderId: "505590894387",
-      appId: "1:505590894387:web:a97bd5deb4356a5ce569c3",
-      databaseURL: "https://the-faithful.firebaseio.com",
+      apiKey: 'AIzaSyC75bagJGvDb5_2FJOT1yE2RV-97FGvYVs',
+      authDomain: 'the-faithful.firebaseapp.com',
+      projectId: 'the-faithful',
+      storageBucket: 'the-faithful.appspot.com',
+      messagingSenderId: '505590894387',
+      appId: '1:505590894387:web:a97bd5deb4356a5ce569c3',
+      databaseURL: 'https://the-faithful.firebaseio.com',
       //    measurementId: "G-3DLYVQYGW1",
     };
+
     if (firebase.apps.length === 0) {
       await firebase.initializeApp(firebaseConfig);
-      //      firebase.functions();
-      dispatch("init", { firebase });
-    }
-    await import("firebase/functions");
-    if (window && window.location.href.indexOf("localhost") !== -1) {
-      // dev mode
-      firebase.functions().useEmulator("localhost", 5001);
+      await import('firebase/functions');
+      if (window && window.location.href.indexOf('localhost') !== -1) {
+        // dev mode
+        firebase.functions().useEmulator('localhost', 15001);
+      }
+
+      dispatch('init', { firebase });
     }
 
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
         // User is signed in.
-        console.log({ user }, "aaa");
+        console.log({ user }, 'aaa');
         if (user && !user.isAnonymous) {
-          dispatch("auth-success", { user, firebase });
+          dispatch('auth-success', { user, firebase });
         } else {
-          dispatch("auth-success-anonymous", { user, firebase });
+          dispatch('auth-success-anonymous', { user, firebase });
         }
       } else {
-        console.log("auth-failure");
+        console.log('auth-failure');
         firebase
           .auth()
           .signInAnonymously()
           .then(() => {
             // Signed in..
-            dispatch("auth-success-anonymous", { user, firebase });
-            console.log("signed in anonymously");
+            dispatch('auth-success-anonymous', { user, firebase });
+            console.log('signed in anonymously');
           })
           .catch((error) => {
             console.error({ error });
-            dispatch("auth-failure", { firebase, error });
+            dispatch('auth-failure', { firebase, error });
           });
       }
     });
     actions.forgotPassword = async (email) => {
       if (!email) {
-        window.pushToast("Please fill out your email first.", "alert");
+        window.pushToast('Please fill out your email first.', 'alert');
         return;
       }
 
@@ -71,18 +72,43 @@
         .then(function () {
           // Email sent.
           window.pushToast(
-            "Ok, check your email for your forgot password link.",
-            "info"
+            'Ok, check your email for your forgot password link.',
+            'info'
           );
         })
         .catch(function (error) {
           // An error happened.
-          window.pushToast(`Unable to reset email. ${error.message}`, "alert");
+          window.pushToast(`Unable to reset email. ${error.message}`, 'alert');
+        });
+    };
+    actions.clickMagicLinkSignin = async (email, onAuth = '/') => {
+      const actionCodeSettings = {
+        url: `${window.location.origin}/magic?next=${encodeURIComponent(
+          onAuth
+        )}`,
+        handleCodeInApp: true,
+      };
+
+      return firebase
+        .auth()
+        .sendSignInLinkToEmail(email, actionCodeSettings)
+        .then(() => {
+          // The link was successfully sent. Inform the user.
+          // Save the email locally so you don't need to ask the user for it again
+          // if they open the link on the same device.
+          window.localStorage.setItem('emailForSignIn', email);
+          window.pushToast(
+            `Email sent. Click on the link in your email to login.`,
+            'success'
+          );
+        })
+        .catch((error) => {
+          window.pushToast(`Unable to send email. ${error.message}`, 'alert');
         });
     };
     actions.clickUserPassSignup = async (email, password) => {
       if (!(email && password)) {
-        window.pushToast("Email and password required", "alert");
+        window.pushToast('Email and password required', 'alert');
         return false;
       }
 
@@ -93,11 +119,11 @@
           email,
           password
         );
-        console.log("Account signup success", usercred.user);
-        return actions.loginAction(usercred, "password");
+        console.log('Account signup success', usercred.user);
+        return actions.loginAction(usercred, 'password');
       } catch (e) {
-        console.log("error linking", e);
-        if (e.code === "auth/email-already-in-use") {
+        console.log('error linking', e);
+        if (e.code === 'auth/email-already-in-use') {
           return actions.clickUserPassSignin(email, password);
           // window.pushToast(
           //   "Email already in use. Try a different way to authenticate.",
@@ -105,7 +131,7 @@
           // );
         } else {
           // auth/invalid-email
-          window.pushToast(`Error: ${e.message}`, "alert");
+          window.pushToast(`Error: ${e.message}`, 'alert');
         }
       }
 
@@ -115,7 +141,7 @@
     actions.clickUserPassSignin = async (email, password) => {
       console.log({ email, password });
       if (!(email && password)) {
-        window.pushToast("Email and password required", "alert");
+        window.pushToast('Email and password required', 'alert');
         return false;
       }
 
@@ -129,18 +155,18 @@
 
       try {
         const usercred = await auth.signInWithEmailAndPassword(email, password);
-        console.log("Account signin success", usercred.user);
-        return actions.loginAction(usercred, "password");
+        console.log('Account signin success', usercred.user);
+        return actions.loginAction(usercred, 'password');
       } catch (e) {
-        console.log("error linking", e);
-        if (e.code === "auth/email-already-in-use") {
+        console.log('error linking', e);
+        if (e.code === 'auth/email-already-in-use') {
           window.pushToast(
-            "Email already in use. Try a different way to authenticate.",
-            "alert"
+            'Email already in use. Try a different way to authenticate.',
+            'alert'
           );
         } else {
           // auth/invalid-email
-          window.pushToast(`Error: ${e.message}`, "alert");
+          window.pushToast(`Error: ${e.message}`, 'alert');
         }
       }
 
@@ -149,11 +175,10 @@
 
     actions.loginAction = async (result, providerId) => {
       const user = JSON.parse(JSON.stringify(result.user));
-console.log({user});
       // check if we know about this user already, if not, add user details
       const db = firebase.firestore();
       console.log(JSON.stringify(user, null, 2));
-      const docRef = db.collection("users").doc(user.uid);
+      const docRef = db.collection('users').doc(user.uid);
       const doc = await docRef.get();
       if (!doc.exists) {
         await db.doc(`users/${user.uid}`).set({
@@ -181,7 +206,7 @@ console.log({user});
         await db.doc(`users/${user.uid}`).update(newDoc);
       }
 
-      dispatch("auth-success-action", {
+      dispatch('auth-success-action', {
         user,
         provider: providerId,
       });
@@ -195,37 +220,43 @@ console.log({user});
           return actions.loginAction(result, providerId);
         })
         .catch((error) => {
-          if (error.code === "auth/account-exists-with-different-credential") {
+          if (error.code === 'auth/account-exists-with-different-credential') {
             window.pushToast(
-              "Email already in use. Try a different way to authenticate.",
-              "alert"
+              'Email already in use. Try a different way to authenticate.',
+              'alert'
             );
           } else {
-            console.log(error, "auth");
-            if (error.code !== "auth/popup-closed-by-user") {
-              window.pushToast(`Error logging in: ${error.message}`, "alert");
-              dispatch("auth-failure", { error });
+            console.log(error, 'auth');
+            if (error.code !== 'auth/popup-closed-by-user') {
+              window.pushToast(`Error logging in: ${error.message}`, 'alert');
+              dispatch('auth-failure', { error });
             }
           }
         });
     };
 
     actions.clickGoogleSignin = async () => {
-      console.log("goog signin");
+      console.log('goog signin');
       const provider = new firebase.auth.GoogleAuthProvider();
-      await actions.doLogin(provider, "google");
+      await actions.doLogin(provider, 'google');
     };
 
     actions.clickTwitterSignin = async () => {
-      console.log("twitter signin");
+      console.log('twitter signin');
       const provider = new firebase.auth.TwitterAuthProvider();
-      await actions.doLogin(provider, "twitter");
+      await actions.doLogin(provider, 'twitter');
     };
 
     actions.clickFacebookSignin = async () => {
-      console.log("fb signin");
+      console.log('fb signin');
       const provider = new firebase.auth.FacebookAuthProvider();
-      await actions.doLogin(provider, "facebook");
+      await actions.doLogin(provider, 'facebook');
+    };
+
+    actions.clickCoilSignin = async () => {
+      console.log('coil signin');
+      // const provider = new firebase.auth.FacebookAuthProvider();
+      // await actions.doLogin(provider, "facebook");
     };
 
     // dispatch any params
@@ -234,11 +265,11 @@ console.log({user});
         .auth()
         .signOut()
         .then(function () {
-          dispatch("auth-logout-success", true);
+          dispatch('auth-logout-success', true);
         })
         .catch((e) => {
           console.error(e);
-          dispatch("auth-logout-success", false);
+          dispatch('auth-logout-success', false);
         });
     }
   });

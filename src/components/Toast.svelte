@@ -9,7 +9,9 @@
   export let initial = { msg: "", type: "success", dismiss: () => {} };
 
   let toastId = 0;
-  const pushToast = (msg = "", type = "success", dismiss = () => {}) => {
+  const pushToast = (msg = "", type = "success", dismiss = (t) => {
+    toasts = toasts.filter((toast, i) => t._id != toast._id);
+  }) => {
     toasts = [
       ...toasts,
       {
@@ -68,6 +70,8 @@
           <div class="ml-auto pl-3">
             <div class="-mx-1.5 -my-1.5">
               <button
+              on:click={() => {toast.dismiss(toast)}}
+
                 class="inline-flex bg-green-50 rounded-md p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600">
                 <span class="sr-only">Dismiss</span>
                 <!-- Heroicon name: x -->
@@ -102,6 +106,7 @@
           <div class="ml-auto pl-3">
             <div class="-mx-1.5 -my-1.5">
               <button
+              on:click={() => {toast.dismiss(toast)}}
                 class="inline-flex bg-gray-50 rounded-md p-1.5 text-gray-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-red-50 focus:ring-red-600">
                 <span class="sr-only">Dismiss</span>
                 <!-- Heroicon name: x -->
@@ -137,6 +142,8 @@
       <div class="ml-auto pl-3">
         <div class="-mx-1.5 -my-1.5">
           <button
+          on:click={() => {toast.dismiss(toast)}}
+
             class="inline-flex bg-blue-50 rounded-md p-1.5 text-blue-500 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-50 focus:ring-blue-600">
             <span class="sr-only">Dismiss</span>
             <!-- Heroicon name: x -->

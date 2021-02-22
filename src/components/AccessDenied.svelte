@@ -31,7 +31,9 @@
                 {message}
               </h3>
               <div class="mt-2">
-                <p class="text-sm text-gray-500" />
+                <p class="text-sm text-gray-500">
+                  <a href="/login">Login again</a>
+                  </p>
               </div>
             </div>
           {:else}

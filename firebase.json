@@ -35,9 +35,6 @@
     "hosting": {
       "port": 15000
     },
-    "pubsub": {
-      "port": 18081
-    },
     "ui": {
       "enabled": true
     }

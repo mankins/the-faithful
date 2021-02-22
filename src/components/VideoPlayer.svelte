@@ -10,6 +10,8 @@ import Hls from 'hls.js';
   export let videoId = 't2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE'; // 'f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE';
   export let captionsSrc = '/subtitles/faithful-trailer.mp4.vtt';
 
+  export let goal;
+
   let previewThumbnails = {
     enabled: true,
     src: `https://image.mux.com/${videoId}/storyboard.vtt`,
@@ -25,6 +27,12 @@ import Hls from 'hls.js';
       previewThumbnails,
     });
     window.player = window.player || player; // debugging
+
+    player.on('play', () => {
+      if (goal) {
+        window.fathom.trackGoal(goal, 0);
+      }
+    });
 
     const video = document.querySelector('video');
 
@@ -46,7 +54,7 @@ import Hls from 'hls.js';
 <svelte:head>
 </svelte:head>
 
-<div class="flex flex-col h-screen bg-black">
+<div class="flex flex-col max-h-screen bg-black">
   <!-- svelte-ignore a11y-media-has-caption -->
   <video controls id="video-player" {poster}>
     {#if captionsSrc}
