@@ -39,15 +39,9 @@
   });
 
   const icons = [
-    '/img/elvis-1',
-    '/img/elvis-2',
-    '/img/elvis-3',
-    '/img/pope-1',
-    '/img/pope-2',
-    '/img/pope-3',
-    '/img/diana-1',
-    '/img/diana-2',
-    '/img/diana-3',
+    '/img/elvis-illustrated',
+    '/img/pope-illustrated',
+    '/img/diana-illustrated',
   ];
   let hero = Math.floor(Math.random() * icons.length);
   let email = '';
