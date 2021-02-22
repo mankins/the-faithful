@@ -26,7 +26,7 @@ import Arrow from '../../components/nav/Arrow.svelte';
       <div class="w-5/6 md:w-4/6 ml-0 mt-8 mb-8">
         <p class="text-justify text-gray-600">
             Let us know if you're having problems.
-            <a class="underline text-gray-500" href="mailto:annie@fishinhand.com">Contact us</a>.
+            <a class="underline text-gray-500" href="mailto:info@fishinhand.com">Contact us</a>.
         </p>
       </div>
     </div>
