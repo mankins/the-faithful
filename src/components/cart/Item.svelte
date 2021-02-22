@@ -35,10 +35,10 @@
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <picture>
-                <source type="image/webp" srcset="/img/diana-3.webp" />
+                <source type="image/webp" srcset="/img/pope-illustrated.webp" />
                 <img
                   class="h-16 w-16 sm:h-24 sm:w-24 rounded-full border bg-gray-100 shadow-xl"
-                  src="/img/diana-3.jpg"
+                  src="/img/pope-illustrated.jpg"
                   alt="Ticket"
                 />
               </picture>
