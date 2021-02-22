@@ -6,7 +6,7 @@ class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-w
 >
 <div class="p-6">
   <h2 class="text-lg leading-6 font-medium text-gray-900">
-    Cinema Premiere
+    Virtual Premiere Opening
   </h2>
   <p class="mt-4 text-sm text-gray-500">March 19, 2021</p>
   <p class="mt-8">

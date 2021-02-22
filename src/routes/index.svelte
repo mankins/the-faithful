@@ -165,6 +165,7 @@
 
 {#if loaded}
   <main class="pt-16 md:pt-1 lg:pt-8">
+    {#if false}
     <section class="overflow-hidden sm:overflow-auto">
       <VideoPlayer
         poster="/img/trailer-cover-1b.jpg"
@@ -173,6 +174,7 @@
         goal="W6DQW4K3"
       />
     </section>
+    {/if}
     <section
       class="pt-4 sm:pt-8 lg:relative lg:py-36"
     >

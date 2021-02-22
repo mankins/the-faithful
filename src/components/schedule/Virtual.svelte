@@ -7,7 +7,7 @@ class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-w
 >
 <div class="p-6">
   <h2 class="text-lg leading-6 font-medium text-gray-900">
-    Virtual Viewing Event
+    Virtual Premiere Weekend
   </h2>
   <p class="mt-4 text-sm text-gray-500">March 20-22, 2021</p>
   <p class="mt-8">
