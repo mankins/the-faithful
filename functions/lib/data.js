@@ -1,28 +1,28 @@
 const get = require('lodash.get');
 
-// 19th - 3pm
-//      - 8pm
-// 20th - 3pm
-//      - 8pm
-// 21st - 3pm
-//      - 8pm
+// 19th - 2pm
+//      - 7pm
+// 20th - 2pm
+//      - 7pm
+// 21st - 2pm
+//      - 7pm
 // 23rd -> 30th anytime
 
 const PRODUCTS = {
   'cinema-premiere': {
     product: 'cinema-premiere',
-    productTitle: 'Cinema Premiere - The Faithful',
+    productTitle: 'Virtual Premiere Opening - The Faithful',
     quantity: 1,
-    productId: 'video:thefaithful:20210319:2000',
+    productId: 'video:thefaithful:20210319:1900',
     variations: [
       {
-        id: 'video:thefaithful:20210319:1500',
-        name: 'Cinema Premiere - The Faithful',
+        id: 'video:thefaithful:20210319:1400',
+        name: 'Virtual Premiere Opening - The Faithful',
         description: 'March 19, 2021 at 3:00pm',
       },
       {
-        id: 'video:thefaithful:20210319:2000',
-        name: 'Cinema Premiere - The Faithful',
+        id: 'video:thefaithful:20210319:1900',
+        name: 'Virtual Premiere Opening - The Faithful',
         description: 'March 19, 2021 at 8:00pm',
       },
     ],
@@ -30,28 +30,28 @@ const PRODUCTS = {
   },
   'cinema-virtual': {
     product: 'cinema-virtual',
-    productId: 'video:thefaithful:20210320:2000',
-    productTitle: 'Virtual Viewing - The Faithful',
+    productId: 'video:thefaithful:20210320:1900',
+    productTitle: 'Virtual Premiere Weekend - The Faithful',
     quantity: 1,
     variations: [
       {
-        id: 'video:thefaithful:20210320:1500',
-        name: 'Virtual Viewing - The Faithful',
+        id: 'video:thefaithful:20210320:1400',
+        name: 'Virtual Premiere Weekend - The Faithful',
         description: 'March 20, 2021 at 3:00pm',
       },
       {
-        id: 'video:thefaithful:20210320:2000',
-        name: 'Virtual Viewing - The Faithful',
+        id: 'video:thefaithful:20210320:1900',
+        name: 'Virtual Premiere Weekend - The Faithful',
         description: 'March 20, 2021 at 8:00pm',
       },
       {
-        id: 'video:thefaithful:20210321:1500',
-        name: 'Virtual Viewing - The Faithful',
+        id: 'video:thefaithful:20210321:1400',
+        name: 'Virtual Premiere Weekend - The Faithful',
         description: 'March 21, 2021 at 3:00pm',
       },
       {
-        id: 'video:thefaithful:20210321:2000',
-        name: 'Virtual Viewing - The Faithful',
+        id: 'video:thefaithful:20210321:1900',
+        name: 'Virtual Premiere Weekend - The Faithful',
         description: 'March 21, 2021 at 8:00pm',
       },
     ],
@@ -65,7 +65,7 @@ const PRODUCTS = {
     variations: [
       {
         id: 'video:thefaithful:streaming',
-        name: 'Steaming Access - The Faithful',
+        name: 'Streaming Access - The Faithful',
         description: 'March 23 to April 30, 2021',
       }
     ],
