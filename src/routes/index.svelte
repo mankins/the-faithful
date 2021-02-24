@@ -159,13 +159,13 @@
 
 {#if loaded}
   <main class="pt-16 md:pt-1 lg:pt-8">
-    {#if false}
+    {#if true}
     <section class="overflow-hidden sm:overflow-auto">
       <VideoPlayer
         poster="/img/trailer-cover-1b.jpg"
-        videoId="t2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE"
+        videoId="pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ"
         captionsSrc="/subtitles/faithful-trailer.mp4.vtt"
-        goal="W6DQW4K3"
+        goals={["W6DQW4K3","KSRPXNHI","FUAW823F","B0OYRVAC"]}
       />
     </section>
     {/if}
