@@ -9,6 +9,8 @@
 
   const dispatch = createEventDispatcher();
 
+  import Oidc from 'oidc-client';
+
   export const actions = {};
 
   onMount(async () => {
@@ -254,7 +256,19 @@
     };
 
     actions.clickCoilSignin = async () => {
-      console.log('coil signin');
+      console.log('coil signin!');
+
+      const config = {
+        authority:
+          'https://coil.com/',
+        client_id: '7d90b18a-2c64-4769-8ecf-63d1101f6e45',
+        redirect_uri: `${window.location.origin}/oauth/authorize`,
+        response_type: 'code',
+        scope: 'openid email simple_wm',
+      };
+
+      const mgr = new Oidc.UserManager(config);
+      mgr.signinRedirect();
       // const provider = new firebase.auth.FacebookAuthProvider();
       // await actions.doLogin(provider, "facebook");
     };

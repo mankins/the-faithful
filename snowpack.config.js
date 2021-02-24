@@ -13,9 +13,9 @@ const preprocess = sveltePreprocess({
 console.log(...Object.keys(pkg.dependencies || {}));
 module.exports = {
 //  extends: "@sveltejs/snowpack-config",
-  optimize: {
-    treeshake: true
-  },
+  // optimize: {
+  //   treeshake: true
+  // },
   packageOptions: {
     // ignore `import fs from 'fs'` etc
     // externalPackage: require("module").builtinModules,
@@ -23,7 +23,7 @@ module.exports = {
     knownEntrypoints: ["svelte"],
     external: [
       ...require("module").builtinModules.filter((m) => m !== "process"),
-//      ...Object.keys(pkg.dependencies || {})
+     ...Object.keys(pkg.dependencies || {})
     ],
     //    packageLookupFields: ["main", "svelte","module"],
   },
