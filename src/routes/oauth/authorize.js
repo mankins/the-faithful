@@ -5,7 +5,7 @@ const coilClientId = process.env.COIL_CLIENT_ID;
 const coilClientSecret = process.env.COIL_CLIENT_SECRET;
 
 const oauthLeg2 = async ({ url, code, redirectUri }) => {
-  const b64Auth = btoa(`${coilClientId}:${coilClientSecret}`);
+  const b64Auth = btoa(`${coilClientId.replace('+','%2b')}:${coilClientSecret.replace('+','%2b')}`);
 
   let data;
   try {
@@ -14,18 +14,25 @@ const oauthLeg2 = async ({ url, code, redirectUri }) => {
       Authorization: `Basic ${b64Auth}`,
     };
 
-      const formData = `client_id=${encodeURIComponent(coilClientId)}&client_secret=${encodeURIComponent(coilClientSecret)}&grant_type=authorization_code&redirect_uri=${encodeURIComponent(
-      redirectUri
-    )}&code=${encodeURIComponent(code)}&client_assertion_type=client_secret_post`;
+      const formData = `code=${encodeURIComponent(code)}&grant_type=authorization_code&redirect_uri=${encodeURIComponent(redirectUri)}`;
 
+    //   const input = {};
+    //   input.grant_type = 'authorization_code';
+    //   input.redirect_uri = redirectUri;
+    //   input.code = code;
+
+    //   headers['Content-type'] = 'application/json';
+      
       const request = {
           body: formData,
           method: 'POST',
           headers,
       };
+    //   return request;
       console.log({ request });
       const response = await fetch(url, request);
-    data = await response.json();
+      data = await response.text();
+      console.log('ok');
   } catch (error) {
     console.log('err', error);
     data = error;
@@ -56,7 +63,7 @@ export async function get(req, res, next) {
   const body = await oauthLeg2({
     code: query.code,
     url: 'https://coil.com/oauth/token',
-    redirectUri: 'http://localhost:5000/oauth/callback',
+    redirectUri: 'http://localhost:5000/oauth/authorize',
   });
 
   return Promise.resolve({
@@ -65,7 +72,7 @@ export async function get(req, res, next) {
       'content-type': 'text/plain',
       'cache-control': 'no-cache; max-age=0',
     },
-    body,
+    body: JSON.stringify({ body, query }),
   });
 }
 
