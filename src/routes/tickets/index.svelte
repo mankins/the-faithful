@@ -126,7 +126,7 @@
     <h1
       class="pt-24 text-4xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-6xl"
     >
-      Schedule
+      Tickets
     </h1>
 
     <div class="w-5/6 md:w-4/6">
