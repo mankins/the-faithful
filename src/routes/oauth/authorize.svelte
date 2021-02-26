@@ -3,6 +3,8 @@
 
   import AccessDenied from '$components/AccessDenied.svelte';
   import Processing from '$components/Processing.svelte';
+  import { getCookies } from '$components/utils/cookies';
+  import { parseParams } from '$components/utils/query';
 
   import { onMount } from 'svelte';
 
@@ -26,11 +28,14 @@
     try {
       const reply = await oauthAuthorize({ query, cookies });
       const authResponse = reply.data;
-      // console.log({ authResponse });
-
+ 
       if (authResponse && authResponse.firebaseToken) {
         const userCredential = await firebase.auth().signInWithCustomToken(authResponse.firebaseToken);
         console.log({userCredential});
+      }
+      if (authResponse && authResponse.btpToken) {
+         document.cookie = `_coil_btp=${authResponse.btpToken}; path=/`; // session
+         document.cookie = '_oauth_state=; path=/; maxAge=-1';
       }
 
     } catch (e) {
@@ -40,29 +45,6 @@
 
     loaded = true;
     window.location.href = '/';
-  };
-
-  const parseParams = (querystring) => {
-    // parse query string
-    const params = new URLSearchParams(querystring);
-
-    const obj = {};
-
-    // iterate over all keys
-    for (const key of params.keys()) {
-      if (params.getAll(key).length > 1) {
-        obj[key] = params.getAll(key);
-      } else {
-        obj[key] = params.get(key);
-      }
-    }
-    return obj;
-  };
-  const getCookies = (req) => {
-    return req.split(';').reduce((res, item) => {
-      const data = item.trim().split('=');
-      return { ...res, [data[0]]: data[1] };
-    }, {});
   };
 
   onMount(async () => {

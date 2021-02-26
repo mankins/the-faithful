@@ -32,6 +32,28 @@ const getCoilUser = async ({
   return data;
 };
 
+const getCoilBtp = async ({
+    access_token,
+    url = 'https://api.coil.com/user/btp',
+  }) => {
+    let data;
+    const headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${access_token}`,
+    };
+  
+    const request = {
+      method: 'POST',
+      headers,
+    };
+  
+    const response = await fetch(url, request);
+    data = await response.json();
+  
+    console.log({ btp: data });
+    return data;
+  };
+  
 const oauthLeg2 = async ({
   config,
   url = 'https://coil.com/oauth/token',
@@ -95,7 +117,8 @@ exports.oauthAuthorize = functions.https.onCall(async (data, context) => {
 
   let coilUser = {};
   let firebaseToken = {};
-  let coilResponse = {};
+    let coilResponse = {};
+    let coilBtp = {};
   try {
     coilResponse = await oauthLeg2({
       config,
@@ -103,9 +126,10 @@ exports.oauthAuthorize = functions.https.onCall(async (data, context) => {
     });
 
     // and then get the user info
-    console.log({ coilResponse });
-    coilUser = await getCoilUser(coilResponse); // {email, sub}
+      console.log({ coilResponse });
 
+      [coilBtp, coilUser] = await Promise.all([getCoilBtp(coilResponse), getCoilUser(coilResponse)]);
+      
     // create a firebase token / associate with user
       if (coilUser.sub) {
           try {
@@ -130,7 +154,18 @@ exports.oauthAuthorize = functions.https.onCall(async (data, context) => {
                   throw ee;
               }
           }
-          firebaseToken = await admin.auth().createCustomToken(coilUser.sub);          
+          firebaseToken = await admin.auth().createCustomToken(coilUser.sub);
+          
+          const db = admin.firestore();
+          try {
+            await db
+              .doc(`email/${coilUser.email}/coil/tokens`)
+              .set({ ...coilUser, ...coilResponse });
+          } catch (eee) {              
+            throw new functions.https.HttpsError('internal', `Coil Store ${eee.message}`, {
+              error: 'email store error',
+            });
+          }      
     }
     // now take the token and store it in firebase user doc
   } catch (e) {
@@ -167,5 +202,9 @@ exports.oauthAuthorize = functions.https.onCall(async (data, context) => {
     );
   }
 
-  return { firebaseToken, coilUser, coilResponse };
+  return { firebaseToken, ...coilBtp };
+});
+
+exports.coilBtp = functions.https.onCall(async (data, context) => {
+
 });
