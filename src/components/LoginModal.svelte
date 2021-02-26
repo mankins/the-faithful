@@ -90,10 +90,10 @@
             <div>
                 <button
                   on:click={() => authActions.clickCoilSignin()}
-                  class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none"
                 >
                   <span class="sr-only">Sign in with Coil</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="h-5 w-5"
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="h-5 w-5 mr-2"
                     ><defs
                       ><style>
                         .cls-1 {
@@ -109,10 +109,12 @@
                         ><circle cx="24" cy="24" r="24" /><path
                           class="cls-1"
                           d="M31.27,29.43c.65,0,1.49.33,2.07,1.72a1.46,1.46,0,0,1,.14.6c0,2.29-5.34,4.36-8.44,4.52l-.7,0A12.76,12.76,0,0,1,13.24,30a11.8,11.8,0,0,1-1.54-5.88,12.17,12.17,0,0,1,2.07-6.78,12.39,12.39,0,0,1,6.77-5,14.59,14.59,0,0,1,4.39-.71,9.12,9.12,0,0,1,5.51,1.66c2.43,1.77,2.93,3.71,2.93,5a3.69,3.69,0,0,1-.17,1.2,5.54,5.54,0,0,1-4.61,3.81,11.35,11.35,0,0,1-1.31.11c-2,0-2.66-.82-2.66-1.74,0-1.25,1.2-2.73,2.07-2.73a.56.56,0,0,1,.31.09,1.52,1.52,0,0,0,.75.19.53.53,0,0,0,.22,0A1.1,1.1,0,0,0,29,18.1C29,17,27.75,15.6,25,15.6a10.57,10.57,0,0,0-3.1.49,8.24,8.24,0,0,0-4.53,3.51A8,8,0,0,0,16,24.1,7.89,7.89,0,0,0,17,28a8.47,8.47,0,0,0,7.38,4.12h.48c4-.22,4.92-2.18,5.81-2.56A3.06,3.06,0,0,1,31.27,29.43Z"
-                        /></g
+                        />
+                        </g
                       ></g
-                    ></svg
-                  >
+                    >
+                    </svg
+                  > Sign in with Coil
                 </button>
               </div>
 

@@ -1,6 +1,12 @@
 <script>
   import { fade } from "svelte/transition";
 
+  import md5 from 'md5';
+
+const gravatar = (em) => {
+  return `https://www.gravatar.com/avatar/${md5(em.toLowerCase())}?d=mp`;
+}
+
 export let user = {};
   let ui = {
     userMenuOpen: false,
@@ -23,10 +29,10 @@ export let user = {};
           aria-haspopup="true"
           aria-expanded="true">
           <span class="sr-only">Open user menu</span>
-          {#if user.photoURL}
+          {#if true || user.photoURL}
             <img
               class="inline-block h-8 w-8 rounded-full"
-              src={user.photoURL}
+              src={gravatar(user.email)}
               alt="" />
           {:else}
             <svg
@@ -55,18 +61,6 @@ export let user = {};
         role="menu"
         aria-orientation="vertical"
         aria-labelledby="options-menu">
-        <a
-          href="/post"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-          role="menuitem">New Post</a>
-        <a
-          href="/dashboard"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-          role="menuitem">Dashboard</a>
-        <a
-          href="/settings"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-          role="menuitem">Settings</a>
         <a
           href="/logout"
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"

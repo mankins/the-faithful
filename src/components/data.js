@@ -15,6 +15,26 @@ const PRODUCTS = {
         name: 'Virtual Premiere Opening - The Faithful',
         description: 'March 19, 2021 at 7:00pm',
       },
+      {
+        id: 'video:thefaithful:20210320:1400',
+        name: 'Virtual Premiere Weekend - The Faithful',
+        description: 'March 20, 2021 at 2:00pm',
+      },
+      {
+        id: 'video:thefaithful:20210320:1900',
+        name: 'Virtual Premiere Weekend - The Faithful',
+        description: 'March 20, 2021 at 7:00pm',
+      },
+      {
+        id: 'video:thefaithful:20210321:1400',
+        name: 'Virtual Premiere Weekend - The Faithful',
+        description: 'March 21, 2021 at 2:00pm',
+      },
+      {
+        id: 'video:thefaithful:20210321:1900',
+        name: 'Virtual Premiere Weekend - The Faithful',
+        description: 'March 21, 2021 at 7:00pm',
+      },
     ],
     price: { currency: 'usd', amount: 1250 },
   },

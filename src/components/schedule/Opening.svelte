@@ -8,7 +8,7 @@ class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-w
   <h2 class="text-lg leading-6 font-medium text-gray-900">
     Virtual Premiere Opening
   </h2>
-  <p class="mt-4 text-sm text-gray-500">March 19, 2021</p>
+  <p class="mt-4 text-sm text-gray-500">March 19-21, 2021</p>
   <p class="mt-8">
     <span class="text-4xl font-extrabold text-gray-900">$12.50</span>
     <span class="text-base font-medium text-gray-500">/ticket</span>

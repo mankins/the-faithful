@@ -4,10 +4,13 @@
   import 'firebase/auth';
   import 'firebase/firestore';
 
+  import WebMonCounter from '$components/WebMonCounter.svelte';
   import Visibility from '$components/Visibility.svelte';
   import Footer from '$components/nav/Footer.svelte';
   import Nav from '$components/nav/Nav.svelte';
   import VideoPlayer from '$components/VideoPlayer.svelte';
+  import { getCookies } from '$components/utils/cookies';
+  import { parseParams } from '$components/utils/query';
 
   import Cart from '$components/cart/Cart.svelte';
   import { getProduct } from '$components/data.js';
@@ -21,9 +24,11 @@
   let loaded = false;
   let user = {};
   let loggedIn = false;
-
+  let btpToken;
+  let webMon = false;
   let cartOpened = false;
   let items = [];
+  let query = {};
 
   const handleAddCart = (item) => {
     cartOpened = true;
@@ -87,6 +92,19 @@
       }
     });
 
+    let cookies = getCookies(document.cookie);
+    btpToken = cookies._coil_btp;
+    if (btpToken) {
+      try {
+        const btpRes = window.document.coilMonetizationPolyfill.init({
+          btpToken,
+        });
+        console.log({ btpRes, btpToken });
+      } catch (coilError) {
+        console.log({ coilError });
+      }
+    }
+
     try {
       let c = window.localStorage.getItem('cart');
       items = c ? JSON.parse(c) : [];
@@ -94,9 +112,36 @@
       console.log({ e });
     }
 
+    query = parseParams(window.location.search);
+    if (query.cart) {
+      const product = getProduct(query.cart) || {};
+      if (query.productId) {
+        product.productId = query.productId;
+      }
+      if (query.productTitle) {
+        product.productTitle = query.productTitle;
+      }
+      if (query.quantity) {
+        product.quantity = query.quantity;
+      }
+      if (query.priceAmount && query.priceCurrency) {
+        product.price = {};
+        product.price.amount = query.priceAmount;
+        product.price.currency = query.priceCurrency;
+      }
+      if (product && product.product) {
+        handleAddCart(product);
+      }
+    }
+
+
     const heroInterval = setInterval(() => {
       hero = Math.floor(Math.random() * icons.length);
     }, 5500);
+
+    try {
+      webMon = window.document.monetization ? true : false;
+    } catch (e) {}
 
     loaded = true;
 
@@ -169,9 +214,7 @@
       />
     </section>
     {/if}
-    <section
-      class="pt-4 sm:pt-8 lg:relative lg:py-36"
-    >
+    <section class="pt-4 sm:pt-8 lg:relative lg:py-36">
       <div
         class="sm:mx-auto sm:max-w-3xl sm:px-6 mr-48 ml-6 -mt-12 -mb-12 lg:-mb-24"
       >
@@ -239,25 +282,25 @@
               </p>
             </div>
             {#if false}
-            <aside class="mt-12 sm:max-w-lg sm:w-full sm:flex">
-              <div class="min-w-0 flex-1">
-                <label for="hero_email" class="sr-only">Email address</label>
-                <input
-                  id="hero_email"
-                  bind:value={email}
-                  type="email"
-                  class="block w-full border border-gray-300 rounded-md px-5 py-3 text-xs text-gray-900 placeholder-gray-500 shadow-sm focus:border-rose-500 focus:ring-rose-500"
-                  placeholder="Enter your email"
-                />
-              </div>
-              <div class="mt-4 sm:mt-0 sm:ml-3  ">
-                <button
-                  on:click={announceSignup}
-                  class="block w-full rounded-md border border-transparent px-5 py-3 bg-gray-800 text-xs font-medium text-white shadow hover:bg-rose-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10"
-                  >Notify me when tickets go on sale</button
-                >
-              </div>
-            </aside>
+              <aside class="mt-12 sm:max-w-lg sm:w-full sm:flex">
+                <div class="min-w-0 flex-1">
+                  <label for="hero_email" class="sr-only">Email address</label>
+                  <input
+                    id="hero_email"
+                    bind:value={email}
+                    type="email"
+                    class="block w-full border border-gray-300 rounded-md px-5 py-3 text-xs text-gray-900 placeholder-gray-500 shadow-sm focus:border-rose-500 focus:ring-rose-500"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                <div class="mt-4 sm:mt-0 sm:ml-3  ">
+                  <button
+                    on:click={announceSignup}
+                    class="block w-full rounded-md border border-transparent px-5 py-3 bg-gray-800 text-xs font-medium text-white shadow hover:bg-rose-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10"
+                    >Notify me when tickets go on sale</button
+                  >
+                </div>
+              </aside>
             {/if}
           </div>
         </div>
@@ -569,8 +612,8 @@
                 Stay up to date
               </h2>
               <p class="mt-6 mx-auto max-w-2xl text-lg text-gray-700  ">
-                We'll notify you when our tickets come on sale in your area as well as update you on
-                details about our virtual cinema release.
+                We'll notify you when our tickets come on sale in your area as
+                well as update you on details about our virtual cinema release.
               </p>
             </div>
             <aside class="mt-12 sm:mx-auto sm:max-w-lg sm:flex">
@@ -636,5 +679,10 @@
       <span>Buy a Ticket</span>
     </button>
   </Nav>
+  {#if (btpToken || webMon) && !cartOpened}
+    <div class="z-40 fixed bottom-4 right-4">
+      <WebMonCounter />
+    </div>
+  {/if}
   <Cart bind:opened={cartOpened} bind:items />
 </div>

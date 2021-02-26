@@ -60,6 +60,16 @@
 		fbq('init', '432513441352379');
 		fbq('track', 'PageView');
 	</script>
-</body>
+	<script>
+		if (document.monetization) {
+		  document.monetizationExtensionInstalled = true
+		} else {
+		  document.monetization = document.createElement('div')
+		  document.monetization.state = 'stopped'
+		}
+	  </script>
+	  <script src="https://cdn.coil.com/coil-oauth-wm.v7.beta.js" defer>
+	  </script>
+	</body>
 
 </html>

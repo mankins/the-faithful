@@ -23,7 +23,8 @@ module.exports = {
     knownEntrypoints: ["svelte"],
     external: [
       ...require("module").builtinModules.filter((m) => m !== "process"),
-//      ...Object.keys(pkg.dependencies || {})
+      "node-fetch"
+    //  ...Object.keys(pkg.dependencies || {})
     ],
     //    packageLookupFields: ["main", "svelte","module"],
   },
