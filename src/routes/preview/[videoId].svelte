@@ -162,7 +162,7 @@
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   {#if loaded}
     {#if entitled}
-      <VideoPlayer {poster} {videoId} {captionsSrc} {goal} />
+      <VideoPlayer {poster} {videoId} {captionsSrc} {goals} />
       {#if (videoId === 't2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE') && !cartOpened}
       <div class="z-40 fixed bottom-20 right-8">
 
