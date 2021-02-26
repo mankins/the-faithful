@@ -146,18 +146,19 @@
               </svg>
             </button>
           {/if}
-          {#if false}
-          <!-- Profile dropdown -->
+          {#if true}
           <div class="ml-3 relative">
               {#if loggedIn}
                 <NavUserMenu {user} />
               {:else}
-                <a
+              {#if loggedIn}
+              <a
                   href="/login"
                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
                 >
                   Log in
                 </a>
+                {/if}
               {/if}
             </div>
           {/if}

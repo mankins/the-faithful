@@ -1,9 +1,12 @@
+import { v1 as uuid } from 'uuid';
 import UuidEncoder from 'uuid-encoder';
-import uuid from 'uuid';
 
-const shortId = () => {
-  const encoder = new UuidEncoder('base58');
-  return encoder.encode(uuid.v1());
+const encoder = new UuidEncoder('base58');
+
+const shortId = function() {
+  return encoder.encode(uuid());
 };
 
-export { shortId };
+export {
+  shortId
+};

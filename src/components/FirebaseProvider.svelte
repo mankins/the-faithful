@@ -5,7 +5,7 @@
   import 'firebase/auth';
   import 'firebase/firestore';
 
-  // import { shortId } from '$components/utils/short-uuid';
+  import { shortId } from '$components/utils/short-uuid';
 
   export let logout = false;
 
@@ -258,9 +258,9 @@
     actions.clickCoilSignin = async () => {
       console.log('coil signin!');
       const redirectUri = `${window.location.origin}/oauth/authorize`;
-      const state = 'shortId()';
-      document.cookie = `_oauth_state=${state}; path=/oauth; secure`;
-      window.location.href = `https://coil.com/oauth/auth?response_type=code&scope=${encodeURIComponent('simple_wm openid email')}&client_id=7d90b18a-2c64-4769-8ecf-63d1101f6e45&state=${state}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+      const cookieState = shortId();
+      document.cookie = `_oauth_state=${cookieState}; path=/`;
+      window.location.href = `https://coil.com/oauth/auth?response_type=code&scope=${encodeURIComponent('simple_wm openid email')}&client_id=7d90b18a-2c64-4769-8ecf-63d1101f6e45&state=${cookieState}&redirect_uri=${encodeURIComponent(redirectUri)}`;
     };
 
     // dispatch any params

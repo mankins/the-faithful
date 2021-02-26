@@ -20,6 +20,9 @@
   
     import { onMount } from 'svelte';
   
+    let user = {};
+  let loggedIn = false; // only appears on home page
+
   export let focusType = "sneak,opening,virtual";
 
     let cartOpened = false;
@@ -59,7 +62,7 @@
   
   <div class="min-h-screen bg-faithful-500 overscroll-x-contain overflow-hidden">
     <div class="absolute top-0 mb h-full z-10">
-      <Nav>
+      <Nav {loggedIn} {user}>
         <button
           on:click={() => {
             if (items.length) {
