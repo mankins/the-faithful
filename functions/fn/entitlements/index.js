@@ -4,10 +4,10 @@ const functions = require('firebase-functions');
 
 // const fetch = require('node-fetch');
 
-const getSecrets = require('../../lib/env'); // load environment config
+// const getSecrets = require('../../lib/env'); // load environment config
 const admin = require('../../lib/firebase');
 
-const secrets = getSecrets('the-faithful');
+// const secrets = getSecrets('the-faithful');
 
 const productsFromReceipts = async (receipts) => {
   const productIds = {};
@@ -75,7 +75,6 @@ exports.userEntitlements = functions.https.onCall(async (data, context) => {
   }
 
   const db = admin.firestore();
-  let entitled = false;
   let userProducts = [];
   let user = {};
   try {

@@ -99,7 +99,7 @@ const oauthLeg2 = async ({
   return data;
 };
 
-exports.oauthAuthorize = functions.https.onCall(async (data, context) => {
+exports.oauthAuthorize = functions.https.onCall(async (data) => {
   const cookies = get(data, 'cookies', {});
   const query = get(data, 'query', {});
 
@@ -205,6 +205,3 @@ exports.oauthAuthorize = functions.https.onCall(async (data, context) => {
   return { firebaseToken, ...coilBtp };
 });
 
-exports.coilBtp = functions.https.onCall(async (data, context) => {
-
-});

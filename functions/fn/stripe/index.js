@@ -46,7 +46,7 @@ const stripe = async () => {
 };
 
 exports.stripeCheckoutSession = functions.https.onCall(
-  async (data, context) => {
+  async (data) => {
     const items = get(data, 'items', '[]');
     const baseUrl = get(data, 'base', 'https://www.the-faithful.com');
 
@@ -65,7 +65,7 @@ exports.stripeCheckoutSession = functions.https.onCall(
       );
     }
 
-    const config = await secrets;
+    // const config = await secrets;
     const stripeProps = await stripe();
     const { _stripe } = stripeProps;
 
