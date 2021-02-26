@@ -30,7 +30,7 @@
   let user = {};
   let userProducts = [...baseProducts]; // these are the products that the user has
   let nextUrl = '/';
-  // f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE vs t2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE
+  // pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ / f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE vs t2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE
 
   // require logged in user
   //  user has products=[]
@@ -50,7 +50,7 @@
     loaded = true;
   }
   let captionsSrc = '/subtitles/faithful-trailer.mp4.vtt';
-  let goal = 'W6DQW4K3';
+  let goals = ["W6DQW4K3","KSRPXNHI","FUAW823F","B0OYRVAC"];
 
   let requiredEntitlement = `video:${videoId}:preview`; // 'video:thefaithful:20210320'; // 'video:thefaithful:20210320:2000' `video:${videoId}:preview`;
 

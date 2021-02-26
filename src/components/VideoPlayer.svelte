@@ -1,16 +1,21 @@
 <script>
-import { onMount } from 'svelte';
-import '$styles/plyr.css';
-import Hls from 'hls.js';
+  import { onMount } from 'svelte';
+  import '$styles/plyr.css';
+  import Hls from 'hls.js';
 
   let player;
   export let title = 'The Faithful: The King, The Pope, The Princess';
   export let poster = '/img/trailer-cover-1b.jpg';
 
-  export let videoId = 't2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE'; // 'f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE';
+  export let videoId = 'pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ'; // 'f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE';
   export let captionsSrc = '/subtitles/faithful-trailer.mp4.vtt';
 
   export let goal;
+  export let goals = [];
+
+  if (goal && (goals.length === 0)) {
+    goals.push(goal); // fires at 0
+  }
 
   let previewThumbnails = {
     enabled: true,
@@ -28,9 +33,32 @@ import Hls from 'hls.js';
     });
     window.player = window.player || player; // debugging
 
-    player.on('play', () => {
-      if (goal) {
-        window.fathom.trackGoal(goal, 0);
+    // player.on('play', () => {
+    // });
+
+    let nextGoal = 0;
+    const fireGoal = (goalId) => {
+      if (goalId) {
+        // console.log({ goalId });
+        window.fathom.trackGoal(goalId, 0);
+      }
+    };
+
+    let mostWatched = 0;
+    player.on('timeupdate', () => {
+      const media = player.media;
+      if (!media) {
+        return;
+      }
+
+      const duration = media.duration || 1;
+      const current = media.currentTime;
+      const percent = current / duration;
+
+      if (percent >= nextGoal / goals.length) {
+        fireGoal(goals[nextGoal]);
+        nextGoal = nextGoal + 1;
+        return true;
       }
     });
 
@@ -51,8 +79,7 @@ import Hls from 'hls.js';
   });
 </script>
 
-<svelte:head>
-</svelte:head>
+<svelte:head />
 
 <div class="flex flex-col max-h-screen bg-black">
   <!-- svelte-ignore a11y-media-has-caption -->

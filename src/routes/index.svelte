@@ -204,15 +204,15 @@
 
 {#if loaded}
   <main class="pt-16 md:pt-1 lg:pt-8">
-    {#if false}
-      <section class="overflow-hidden sm:overflow-auto">
-        <VideoPlayer
-          poster="/img/trailer-cover-1b.jpg"
-          videoId="t2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE"
-          captionsSrc="/subtitles/faithful-trailer.mp4.vtt"
-          goal="W6DQW4K3"
-        />
-      </section>
+    {#if true}
+    <section class="overflow-hidden sm:overflow-auto">
+      <VideoPlayer
+        poster="/img/trailer-cover-1b.jpg"
+        videoId="pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ"
+        captionsSrc="/subtitles/faithful-trailer.mp4.vtt"
+        goals={["W6DQW4K3","KSRPXNHI","FUAW823F","B0OYRVAC"]}
+      />
+    </section>
     {/if}
     <section class="pt-4 sm:pt-8 lg:relative lg:py-36">
       <div
