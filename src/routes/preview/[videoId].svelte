@@ -39,13 +39,14 @@
   let title = 'The Faithful: The King, The Pope, The Princess';
   let poster = '/img/trailer-cover-1b.jpg';
 
-  export let videoId = 't2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE'; // 'f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE';
+  let previewId = 'pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ';
+  export let videoId = previewId; // 'f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE';
   let cartOpened = false;
   let items = [];
   let query = {};
 
   let entitled = false;
-  if (videoId === 't2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE') {
+  if (videoId === previewId) {
     entitled = true; // default to entitled 
     loaded = true;
   }
@@ -163,7 +164,7 @@
   {#if loaded}
     {#if entitled}
       <VideoPlayer {poster} {videoId} {captionsSrc} {goals} />
-      {#if (videoId === 't2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE') && !cartOpened}
+      {#if (videoId === previewId) && !cartOpened}
       <div class="z-40 fixed bottom-20 right-8">
 
       <button
