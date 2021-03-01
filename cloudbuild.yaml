@@ -1,3 +1,4 @@
+timeout: 1200s
 steps:
   - id: "cloud functions install"
     name: 'gcr.io/cloud-builders/npm'
