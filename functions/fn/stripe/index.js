@@ -184,9 +184,11 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
     }
 
     const session = await _stripe.checkout.sessions.retrieve(sessionId);
-
+        console.log({ session });
     const email = get(session, 'customer_details.email');
-    if (!email) {
+        if (!email) {
+            console.log('missing email');
+
       throw new functions.https.HttpsError(
         'unauthenticated',
         'Request missing associated email',
@@ -222,6 +224,7 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
         .doc(`email/${email}/receipts/${receipt.id}`)
         .set({ receipt, email });
     } catch (ee) {
+        console.log('error::::email store', receipt);
       throw new functions.https.HttpsError('internal', 'Internal Error', {
         error: 'email store error',
       });
