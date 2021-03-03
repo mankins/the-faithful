@@ -62,6 +62,10 @@ export let user = {};
         aria-orientation="vertical"
         aria-labelledby="options-menu">
         <a
+          href="/theatre/guestlist"
+          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+          role="menuitem">Guest list</a>
+        <a
           href="/logout"
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
           role="menuitem">Sign out</a>

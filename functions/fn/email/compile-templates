@@ -1,0 +1,108 @@
+#!/usr/bin/perl
+
+# compile our templates to support layouts. May not be required with tweaks to gulp file
+
+my $layouts = {};
+use Data::Dumper;
+
+if (!-x 'templates')
+{
+  print "Run from parent of templates directory.\n";
+  exit 1;
+}
+
+`mkdir -p templates/built`;
+`mkdir -p templates/merged`;
+# `mkdir -p templates/inlined`;
+
+foreach my $file (<"./templates/src/layouts/*.hbs">)
+{
+  if (-f $file)
+  {
+    print "$file\n";
+    open (LAYOUT, $file);
+    my ($layout_name) = $file =~ /(\w+)\.hbs$/;
+    next if (!$layout_name);
+
+    while (my $line = <LAYOUT>)
+    {
+      $layouts->{$layout_name} .= $line;
+    }
+    close LAYOUT;
+#    print ``;
+  }
+  else
+  {
+    next;
+  }
+}
+
+my $templates = {};
+my $count = 0;
+foreach my $file (<"./templates/src/*.hbs">)
+{
+  $count++;
+  if (-f $file)
+  {
+    print "$file\n";
+    my ($template_name) = $file =~ /^.*\/(.*)\.hbs$/;
+    my ($layout_name, @rest) = split(/\-/, $template_name);
+    my $layout;
+    print "layout: $layout_name for $template_name\n";
+    unless ($layouts->{$layout_name})
+    {
+      print "using default layout\n";
+      $layout = $layouts->{'default'};
+    }
+    else
+    {
+      print "using $layout_name\n";
+      $layout = $layouts->{$layout_name};
+    }
+
+    my $template = "";
+    print "templ: $template_name\n";
+    open (TEMPLATE, $file);
+    while (my $line = <TEMPLATE>)
+    {
+      $templates->{$template_name} .= $line;
+      $template .= $line;
+    }
+    close TEMPLATE;
+
+    # merge the layout with the body
+    my $layout_merged = "";
+    foreach my $line (split(/\n/, $layout))
+    {
+      $line =~ s/\{\{\s*body\s*\}\}/$template/i;
+      $layout_merged .= $line . "\n";
+    }
+    print $layout_merged;
+
+
+    my $tmpfile = "templates/merged/$template_name.hbs";
+    open (TMP, ">$tmpfile");
+    print TMP $layout_merged;
+    close TMP;
+
+#    print ``;
+  }
+  else
+  {
+    next;
+  }
+
+}
+
+print "running gulp to build...\n";
+print `gulp precompile`;
+
+print "Cleaning up...";
+`rm -rf templates/merged`;
+
+__END__
+
+    print "handlebars $tmpfile -f templates/built/$template_name.hbs\n";
+    print `handlebars $tmpfile -f templates/built/$template_name.hbs`;
+
+    unlink $tmpfile;
