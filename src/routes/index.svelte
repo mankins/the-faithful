@@ -188,16 +188,16 @@
 
 <svelte:head>
   <title
-    >The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman.</title
+    >The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman</title
   >
   <meta
     property="og:image"
-    content="https://www.the-faithful.com/img/the-faithful-a-movie-by-annie-berman.jpg"
+    content="https://www.the-faithful.com/img/the-faithful-preview-1.jpg"
   />
 
   <meta
     property="twitter:image"
-    content="https://www.the-faithful.com/img/the-faithful-a-movie-by-annie-berman.jpg"
+    content="https://www.the-faithful.com/img/the-faithful-preview-1.jpg"
   />
   <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
