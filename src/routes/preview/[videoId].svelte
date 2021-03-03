@@ -169,6 +169,12 @@
 />
 <meta property="twitter:card" content="summary_large_image" />
 
+<meta property="og:video" content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4" />
+<meta property="og:video:secure_url" content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4" />
+<meta property="og:video:type" content="video/mp4" />
+<meta property="og:video:width" content="640" />
+<meta property="og:video:height" content="360" />
+
 </svelte:head>
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
