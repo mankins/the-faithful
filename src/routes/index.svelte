@@ -192,12 +192,12 @@
   >
   <meta
     property="og:image"
-    content="https://www.the-faithful.com/img/the-faithful-poster-1.jpg"
+    content="https://www.the-faithful.com/img/the-faithful-poster-2.jpg"
   />
 
   <meta
     property="twitter:image"
-    content="https://www.the-faithful.com/img/the-faithful-poster-1.jpg"
+    content="https://www.the-faithful.com/img/the-faithful-poster-2.jpg"
   />
   <meta property="twitter:card" content="summary_large_image" />
   
