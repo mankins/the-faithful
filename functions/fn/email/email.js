@@ -1,24 +1,24 @@
 const composer = require('./composer');
 // const mailgun = require('./mailgun');
 
-const sendEmail = async (payload = {}, context = {}) => {
+exports.sendEmail = async (payload = {}, context = {}) => {
+  console.log({ payload, context });
+
   const templateName = context.templateName;
   if (!templateName) {
     throw new Error('MISSING-TEMPLATE');
   }
 
-    try {
-        const mimeMessage = await composer.composeEmail(
-            templateName,
-            payload,
-            context
-        );
+  try {
+    const mimeMessage = await composer.composeEmail(
+      templateName,
+      payload,
+      context
+    );
 
-        console.log(mimeMessage);
-    } catch (e) {
-        console.log({ e }); 
-        throw new Error('COMPOSE-ERROR');
-    }
+      console.log('mime', { mimeMessage });
+  } catch (e) {
+    console.log({ e });
+    throw new Error('COMPOSE-ERROR');
+  }
 };
- 
-exports = { sendEmail };

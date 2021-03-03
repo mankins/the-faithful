@@ -12,16 +12,17 @@ const templates = require('./templates');
 var DEFAULT_EMAIL = 'info@the-faithful.com';
 
 function getTo(Context) {
+  console.log({ Context }, 'getTo');
   var to = Context.to || Context.email;
 
   if (Context.name && to) {
     // "Yohan Alvarez" <yohan@moo.com> (preferred, passes through more filters.)
     Context.name = Context.name.replace(/"/g, ''); // just in case?
-    return '"' + Context.name + '" <' + to + '>';
+    return `"${Context.name || ''}" <${to}>`;
   }
 
   // yohan@moo.com
-  return '<' + to + '>';
+  return `<${to}>`;
 }
 
 function normalizeContext(Context) {
@@ -65,7 +66,7 @@ module.exports.composeEmail = async function composeEmail(
   console.log('t', templateName, Context, options);
 
   // Now create the SMTP message
-  const msgParams = {};
+  let msgParams = {};
 
   // merge default context
   const defaultContext = templates.defaultContext(templateName) || {};

@@ -1,4 +1,4 @@
-const {PubSub} = require('@google-cloud/pubsub');
+const { PubSub } = require('@google-cloud/pubsub');
 const get = require('lodash.get');
 
 const functions = require('firebase-functions');
@@ -12,21 +12,27 @@ const secrets = getSecrets('the-faithful');
 const renderers = require('./renderers');
 const { sendEmail } = require('./email.js');
 
-const pubsub = new PubSub(); // {projectId}
+const pubsub = new PubSub({ projectId: 'the-faithful' }); // {projectId}
 
-const emailTopicName = "send-email";
+const TOPIC_EMAIL = 'send-email';
+const CREATE_TOPIC_EMAIL = false;
 
 async function publishMessage(data) {
-    // Publishes the message as a string
-    data._ts = Date.now();
-    const dataBuffer = Buffer.from(JSON.stringify(data));
-    const messageId = await pubsub.topic(emailTopicName).publish(dataBuffer);
-    console.log(`Message ${messageId} published.`);
-    return { messageId, data };
-};
+  // Publishes the message as a string
+  if (CREATE_TOPIC_EMAIL) {
+    const [topic] = await pubsub.createTopic(TOPIC_EMAIL);
+    console.log(`Topic ${topic.name} created.`);
+  }
+
+  data._ts = Date.now();
+  const dataBuffer = Buffer.from(JSON.stringify(data));
+  const messageId = await pubsub.topic(TOPIC_EMAIL).publish(dataBuffer);
+  console.log(`Message ${messageId} published.`);
+  return { messageId, data };
+}
 
 exports.sendEmailPubSub = functions.pubsub
-  .topic(emailTopicName)
+  .topic(TOPIC_EMAIL)
   .onPublish(async (message, context) => {
     let eventAge = Date.now() - Date.parse(context.timestamp);
     const eventMaxAge = 60 * 60 * 1000;
@@ -37,7 +43,7 @@ exports.sendEmailPubSub = functions.pubsub
       return;
     }
 
-    console.log('Processing', context.eventId);
+    console.log('Processing', context);
 
     let payload = {};
     try {
@@ -58,11 +64,23 @@ exports.sendEmailPubSub = functions.pubsub
         }
       }
 
-        const out = await sendEmail(payload, { eventId: context.eventId });
-        console.log({ out });
+      const email = payload.email || 'mankins@gmail.com';
+      const msgParams = {
+        eventId: context.eventId,
+        templateName: 'hi',
+        email,
+        to: payload.to || email,
+        name: payload.name || '',
+      };
+      console.log('calling sendemail', { payload, msgParams });
+      const out = await sendEmail(payload, msgParams);
+      console.log({ out });
     } catch (e) {
-      console.log({ e, src: 'pubsub-send-email' });
-      throw new Error('error processing send-email');
+        console.log(e.code);
+        if (e.code !== 'invalid email format') {
+            console.log({ e, src: 'pubsub-send-email' });
+            throw new Error('error processing send-email');
+        }
     }
 
     console.log({ payload, context });
@@ -70,13 +88,13 @@ exports.sendEmailPubSub = functions.pubsub
   });
 
 exports.apiEmail = functions.https.onRequest(async (req, res) => {
-    console.log({ q: req.query })
-    try {
-        const result = await publishMessage({ ...req.query });
-        return res.status(200).send(result);
-    } catch (e) {
-        return res.status(500).send(e.code);
-    }
+  console.log({ q: req.query });
+  try {
+    const result = await publishMessage({ ...req.query });
+    return res.status(200).send(result);
+  } catch (e) {
+    return res.status(500).send(e.code);
+  }
 });
 
 exports.apiImage = functions.https.onRequest(async (req, res) => {
@@ -107,7 +125,7 @@ exports.apiImage = functions.https.onRequest(async (req, res) => {
         return res.status(200).send(surface.result);
       }
     } catch (e) {
-        console.log({ e });
+      console.log({ e });
       return res.status(500).send(JSON.stringify({ err: { code: e.code } }));
     }
   }
