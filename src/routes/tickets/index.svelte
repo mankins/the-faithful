@@ -84,6 +84,32 @@
   });
 </script>
 
+<svelte:head>
+  <meta name="twitter:site" content="@TheFaithful" />
+  <title
+    >The Faithful: The King, The Pope, The Princess – A Movie by
+    Annie Berman.</title
+  >
+  <meta
+  property="og:image"
+  content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+
+<meta
+  property="twitter:image"
+  content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+
+/>
+<meta property="twitter:card" content="summary_large_image" />
+
+<meta property="og:video" content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4" />
+<meta property="og:video:secure_url" content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4" />
+<meta property="og:video:type" content="video/mp4" />
+<meta property="og:video:width" content="640" />
+<meta property="og:video:height" content="360" />
+
+</svelte:head>
+
 <div class="min-h-screen bg-faithful-500 overscroll-x-contain overflow-hidden">
   <div class="absolute top-0 mb h-full z-10">
     <Nav {loggedIn} {user}>
