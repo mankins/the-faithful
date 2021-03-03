@@ -3,10 +3,10 @@
 var handlebars  = require('handlebars');
 var helpers = require('./helpers');
 
-var _ = require('lodash');
+const _ = require('lodash');
 
 _.forEach(helpers, function(helperFn, plugin) {
-   // console.log('plugin', plugin);
+  //  console.log('plugin', plugin);
   handlebars.registerHelper(plugin, helperFn);
 });
 

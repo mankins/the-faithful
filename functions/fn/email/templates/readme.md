@@ -21,16 +21,12 @@ layout.
 Once templates have been updated, you need to compile them:
 
 ```
+npm install --global gulp-cli
+```
+
+```
  % cd ROOT_DIR_OF_LAMBDA_FN && ./compile-templates
 ```
-
-Then upload the lambda function:
-
-```
-% ./builder
-```
-
-(Select prod and "queue")
 
 # Testing
 

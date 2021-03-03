@@ -7,10 +7,6 @@ var gulp = require('gulp');
 var handlebars = require('gulp-handlebars');
 var defineModule = require('gulp-define-module');
 
-gulp.task('default', ['precompile']);
-
-// gulp.task('merge', shell.task('./merge-templates'));
-
 gulp.task('precompile', function () {
   return gulp.src('./templates/merged/*.hbs')
     //      .pipe(inlineCss())
@@ -24,3 +20,9 @@ gulp.task('precompile', function () {
     }))
     .pipe(gulp.dest('./templates/built/'));
 });
+
+
+gulp.task('default', gulp.series('precompile'));
+
+// gulp.task('merge', shell.task('./merge-templates'));
+
