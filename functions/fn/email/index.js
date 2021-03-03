@@ -1,3 +1,4 @@
+const {PubSub} = require('@google-cloud/pubsub');
 const get = require('lodash.get');
 
 const functions = require('firebase-functions');
@@ -11,8 +12,21 @@ const secrets = getSecrets('the-faithful');
 const renderers = require('./renderers');
 const { sendEmail } = require('./email.js');
 
+const pubsub = new PubSub(); // {projectId}
+
+const emailTopicName = "send-email";
+
+async function publishMessage(data) {
+    // Publishes the message as a string
+    data._ts = Date.now();
+    const dataBuffer = Buffer.from(JSON.stringify(data));
+    const messageId = await pubsub.topic(emailTopicName).publish(dataBuffer);
+    console.log(`Message ${messageId} published.`);
+    return { messageId, data };
+};
+
 exports.sendEmailPubSub = functions.pubsub
-  .topic('sendEmail')
+  .topic(emailTopicName)
   .onPublish(async (message, context) => {
     let eventAge = Date.now() - Date.parse(context.timestamp);
     const eventMaxAge = 60 * 60 * 1000;
@@ -44,7 +58,8 @@ exports.sendEmailPubSub = functions.pubsub
         }
       }
 
-      await sendEmail(payload, { eventId: context.eventId });
+        const out = await sendEmail(payload, { eventId: context.eventId });
+        console.log({ out });
     } catch (e) {
       console.log({ e, src: 'pubsub-send-email' });
       throw new Error('error processing send-email');
@@ -53,6 +68,16 @@ exports.sendEmailPubSub = functions.pubsub
     console.log({ payload, context });
     return true;
   });
+
+exports.apiEmail = functions.https.onRequest(async (req, res) => {
+    console.log({ q: req.query })
+    try {
+        const result = await publishMessage({ ...req.query });
+        return res.status(200).send(result);
+    } catch (e) {
+        return res.status(500).send(e.code);
+    }
+});
 
 exports.apiImage = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');

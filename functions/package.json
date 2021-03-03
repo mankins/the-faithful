@@ -18,6 +18,7 @@
   "main": "index.js",
   "dependencies": {
     "@google-cloud/logging": "^9.0.1",
+    "@google-cloud/pubsub": "^2.10.0",
     "@google-cloud/secret-manager": "^3.4.0",
     "@google-cloud/video-transcoder": "^1.2.0",
     "address-rfc2822": "^2.1.0",

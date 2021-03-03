@@ -1,5 +1,5 @@
 const composer = require('./composer');
-const mailgun = require('./mailgun');
+// const mailgun = require('./mailgun');
 
 const sendEmail = async (payload = {}, context = {}) => {
   const templateName = context.templateName;
@@ -16,7 +16,7 @@ const sendEmail = async (payload = {}, context = {}) => {
 
         console.log(mimeMessage);
     } catch (e) {
-        console.log({ e });
+        console.log({ e }); 
         throw new Error('COMPOSE-ERROR');
     }
 };
