@@ -158,6 +158,17 @@
     >Preview for The Faithful: The King, The Pope, The Princess – A Movie by
     Annie Berman.</title
   >
+  <meta
+  property="og:image"
+  content="https://www.the-faithful.com/img/the-faithful-trailer-endcard-1.jpg"
+/>
+
+<meta
+  property="twitter:image"
+  content="https://www.the-faithful.com/img/the-faithful-trailer-endcard-1.jpg"
+/>
+<meta property="twitter:card" content="summary_large_image" />
+
 </svelte:head>
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
