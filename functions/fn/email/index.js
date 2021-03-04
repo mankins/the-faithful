@@ -94,7 +94,7 @@ exports.apiEmail = functions.https.onRequest(async (req, res) => {
         try {
             const email = payload.email;
             const msgParams = {
-              templateName: 'hi',
+              templateName: payload.template,
               email,
               to: payload.to || email,
               name: payload.name || '',
@@ -132,7 +132,7 @@ exports.apiImage = functions.https.onRequest(async (req, res) => {
     // } else if (req.method === 'GET') {
   }
 
-  const { template = 'plaintext' } = req.query;
+  const { template } = req.query;
 
   if (renderers[template]) {
     console.log(template, 'query-->', req.query);

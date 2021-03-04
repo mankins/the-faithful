@@ -2,7 +2,7 @@
 
 var context = require('../context'); // drawing context, not lambda
 
-  exports.process = async (params) => {
+  exports.process = async (params, isInline) => {
 
   /*
    *   params:
@@ -16,8 +16,8 @@ var context = require('../context'); // drawing context, not lambda
    *            buttonTxt - button foreground color
    *
    */
-
-  var bgStyle = params.bg || '#93D6F1';
+    
+  var bgStyle = params.bg || '#FEDFD7';
   var fgStyle = params.fg || '#ffffff';
 
   var w = parseInt(params.w || 600, 10);
@@ -46,7 +46,7 @@ var context = require('../context'); // drawing context, not lambda
   var startY = h / 2 - (textHeight + buttonMargin) / 2;
   var minButtonWidth = 266;
 
-  ctx.fillStyle = params.buttonbg || '#FEC959';
+  ctx.fillStyle = params.buttonbg || '#792520';
   // var lineHeight = parseInt(m.emHeightAscent, 10) + parseInt(m.emHeightDescent, 10);
   var textFullWidth = m.width;
   var xMovement = 0;
@@ -72,7 +72,11 @@ var context = require('../context'); // drawing context, not lambda
   var textTop = startY + parseInt((endY) / 2, 10) + parseInt(textHeight / 2, 10);
   ctx.fillText(ctaText, textLeft, textTop);
 
-  surface.result = await surface.canvas.toBuffer('image/png');
-  // surface.result = surface.canvas.pngStream();
+  if (isInline) {
+    surface.result = surface.canvas.toDataURL();
+  } else {
+    surface.result = await surface.canvas.toBuffer('image/png');
+  }
+
   return surface;
 };

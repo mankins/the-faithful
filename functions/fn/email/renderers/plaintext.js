@@ -13,6 +13,20 @@ exports.process = async (params, isInline) => {
    *            bigText, smallText, and mediumText for the text
    */
 
+  function fitTextOnCanvas(ctx, text, fontface, width) {
+    // start with a large font size
+    let fontsize = 300;
+
+    // lower the font size until the text fits the canvas
+    do {
+      fontsize--;
+      ctx.font = fontsize + 'px ' + fontface;
+    } while ((ctx.measureText(text).width) > width);
+    console.log(fontsize, ctx.width, ctx.measureText(text).width);
+    return fontsize;
+  }
+
+  
   let surface;
   
   try {
@@ -53,24 +67,23 @@ exports.process = async (params, isInline) => {
     ctx.antialias = 'subpixel';
 
     var m = ctx.measureText(medText);
-    var textLeft = parseInt(params.textleft, 10) || ((w / 2) - parseInt(m.width / 2, 10));
+//    var textLeft = 0; // = parseInt(params.textleft, 10) || ((w / 2) - parseInt(m.width / 2, 10));
+    var textLeft = ((w - parseInt(m.width, 10)) / 2);
+
     ctx.fillStyle = medStyle || fgStyle;
     ctx.fillText(medText, textLeft, 90 + offset);
 
     // BIG text
-    ctx.font = 'normal ' + bigTextSize + 'px recoleta';
-
-    m = ctx.measureText(bigText);
-    textLeft = parseInt(params.textleft, 10) || ((w / 2) - parseInt(m.width / 2, 10));
-    ctx.fillStyle = bigStyle || fgStyle;
-
-    ctx.fillText(bigText, textLeft, 185 + offset);
+    // ctx.font = 'normal ' + bigTextSize + 'px recoleta';
+    ctx.font = `${fitTextOnCanvas(ctx, bigText, 'recoleta', w-20)}px recoleta`;
+    ctx.fillStyle = bigStyle || bgStyle;
+    ctx.fillText(bigText, 10, 185 + offset);
 
     // next line
     var line = params.smalltext1 || '';
     ctx.font = 'normal ' + smallTextSize + 'px recoleta';
     m = ctx.measureText(line);
-    textLeft = parseInt(params.textleft, 10) || ((w / 2) - parseInt(m.width / 2, 10));
+    textLeft = ((w - parseInt(m.width, 10)) / 2);
 
     ctx.fillStyle = smallStyle || fgStyle;
 
