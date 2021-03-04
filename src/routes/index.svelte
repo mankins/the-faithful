@@ -11,6 +11,7 @@
   import VideoPlayer from '$components/VideoPlayer.svelte';
   import { getCookies } from '$components/utils/cookies';
   import { parseParams } from '$components/utils/query';
+  import { fireGoal } from '$components/utils/analytics';
 
   import Cart from '$components/cart/Cart.svelte';
   import { getProduct } from '$components/data.js';
@@ -134,7 +135,6 @@
       }
     }
 
-
     const heroInterval = setInterval(() => {
       hero = Math.floor(Math.random() * icons.length);
     }, 5500);
@@ -170,7 +170,7 @@
         }
 
         window.pushToast("Success. We'll write soon.", 'success');
-        window.fathom.trackGoal('A99HAGDM', 0); // Announce Email Signup
+        fireGoal('A99HAGDM', 0); // Announce Email Signup
         // fathom.blockTrackingForMe();
       } else {
         window.pushToast(`Please enter a valid email address.`, 'alert');
@@ -200,20 +200,19 @@
     content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
   />
   <meta property="twitter:card" content="summary_large_image" />
-  
 </svelte:head>
 
 {#if loaded}
   <main class="pt-16 md:pt-1 lg:pt-8">
     {#if true}
-    <section class="overflow-hidden sm:overflow-auto">
-      <VideoPlayer
-        poster="/img/trailer-cover-1b.jpg"
-        videoId="pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ"
-        captionsSrc="/subtitles/faithful-trailer.mp4.vtt"
-        goals={["W6DQW4K3","KSRPXNHI","FUAW823F","B0OYRVAC"]}
-      />
-    </section>
+      <section class="overflow-hidden sm:overflow-auto">
+        <VideoPlayer
+          poster="/img/trailer-cover-1b.jpg"
+          videoId="pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ"
+          captionsSrc="/subtitles/faithful-trailer.mp4.vtt"
+          goals={['W6DQW4K3', 'KSRPXNHI', 'FUAW823F', 'B0OYRVAC']}
+        />
+      </section>
     {/if}
     <section class="pt-4 sm:pt-8 lg:relative lg:py-36">
       <div

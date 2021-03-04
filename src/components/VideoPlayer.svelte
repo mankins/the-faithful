@@ -3,6 +3,8 @@
   import '$styles/plyr.css';
   import Hls from 'hls.js';
 
+  import { fireGoal } from '$components/utils/analytics';
+
   let player;
   export let title = 'The Faithful: The King, The Pope, The Princess';
   export let poster = '/img/trailer-cover-1b.jpg';
@@ -37,12 +39,6 @@
     // });
 
     let nextGoal = 0;
-    const fireGoal = (goalId) => {
-      if (goalId) {
-        // console.log({ goalId });
-        window.fathom.trackGoal(goalId, 0);
-      }
-    };
 
     let mostWatched = 0;
     player.on('timeupdate', () => {

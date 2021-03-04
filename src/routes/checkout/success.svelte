@@ -5,6 +5,7 @@
   import Footer from '$components/nav/Footer.svelte';
   import Nav from '$components/nav/Nav.svelte';
   import Toast from '$components/Toast.svelte';
+  import { fireGoal } from '$components/utils/analytics';
 
   import firebase from 'firebase/app';
   import 'firebase/auth';
@@ -62,13 +63,13 @@
             session.currency === 'usd'
           ) {
             try {
-              window.fathom.trackGoal('YJQPVOAW', session.amount || 0);
+              fireGoal('YJQPVOAW', session.amount || 0);
               window.fbq('track', 'Purchase', {
                 currency: session.currency.toUpperCase(),
                 value: parseFloat(session.amount_decimal),
               });
             } catch (ee) {
-              console.log({ ee });
+              console.log('fb-goal', { ee });
             }
           }
         }, 5);
