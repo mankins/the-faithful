@@ -2,11 +2,12 @@ const addressParser = require('address-rfc2822');
 const validateEmail = require('rfc822-validate');
 const mailcomposer = require('mailcomposer');
 const inlineCss = require('inline-css');
-// const cheerio = require('cheerio');
+const cheerio = require('cheerio');
 
 const _ = require('lodash');
-// const md5 = require('md5');
+const md5 = require('md5');
 
+const renderers = require('./renderers');
 const templates = require('./templates');
 
 var DEFAULT_EMAIL = 'info@the-faithful.com';
@@ -35,12 +36,77 @@ function normalizeContext(Context) {
   }
 }
 
-async function doRenderEmailTemplate(templateName, Context, options, callback) {
-  var rendered = {};
+async function expandInlineImages(rendered, Context) {
+  // cheerio, search for our special html types: <img smallText="" id="idhere" />
+  console.log('looking for inlines');
+  if (rendered && rendered.html) {
+    let atris = {}; // list of ids that we will replace.
+    console.log('expanding inlines');
+    let $;
+    let promises = [];
+    let contextData = [];
+
+    try {
+      $ = cheerio.load(rendered.html);
+      $('.atri').each(function doAtris(index, atri) {
+        // which should get inlined into an img?
+        // search for all occurrences
+        // async out to the api server to expand them, using our local disk-cache
+        // replace if appropriate.
+        // <img class="atri" id="uniquehere" type="sampletext" txt="Hello World?" />
+        console.log('atri found', index);
+        let atriType = $(atri).attr('type');
+        let atriId = $(atri).attr('id');
+        console.log({ atriType, atriId });
+        if (atriType && atriId) {
+          console.log('converting', atriType, atriId, { ...atri.attribs });
+          promises.push(renderers[atriType].process({ ...atri.attribs }, true));
+          contextData.push({ atriId, atriType });
+        }
+      });
+      atris = await Promise.all(promises);
+
+      atris.forEach((data, i) => {
+        const { atriId } = contextData[i];
+        console.log(atriId, data);
+        const imgData = data.result;
+
+        console.log('got', atriId, imgData.length);
+
+        const imgCid = md5(imgData);
+        console.log(imgCid, 'cid');
+        if (Context.preview) {
+          $('#' + atriId).replaceWith('<img src="' + imgData + '">');
+        } else {
+          $('#' + atriId).replaceWith(
+            `<img id="${atriId}" src="cid:${imgCid}" />`
+          );
+        }
+
+        const attachment = {};
+        attachment.cid = imgCid;
+        attachment.path = imgData;
+        attachment.filename = `${imgCid}.png`;
+        // console.log({ attachment });
+        rendered.attachments.push(attachment);
+      });
+    } catch (e) {
+      console.log('problem parsing html', e);
+    }
+    rendered.html = $.html();
+  }
+
+  return { ...rendered };
+}
+
+async function doRenderEmailTemplate(templateName, Context, options) {
+  let rendered = {};
   rendered.attachments = [];
 
   if (templates.has(templateName + '-html')) {
     rendered.html = templates.render(templateName + '-html', Context);
+
+    rendered = await expandInlineImages(rendered, Context);
   }
 
   if (rendered && rendered.html) {
@@ -61,7 +127,7 @@ module.exports.renderEmailTemplate = doRenderEmailTemplate;
 module.exports.composeEmail = async function composeEmail(
   templateName,
   Context,
-  options,
+  options
 ) {
   console.log('t', templateName, Context, options);
 
@@ -117,19 +183,17 @@ module.exports.composeEmail = async function composeEmail(
   }
 
   console.log('running mail composer?');
-  const composer = (async () => {
+  const composer = async () => {
     return new Promise(function (resolve, reject) {
-      mailcomposer(msgParams).build(
-        function (composerErr, mimeMessage) {
-          if (composerErr) {
-            console.log('composer err', composerErr);
-            return reject (composerErr);
-          }
-          resolve(mimeMessage);
+      mailcomposer(msgParams).build(function (composerErr, mimeMessage) {
+        if (composerErr) {
+          console.log('composer err', composerErr);
+          return reject(composerErr);
         }
-      );
+        resolve(mimeMessage);
+      });
     });
-  });
+  };
 
   let mimeMessage = await composer(msgParams);
   // console.log(mimeMessage, '?');

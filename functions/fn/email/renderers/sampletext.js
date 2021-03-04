@@ -2,7 +2,7 @@
 
 var context = require('../context'); // drawing context, not lambda
 
-exports.process = async (params) => {
+exports.process = async (params, isInline) => {
   function fitTextOnCanvas(ctx, text, fontface, width) {
     // start with a large font size
     let fontsize = 300;
@@ -51,6 +51,11 @@ exports.process = async (params) => {
   ctx.rotate(0);
   ctx.fillText('recoleta', 10, 160);
 
-  surface.result = await surface.canvas.toBuffer('image/png');
+  if (isInline) {
+    surface.result = surface.canvas.toDataURL();
+  } else {
+    surface.result = await surface.canvas.toBuffer('image/png');
+  }
+
   return surface;
 };
