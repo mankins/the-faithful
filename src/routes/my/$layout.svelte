@@ -198,8 +198,6 @@
             </main>
           </div>
         </div>
-
-        <slot />
       {:else if user && user.email}
         <AccessDenied
           message={`Sorry you don't have access to this as ${user.email}`}

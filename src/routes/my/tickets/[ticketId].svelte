@@ -7,20 +7,22 @@
 
 <script>
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
+  import Ticket from '$components/Ticket.svelte';
 
   import { onMount } from 'svelte';
-  import { parseParams } from '$components/utils/query';
+  // import { parseParams } from '$components/utils/query';
 
   let db;
   let firebase;
   let loaded = false;
   let user = {};
+  let ticket = {};
   export let ticketId;
+  let ticketFound = false;
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
     db = firebase.firestore();
-    loaded = true;
   };
 
   let handleLogin = async (profile) => {
@@ -33,10 +35,33 @@
     console.log({ user });
     firebase = firebase || profile.detail.firebase;
     db = db || firebase.firestore();
+    loaded = true;
+
+    if (ticketFound) {
+      return;
+    }
+    const docRef = db
+      .collection(`email/${user.email}/receipts`)
+      .doc(`${ticketId}`);
+    try {
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        // no thumbs
+        console.log('no ticket');
+        ticketFound = false;
+        return;
+      } else {
+        ticket = doc.data();
+        console.log({ ticket });
+        ticketFound = true;
+      }
+    } catch (e) {
+      console.log('ticket err', e);
+    }
   };
 
   onMount(async () => {
-    loaded = true;
+    // loaded = true;
   });
 </script>
 
@@ -47,23 +72,37 @@
     Annie Berman.</title
   >
   <meta
-  property="og:image"
-  content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+    property="og:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
   />
 
-<meta
-  property="twitter:image"
-  content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
-
-/>
-<meta property="twitter:card" content="summary_large_image" />
-
+  <meta
+    property="twitter:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+  <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   {#if loaded}
-  hi there tickets {ticketId}
+    <div class="m-6">
+      <div class="pb-5 border-b border-gray-200">
+        <h3
+          class="pt-24 text-3xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-5xl"
+        >
+          Ticket
+        </h3>
+      </div>
+      {#if ticketFound}
+        <Ticket {ticket} />
+      {:else}
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12 flex">
+        <svg class="text-faithful-800 h-10 w-10 ml-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <h3 class="p-2">Ticket not found</h3>
+      </div>    
+      {/if}
+    </div>
   {/if}
-
 </FirebaseProvider>
-
