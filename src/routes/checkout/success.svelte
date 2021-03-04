@@ -55,13 +55,23 @@
         const session = reply.data;
         console.log({ session });
 
-        if (session.livemode && session.amount && session.currency === 'usd') {
-          window.fathom.trackGoal('YJQPVOAW', session.amount || 0);
-          window.fbq('track', 'Purchase', {
-            currency: session.currency.toUpperCase(),
-            value: parseFloat(session.amount_decimal),
-          });
-        }
+        setTimeout(() => {
+          if (
+            session.livemode &&
+            session.amount &&
+            session.currency === 'usd'
+          ) {
+            try {
+              window.fathom.trackGoal('YJQPVOAW', session.amount || 0);
+              window.fbq('track', 'Purchase', {
+                currency: session.currency.toUpperCase(),
+                value: parseFloat(session.amount_decimal),
+              });
+            } catch (ee) {
+              console.log({ ee });
+            }
+          }
+        }, 5);
         processing = false;
       } catch (e) {
         window.pushToast(`Error completing transaction. ${e.message}`, 'alert');
@@ -69,6 +79,8 @@
       }
 
       clearInterval(waitTimer);
+    } else {
+       window.location.href= '/';        
     }
   });
 </script>
@@ -86,9 +98,6 @@
     </h1>
 
     <div class="w-5/6 md:w-4/6 ml-0 mt-8 mb-8">
-      <p class="text-justify text-gray-600">
-        We will email you your ticket and receipt.
-      </p>
       <p class="text-justify text-gray-600">
         On the day of the event you'll need your email address to login to see
         the event.

@@ -2,6 +2,9 @@
   import '$styles/tailwind.css';
   import '$styles/main.scss';
   import '$styles/fonts.css';
+
+  import * as Sentry from '@sentry/browser';
+  import { Integrations } from '@sentry/tracing';
   import { afterUpdate } from 'svelte';
   import { page as pageStore } from '$components/stores';
   //  import ThemeToggle from "$components/ThemeToggle.svelte";
@@ -29,6 +32,13 @@
         fireGoal(query.utm_campaign);
       }, 500);
     }
+
+    Sentry.init({
+      dsn:
+        'https://5a6ba0dde074485fbd80040aedb28d7a@o541573.ingest.sentry.io/5660669',
+      integrations: [new Integrations.BrowserTracing()],
+      tracesSampleRate: 1.0,
+    });
   });
 </script>
 

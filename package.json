@@ -38,6 +38,8 @@
 		"tinygesture": "^1.1.4"
 	},
 	"dependencies": {
+		"@sentry/browser": "^6.2.1",
+		"@sentry/tracing": "^6.2.1",
 		"@stripe/stripe-js": "^1.12.1",
 		"base58": "^2.0.1",
 		"firebase": "8.2.2",
