@@ -1,6 +1,16 @@
+<script>
+  export let open = true;
+
+  export let change = () => {};
+</script>
+
 <nav class="mt-5 flex-1 flex flex-col overflow-y-auto" aria-label="Sidebar">
   <div class="px-2 space-y-1">
     <a
+      on:click={() => {
+        open = !open;
+        change(open);
+      }}
       href="/my"
       class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
       aria-current="page"
@@ -28,6 +38,10 @@
     <div class="px-2 space-y-1">
       <a
         href="/my/tickets"
+        on:click={() => {
+            open = !open;
+            change(open);
+          }}    
         class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
       >
         <!-- Heroicon name: ticket -->
@@ -49,7 +63,11 @@
       </a>
 
       <a
-        href="#"
+        href="/my/theatre"
+        on:click={() => {
+            open = !open;
+            change(open);
+          }}    
         class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
       >
         <!-- Heroicon name: shield-check -->
@@ -75,7 +93,11 @@
         Watch
       </a>
       <a
-        href="#"
+        href="/my/chat"
+        on:click={() => {
+            open = !open;
+            change(open);
+          }}    
         class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
       >
         <!-- Heroicon name: chat-alt-2 -->

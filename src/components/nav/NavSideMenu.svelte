@@ -5,8 +5,6 @@
 
   export let change = () => {};
   export let open = true;
-
-  let ui = {};
 </script>
 
 {#if open}
@@ -58,7 +56,7 @@
       <div class="flex items-center flex-shrink-0 px-4">
         <a href="/"><img class="h-10 w-auto" src="/svg/logo.svg" alt="" /></a>
       </div>
-      <NavInner />
+      <NavInner bind:open={open} {change} />
     </div>
     <div class="flex-shrink-0 w-14" aria-hidden="true">
       <!-- Dummy element to force sidebar to shrink to fit close icon -->
