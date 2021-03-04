@@ -24,22 +24,20 @@
   let query = {};
 
   onMount(async () => {
-    query = parseParams(window.location.search);
-
-    // check for utm &utm_source=cid&utm_medium=email&utm_campaign=Y3FAKBV4
-    if (query.utm_campaign) {
-      setTimeout(() => {
-        fireGoal(query.utm_campaign);
-      }, 500);
-    }
-
     Sentry.init({
       dsn:
         'https://5a6ba0dde074485fbd80040aedb28d7a@o541573.ingest.sentry.io/5660669',
       integrations: [new Integrations.BrowserTracing()],
       tracesSampleRate: 1.0,
     });
-  });
+
+    query = parseParams(window.location.search);
+
+    // check for utm &utm_source=cid&utm_medium=email&utm_campaign=Y3FAKBV4
+    if (query.utm_campaign) {
+      fireGoal(query.utm_campaign);
+    }
+});
 </script>
 
 <main class="flex-grow">

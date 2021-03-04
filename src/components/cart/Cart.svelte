@@ -4,6 +4,7 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import Item from '$components/cart/Item.svelte';
+  import { fireGoal } from '$components/utils/analytics';
 
   import firebase from 'firebase/app';
   import 'firebase/auth';
@@ -17,7 +18,7 @@
 
   let loaded = false;
   let checkingOut = false;
-   
+
   let saveItems = () => {
     console.log('default');
   };
@@ -57,7 +58,7 @@
       const reply = await stripeCheckoutSession({ items, base });
       const session = reply.data;
       const stripe = window.Stripe(session.stripePubKey);
-      window.fathom.trackGoal('P44I1858', 0);
+      fireGoal('P44I1858');
       stripe.redirectToCheckout({ sessionId: session.id });
     } catch (e) {
       window.pushToast(`Error creating cart. ${e.message}`, 'alert');
@@ -112,7 +113,9 @@
           }}
           aria-hidden="true"
         />
-<script>window.fathom.trackGoal('MWXDWYLT', 0);</script>
+        <script>
+          window.fathom.trackGoal('MWXDWYLT', 0);
+        </script>
         <section
           class="absolute -mt-8 inset-y-0 right-0 pl-10 max-w-full flex"
           aria-labelledby="slide-over-heading"
