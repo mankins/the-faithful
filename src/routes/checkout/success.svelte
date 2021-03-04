@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
+  import * as Sentry from '@sentry/browser';
 
   import Footer from '$components/nav/Footer.svelte';
   import Nav from '$components/nav/Nav.svelte';
@@ -77,6 +78,7 @@
       } catch (e) {
         window.pushToast(`Error completing transaction. ${e.message}`, 'alert');
         waiter = `Bummer: error completing your request. [${e.message}] Email support?`;
+        Sentry.captureException(e);
       }
 
       clearInterval(waitTimer);
