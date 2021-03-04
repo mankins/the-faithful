@@ -117,8 +117,23 @@ module.exports.composeEmail = async function composeEmail(
   }
 
   console.log('running mail composer?');
-  let mimeMessage = await mailcomposer(msgParams).build();
-  console.log('got', mimeMessage.toString());
+  const composer = (async () => {
+    return new Promise(function (resolve, reject) {
+      mailcomposer(msgParams).build(
+        function (composerErr, mimeMessage) {
+          if (composerErr) {
+            console.log('composer err', composerErr);
+            return reject (composerErr);
+          }
+          resolve(mimeMessage);
+        }
+      );
+    });
+  });
 
-  return mimeMessage;
+  let mimeMessage = await composer(msgParams);
+  // console.log(mimeMessage, '?');
+  // console.log(`msg\n------\n${mimeMessage.toString()}\n-----\n`);
+
+  return { mime: `${mimeMessage.toString()}`, rendered };
 };

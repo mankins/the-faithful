@@ -34,6 +34,7 @@
     "lodash": "^4.17.21",
     "lodash.get": "^4.4.2",
     "mailcomposer": "^4.0.2",
+    "mailgun-js": "^0.22.0",
     "md5": "^2.3.0",
     "node-fetch": "^2.6.1",
     "qs": "^6.9.6",

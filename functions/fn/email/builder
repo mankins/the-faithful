@@ -1,0 +1,3 @@
+#!/bin/bash
+
+fswatch -o templates/src | xargs -n1 -I{} ./compile-templates

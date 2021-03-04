@@ -10,7 +10,7 @@ const getSecrets = require('../../lib/env'); // load environment config
 const secrets = getSecrets('the-faithful');
 
 const renderers = require('./renderers');
-const { sendEmail } = require('./email.js');
+const { sendEmail, composeEmail } = require('./email.js');
 
 const pubsub = new PubSub({ projectId: 'the-faithful' }); // {projectId}
 
@@ -64,7 +64,7 @@ exports.sendEmailPubSub = functions.pubsub
         }
       }
 
-      const email = payload.email || 'mankins@gmail.com';
+      const email = payload.email;
       const msgParams = {
         eventId: context.eventId,
         templateName: 'hi',
@@ -79,7 +79,7 @@ exports.sendEmailPubSub = functions.pubsub
         console.log(e.code);
         if (e.code !== 'invalid email format') {
             console.log({ e, src: 'pubsub-send-email' });
-            throw new Error('error processing send-email');
+            throw new Error(`error processing send-email ${e}`);
         }
     }
 
@@ -88,13 +88,32 @@ exports.sendEmailPubSub = functions.pubsub
   });
 
 exports.apiEmail = functions.https.onRequest(async (req, res) => {
-  console.log({ q: req.query });
-  try {
-    const result = await publishMessage({ ...req.query });
-    return res.status(200).send(result);
-  } catch (e) {
-    return res.status(500).send(e.code);
-  }
+    console.log({ q: req.query });
+    if (req.query.preview) {
+        const payload = { ...req.query };
+        try {
+            const email = payload.email;
+            const msgParams = {
+              templateName: 'hi',
+              email,
+              to: payload.to || email,
+              name: payload.name || '',
+            };
+            console.log('calling composeemail', { payload, msgParams });
+            const composed = await composeEmail(payload, msgParams);
+            return res.status(200).send(composed.rendered.html);          
+          } catch (e) {
+            return res.status(500).send(e.code);
+          }
+        
+    } else {
+        try {
+            const result = await publishMessage({ ...req.query });
+            return res.status(200).send(result);
+          } catch (e) {
+            return res.status(500).send(e.code);
+          }        
+    }
 });
 
 exports.apiImage = functions.https.onRequest(async (req, res) => {
