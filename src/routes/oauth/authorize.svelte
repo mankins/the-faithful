@@ -35,7 +35,7 @@
       }
       if (authResponse && authResponse.btpToken) {
          document.cookie = `_coil_btp=${authResponse.btpToken}; path=/`; // session
-         document.cookie = '_oauth_state=; path=/; maxAge=-1';
+         document.cookie = '_oauth_state=; path=/; max-age=-1';
       }
 
     } catch (e) {

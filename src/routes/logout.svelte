@@ -7,9 +7,9 @@
       console.log('not logged out.');
       return;
     }
-    document.cookie = `_em=; path=/; maxAge=-1`;
-    document.cookie = `_coil_btp=; path=/; maxAge=-1`;
-    document.cookie = '_oauth_state=; path=/; maxAge=-1';
+    document.cookie = `_em=; path=/; max-age=-1`;
+    document.cookie = `_coil_btp=; path=/; max-age=-1`;
+    document.cookie = '_oauth_state=; path=/; max-age=-1';
 
     loggingOut = false;
   };

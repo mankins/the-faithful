@@ -40,6 +40,7 @@
     ) {
       console.log('not logged in.');
       entitled = false;
+      document.cookie = `_em=; path=/; max-age=-1`;
       return;
     }
     document.cookie = `_em=1; path=/`; // session
@@ -54,7 +55,8 @@
 
   let handleAuthFailure = () => {
     entitled = false;
-    document.cookie = `_em=; path=/; maxAge=-1`;
+    loaded = true;
+    document.cookie = `_em=; path=/; max-age=-1`;
   };
 
   onMount(async () => {
@@ -206,7 +208,7 @@
         <LoginModal {nextUrl} />
       {/if}
     {/if}
-  </FirebaseProvider>
+</FirebaseProvider>
   <Toast />
   <Processing processing={!loaded} />
 </div>
