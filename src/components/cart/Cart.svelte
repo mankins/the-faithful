@@ -169,7 +169,24 @@
               <div class="text-gray-700 text-xs mt-2 sm:mt-6 text-center">
                 All times Eastern Time (US) EST UTC-5
               </div>
-
+              <div class="">
+                <div
+                  class="inset-x-0 bottom-0 mr-2 sm:mr-6 ml-10 sm:ml-16 mb-0 space-x-3 flex justify-end bg-faithful-500 p-10"
+                />
+                <div
+                  class="inset-x-0 bottom-0 mr-6 ml-6 mb-2 space-x-2 flex justify-end"
+                >
+                  <button
+                    on:click={() => {
+                      handleCheckout();
+                    }}
+                    disabled={items.length === 0 || checkingOut || !loaded}
+                    class="inline-flex justify-center w-full py-2 px-4 border border-transparent shadow-xl text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-900 disabled:opacity-50"
+                  >
+                    Checkout
+                  </button>
+                </div>
+              </div>
               <div class="mt-1 sm:mt-6 relative flex-1 px-4 sm:px-6">
                 <div
                   class="absolute inset-0 px-4 sm:px-6 overflow-scroll-y flex-shrink h-screen"
@@ -196,24 +213,6 @@
                       {/each}
                     </ul>
                   </div>
-                </div>
-              </div>
-              <div class="flex-shrink-0 px-4 py-5 sm:px-6">
-                <div
-                  class="absolute inset-x-0 bottom-0 mr-2 sm:mr-6 ml-10 sm:ml-16 mb-0 space-x-3 flex justify-end bg-faithful-500 p-10"
-                />
-                <div
-                  class="absolute inset-x-0 bottom-0 mr-6 ml-16 mb-6 space-x-3 flex justify-end"
-                >
-                  <button
-                    on:click={() => {
-                      handleCheckout();
-                    }}
-                    disabled={items.length === 0 || checkingOut || !loaded}
-                    class="inline-flex justify-center w-full py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-900 disabled:opacity-50"
-                  >
-                    Checkout
-                  </button>
                 </div>
               </div>
             </div>
