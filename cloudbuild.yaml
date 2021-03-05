@@ -42,15 +42,6 @@ steps:
     waitFor: ["cloud functions install"]
     dir: 'functions'
 
-    # - id: "build image - ssr"
-  #   name: "gcr.io/cloud-builders/docker"
-  #   waitFor: ['-']
-  #   args: ["build", "-t", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}", "."]
-#  - id: "push image"
-#     name: "gcr.io/cloud-builders/docker"
-#     waitFor: ['build image - ssr']
-#     args: ["push", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}"]
-
   - id: "build image - ssr"
     name: 'gcr.io/kaniko-project/executor:latest'
     waitFor: ['-']
@@ -61,10 +52,20 @@ steps:
     waitFor: ['-']
     args: ["build", "-t", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}-ingress", "infra/ingress"]
 
+  - id: "build image - tracking-proxy"
+    name: "gcr.io/cloud-builders/docker"
+    waitFor: ['-']
+    args: ["build", "-t", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}-tracking-proxy", "infra/tracking-proxy"]
+
   - id: "push image - ingress"
     name: "gcr.io/cloud-builders/docker"
     waitFor: ['build image - ingress']
     args: ["push", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}-ingress"]
+
+  - id: "push image - tracking-proxy"
+    name: "gcr.io/cloud-builders/docker"
+    waitFor: ['build image - tracking-proxy']
+    args: ["push", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}-tracking-proxy"]
 
   - id: "deploy prod service"
     name: "gcr.io/google.com/cloudsdktool/cloud-sdk"

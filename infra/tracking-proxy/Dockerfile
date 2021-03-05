@@ -5,6 +5,7 @@ WORKDIR /app/infra/tracking-proxy
 COPY . .
 
 ENV HOST 0.0.0.0
-RUN npm install
-EXPOSE 3000
+RUN npm ci
+EXPOSE $PORT
+
 CMD [ "node", "index.js" ]

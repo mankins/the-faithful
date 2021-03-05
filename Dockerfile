@@ -9,7 +9,8 @@ WORKDIR /app
 # COPY snowpack.config.js snowpack.config.cjs
 COPY package.json .
 COPY package-lock.json .
-RUN npm install --no-audit --unsafe-perm
+# RUN npm install --no-audit --unsafe-perm
+RUN npm ci
 COPY . .
 ARG COMMIT_SHA=$COMMIT_SHA
 RUN NODE_ENV=production COMMIT_SHA=$COMMIT_SHA npm run build
