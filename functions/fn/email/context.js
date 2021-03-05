@@ -8,6 +8,9 @@ function fontFile(name) {
 function _addFonts() {
   // must happen before canvas
   registerFont(fontFile('Recoleta-Medium.ttf'), { family: 'recoleta' });
+  registerFont(fontFile('Recoleta-Bold.ttf'), { family: 'recoleta-bold', style: 'bold' });
+  registerFont(fontFile('Recoleta-Black.ttf'), { family: 'recoleta-black', weight: 900 });
+  registerFont(fontFile('Recoleta-Thin.ttf'), { family: 'recoleta-thin', weight: 100 });
 }
 
 exports.custom = function custom(width, height) {

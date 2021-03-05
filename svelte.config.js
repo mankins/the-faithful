@@ -5,7 +5,7 @@ module.exports = {
   preprocess: sveltePreprocess({
     replace: [
       ['process.env.NODE_ENV', JSON.stringify(process.env.NODE_ENV)],
-      ['process.env.APP_VERSION', JSON.stringify(process.env.APP_VERSION)],
+      ['process.env.COMMIT_SHA', JSON.stringify(process.env.COMMIT_SHA || 'unset')],
     ],
   }),
   kit: {

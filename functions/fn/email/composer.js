@@ -3,6 +3,10 @@ const validateEmail = require('rfc822-validate');
 const mailcomposer = require('mailcomposer');
 const inlineCss = require('inline-css');
 const cheerio = require('cheerio');
+// const mailgunJs = require('mailgun-js');
+// const getSecrets = require('../../lib/env'); // load environment config
+// const secrets = getSecrets('the-faithful');
+// let mailgun;
 
 const _ = require('lodash');
 const md5 = require('md5');
@@ -26,7 +30,7 @@ function getTo(Context) {
   return `<${to}>`;
 }
 
-function normalizeContext(Context) {
+async function normalizeContext(Context) {
   Context.year = new Date().getFullYear();
 
   Context.subjectSimple = Context.subject; // allow in templates w/o []
@@ -34,6 +38,21 @@ function normalizeContext(Context) {
   if (Context.subject && Context.subject.indexOf('[The Faithful]') === -1) {
     Context.subject = '' + Context.subject;
   }
+
+  // not needed, automatic?
+  // const config = await secrets;
+
+  // if (!mailgun) {
+  //   // init
+  //   mailgun = mailgunJs({
+  //     apiKey: config.MAILGUN_PRIVATE,
+  //     domain: 'elvis.the-faithful.com',
+  //   });
+  // }
+
+  // const tracking = await domains.getTracking('elvis.the-faithful.com');
+  // Context.unsubscribeLink = tracking.
+
 }
 
 async function expandInlineImages(rendered, Context) {
@@ -138,7 +157,7 @@ module.exports.composeEmail = async function composeEmail(
   const defaultContext = templates.defaultContext(templateName) || {};
   _.extend(Context, defaultContext);
 
-  normalizeContext(Context);
+  await normalizeContext(Context);
   console.log('Context now', Context);
 
   msgParams = {

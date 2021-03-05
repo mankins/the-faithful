@@ -66,8 +66,7 @@ exports.sendEmailPubSub = functions.pubsub
 
       const email = payload.email;
       const msgParams = {
-        eventId: context.eventId,
-        templateName: 'hi',
+        templateName: payload.template,
         email,
         to: payload.to || email,
         name: payload.name || '',
@@ -89,8 +88,9 @@ exports.sendEmailPubSub = functions.pubsub
 
 exports.apiEmail = functions.https.onRequest(async (req, res) => {
     console.log({ q: req.query });
+    const payload = { ...req.query };
+
     if (req.query.preview) {
-        const payload = { ...req.query };
         try {
             const email = payload.email;
             const msgParams = {
@@ -108,7 +108,7 @@ exports.apiEmail = functions.https.onRequest(async (req, res) => {
         
     } else {
         try {
-            const result = await publishMessage({ ...req.query });
+            const result = await publishMessage(payload);
             return res.status(200).send(result);
           } catch (e) {
             return res.status(500).send(e.code);

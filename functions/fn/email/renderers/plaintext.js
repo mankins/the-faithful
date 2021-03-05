@@ -75,9 +75,9 @@ exports.process = async (params, isInline) => {
 
     // BIG text
     // ctx.font = 'normal ' + bigTextSize + 'px recoleta';
-    ctx.font = `${fitTextOnCanvas(ctx, bigText, 'recoleta', w-20)}px recoleta`;
+    ctx.font = `${fitTextOnCanvas(ctx, bigText, 'recoleta', w-40)}px recoleta-bold`;
     ctx.fillStyle = bigStyle || bgStyle;
-    ctx.fillText(bigText, 10, 185 + offset);
+    ctx.fillText(bigText, 20, 185 + offset);
 
     // next line
     var line = params.smalltext1 || '';
