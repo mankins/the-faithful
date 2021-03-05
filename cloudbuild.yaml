@@ -54,7 +54,7 @@ steps:
   - id: "build image - ssr"
     name: 'gcr.io/kaniko-project/executor:latest'
     waitFor: ['-']
-    args: ["--destination=gcr.io/${PROJECT_ID}/${_SERVICE_NAME}",'--cache=false','--cache-ttl=48h']
+    args: ["--destination=gcr.io/${PROJECT_ID}/${_SERVICE_NAME}",'--cache=true','--cache-ttl=4h', '--build-arg', "COMMIT_SHA=${SHORT_SHA}"]
  
   - id: "build image - ingress"
     name: "gcr.io/cloud-builders/docker"

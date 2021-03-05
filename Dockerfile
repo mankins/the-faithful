@@ -11,7 +11,8 @@ COPY package.json .
 COPY package-lock.json .
 RUN npm install --no-audit --unsafe-perm
 COPY . .
-RUN NODE_ENV=production npm run build
+ARG COMMIT_SHA=$COMMIT_SHA
+RUN NODE_ENV=production COMMIT_SHA=$COMMIT_SHA npm run build
 
 EXPOSE 3000
 CMD ["npm", "run", "start"]
