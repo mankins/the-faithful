@@ -181,9 +181,9 @@
                       handleCheckout();
                     }}
                     disabled={items.length === 0 || checkingOut || !loaded}
-                    class="inline-flex justify-center w-full py-2 px-4 border border-transparent shadow-xl text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-900 disabled:opacity-50"
+                    class="inline-flex justify-center w-full py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-900 disabled:opacity-50"
                   >
-                    Checkout
+                    Proceed to checkout
                   </button>
                 </div>
               </div>
