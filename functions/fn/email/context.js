@@ -10,7 +10,8 @@ function _addFonts() {
   registerFont(fontFile('Recoleta-Medium.ttf'), { family: 'recoleta' });
   registerFont(fontFile('Recoleta-Bold.ttf'), { family: 'recoleta-bold', style: 'bold' });
   registerFont(fontFile('Recoleta-Black.ttf'), { family: 'recoleta-black', weight: 900 });
-  registerFont(fontFile('Recoleta-Thin.ttf'), { family: 'recoleta-thin', weight: 100 });
+    registerFont(fontFile('Recoleta-Thin.ttf'), { family: 'recoleta-thin', weight: 100 });
+    registerFont(fontFile('Inter-Medium.ttf'), { family: 'inter', weight: 500 });    
 }
 
 exports.custom = function custom(width, height) {

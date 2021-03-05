@@ -32,7 +32,7 @@ var context = require('../context'); // drawing context, not lambda
 
   ctx.fillStyle = fgStyle;
   var txtSize = parseInt(params.txtsize, 10) || 16;
-  ctx.font = 'normal ' + txtSize + 'px asap';
+  ctx.font = 'normal ' + txtSize + 'px inter';
   ctx.antialias = 'subpixel';
 
   var ctaText = params.button || 'Login';
@@ -69,7 +69,7 @@ var context = require('../context'); // drawing context, not lambda
   ctx.fillStyle = params.buttontxt || '#ffffff';
   // console.log('...............', startX, startY, endX, endY, m);
   var textLeft = (w / 2) - (textFullWidth - xMovement) / 2;
-  var textTop = startY + parseInt((endY) / 2, 10) + parseInt(textHeight / 2, 10);
+  var textTop = startY + 1 + (parseInt((endY + textHeight), 10) / 2);
   ctx.fillText(ctaText, textLeft, textTop);
 
   if (isInline) {
