@@ -157,9 +157,8 @@
 
     <div class="w-5/6 md:w-4/6">
       <p class="text-justify text-gray-600">
-        Limited virtual cinema screenings are available from March, 2021. Some
-        screenings are live events with the filmmakers present. Other screenings
-        are video on demand and can be watched at your leisure.
+        Limited virtual cinema screenings are available from March 18-21, 2021.
+        All screenings are live events with the filmmakers present.
       </p>
     </div>
   </div>

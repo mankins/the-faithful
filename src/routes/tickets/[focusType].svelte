@@ -84,27 +84,31 @@
 <svelte:head>
   <meta name="twitter:site" content="@TheFaithful" />
   <title
-    >The Faithful: The King, The Pope, The Princess – A Movie by
-    Annie Berman about Elvis, Pope John Paul II, and Diana Princess of Wales</title
+    >The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman
+    about Elvis, Pope John Paul II, and Diana Princess of Wales</title
   >
   <meta
-  property="og:image"
-  content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+    property="og:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
   />
 
-<meta
-  property="twitter:image"
-  content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  <meta
+    property="twitter:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+  <meta property="twitter:card" content="summary_large_image" />
 
-/>
-<meta property="twitter:card" content="summary_large_image" />
-
-<meta property="og:video" content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4" />
-<meta property="og:video:secure_url" content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4" />
-<meta property="og:video:type" content="video/mp4" />
-<meta property="og:video:width" content="640" />
-<meta property="og:video:height" content="360" />
-
+  <meta
+    property="og:video"
+    content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4"
+  />
+  <meta
+    property="og:video:secure_url"
+    content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4"
+  />
+  <meta property="og:video:type" content="video/mp4" />
+  <meta property="og:video:width" content="640" />
+  <meta property="og:video:height" content="360" />
 </svelte:head>
 
 <div class="min-h-screen bg-faithful-500 overscroll-x-contain overflow-hidden">
@@ -154,9 +158,8 @@
 
     <div class="w-5/6 md:w-4/6">
       <p class="text-justify text-gray-600">
-        Limited virtual cinema screenings are available from March, 2021. Some
-        screenings are live events with the filmmakers present. Other screenings
-        are video on demand and can be watched at your leisure.
+        Limited virtual cinema screenings are available from March 18-21, 2021.
+        All screenings are live events with the filmmakers present.
       </p>
     </div>
   </div>
