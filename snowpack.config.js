@@ -3,6 +3,10 @@ const path = require('path');
 const pkg = require(path.join(process.cwd(), 'package.json'));
 const sveltePreprocess = require("svelte-preprocess");
 const preprocess = sveltePreprocess({
+  replace: [
+    ['process.env.NODE_ENV', JSON.stringify(process.env.NODE_ENV)],
+    ['process.env.APP_VERSION', JSON.stringify(process.env.APP_VERSION)],
+  ],
   scss: {
     includePaths: ["src"],
   },

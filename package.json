@@ -2,7 +2,7 @@
 	"name": "the-faithful",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "dotenv -- svelte-kit dev -p 5000",
+		"dev": "COMMIT_SHA=$(git rev-parse HEAD) dotenv -- svelte-kit dev -p 5000",
 		"build": "svelte-kit build",
 		"start": "svelte-kit start -p ${PORT:=3000}"
 	},
