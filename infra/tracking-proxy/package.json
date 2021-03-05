@@ -1,0 +1,14 @@
+{
+  "name": "tracking-proxy",
+  "version": "1.0.0",
+  "description": "If only things were simple.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http-proxy": "^1.18.1"
+  }
+}

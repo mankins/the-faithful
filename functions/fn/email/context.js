@@ -1,5 +1,5 @@
 const path = require('path');
-const { createCanvas, registerFont, Image } = require('canvas');
+const { createCanvas, registerFont } = require('canvas');
 
 function fontFile(name) {
   return path.join(__dirname, '../../fonts/', name);

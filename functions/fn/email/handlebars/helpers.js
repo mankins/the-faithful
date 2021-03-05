@@ -17,7 +17,7 @@ ExpressionRegistry.prototype.add = function(operator, method) {
 };
 
 ExpressionRegistry.prototype.call = function(operator, left, right) {
-    if (!this.expressions.hasOwnProperty(operator)) {
+    if (!this.expressions.hasOwnProperty(operator)) { // eslint-disable-line no-prototype-builtins
         throw new Error('Unknown operator "' + operator + '"');
     }
 
@@ -134,7 +134,7 @@ exports.encodeUrl = exports.encodeUri = function(string) {
    return encodeURIComponent(string);
 };
 
-exports.ts = function(string) {
+exports.ts = function() {
     return Date.now() + '';
 };
 
@@ -162,7 +162,7 @@ exports.commas = function(val) {
     return val;
 };
 
-exports.substr = function(length, context, options) {
+exports.substr = function(length, context) {
     if (context.length > length) {
         return context.substring(0, length) + "...";
     } else {
@@ -174,9 +174,9 @@ exports.yyyymm = function(yyyymm) {
     return yyyymm.substring(0, 4) + '-' + yyyymm.substring(4);
 };
 
-exports.nl2br = function(text) {
-    var nl2br = (text + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
-    return new Handlebars.SafeString(nl2br);
+exports.nl2br = function() {
+    // var nl2br = (text + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
+    // return new Handlebars.SafeString(nl2br);
 };
 
 exports.json = function() {

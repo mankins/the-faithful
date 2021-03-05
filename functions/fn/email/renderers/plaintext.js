@@ -53,7 +53,7 @@ exports.process = async (params, isInline) => {
     var medText = params.medtext || '';
     var smallTextSize = parseInt(params.smalltextsize, 10) || 24;
     var medTextSize = parseInt(params.medtextsize, 10) || 42;
-    var bigTextSize = parseInt(params.bigtextsize, 10) || 92;
+    // var bigTextSize = parseInt(params.bigtextsize, 10) || 92;
 
     var smallStyle = params.smallstyle || '';
     var smallStyle2 = params.smallstyle2 || '';

@@ -1,13 +1,13 @@
 const { PubSub } = require('@google-cloud/pubsub');
-const get = require('lodash.get');
+// const get = require('lodash.get');
 
 const functions = require('firebase-functions');
 
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
 
-const getSecrets = require('../../lib/env'); // load environment config
+// const getSecrets = require('../../lib/env'); // load environment config
 
-const secrets = getSecrets('the-faithful');
+// const secrets = getSecrets('the-faithful');
 
 const renderers = require('./renderers');
 const { sendEmail, composeEmail } = require('./email.js');
@@ -119,7 +119,7 @@ exports.apiEmail = functions.https.onRequest(async (req, res) => {
 exports.apiImage = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
 
-  const config = await secrets;
+//   const config = await secrets;
 
   if (req.method === 'OPTIONS') {
     // Send response to OPTIONS requests
