@@ -1,6 +1,7 @@
 const baseProducts = [
   'video:t2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE', // trailer 2021-02-11
   'video:pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ', // trailer 2021-02-12
+  'video:LICidNn6bbaPjiIwJpOMEzZx7tO72H2IKeFTyLH4c3s', // paulo 2021-03-05
   'video:*:trailer',
   // 'video:*:preview'
 ];
