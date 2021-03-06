@@ -25,29 +25,42 @@
   };
 </script>
 
-<tr>
-  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-    <ul class="border border-gray-200 rounded-md divide-y divide-gray-200">
-      {#each get(ticket, 'receipt.products', []) as productId, i}
-        <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm mt-2 bg-gray-50">
-          {getProductFromId(productId)}
-        </li>
-      {/each}
-    </ul>
-  </td>
-  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-    {get(ticket, 'receipt.paid', '-')}
-  </td>
-  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-    {get(ticket, 'receipt.ts', '')}
-  </td>
-  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-    ({get(ticket, 'receipt.type', '-')})
-  </td>
-  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-    <a
-      href={`/my/tickets/${get(ticket, 'receipt.id', '')}`}
-      class="text-faithful-600 hover:text-faithful-900">View</a
-    >
-  </td>
-</tr>
+<a href={`/my/tickets/${get(ticket, 'receipt.id', '')}`} class="block hover:bg-gray-50">
+
+  <div class="flex items-center px-4 py-4 sm:px-6">
+    <div class="min-w-0 flex-1 flex items-center">
+      <div class="flex-shrink-0">
+        <picture>
+          <source type="image/webp" srcset="/img/diana-illustrated.webp" />
+        <img class="h-12 w-12 rounded-full" src="/img/diana-illustrated.jpg" alt="">
+        </picture>
+      </div>
+      <div class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
+        <div>          
+            {#each get(ticket, 'receipt.products', []) as productId, i}
+              <p class="text-sm font-medium text-gray-900 truncate mb-2">
+                {getProductFromId(productId)}
+              </p>
+          {/each}
+        </div>
+        <div class="hidden md:block">
+          <div>
+            <p class="text-sm text-gray-900">              
+              <time datetime={get(ticket, 'receipt.ts', '').substring(0, 10)}>{get(ticket, 'receipt.ts', '').substring(0, 10)}</time>
+            </p>
+            <p class="mt-2 flex items-center text-sm text-gray-500">
+              {get(ticket, 'receipt.paid', '-')}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <!-- Heroicon name: solid/chevron-right -->
+      <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+      </svg>
+    </div>
+  </div>
+</a>
+
