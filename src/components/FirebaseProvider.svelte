@@ -266,11 +266,13 @@
       await actions.doLogin(provider, 'facebook');
     };
 
-    actions.clickCoilSignin = async () => {
+    actions.clickCoilSignin = async (nextUrl) => {
       console.log('coil signin!');
       const redirectUri = `${window.location.origin}/oauth/authorize`;
       const cookieState = shortId();
       document.cookie = `_oauth_state=${cookieState}; path=/`;
+      document.cookie = `_oauth_redir=${encodeURIComponent(nextUrl)}; path=/`;
+
       window.location.href = `https://coil.com/oauth/auth?response_type=code&scope=${encodeURIComponent(
         'simple_wm openid email'
       )}&client_id=7d90b18a-2c64-4769-8ecf-63d1101f6e45&state=${cookieState}&redirect_uri=${encodeURIComponent(

@@ -36,6 +36,7 @@
       if (authResponse && authResponse.btpToken) {
          document.cookie = `_coil_btp=${authResponse.btpToken}; path=/`; // session
          document.cookie = '_oauth_state=; path=/; max-age=-1';
+         document.cookie = '_oauth_redir=; path=/; max-age=-1';
       }
 
     } catch (e) {
@@ -44,7 +45,8 @@
     }
 
     loaded = true;
-    window.location.href = '/';
+    const nextUrl = decodeURIComponent(cookies._oauth_redir || '/') || '/';
+    window.location.href = nextUrl;
   };
 
   onMount(async () => {
