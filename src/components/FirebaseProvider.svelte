@@ -51,6 +51,10 @@
 
           dispatch('auth-success', { user, firebase });
         } else {
+          if (user.uid) {
+            window.Sentry.setUser({ id: user.uid });
+          }
+
           dispatch('auth-success-anonymous', { user, firebase });
         }
       } else {
