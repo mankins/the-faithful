@@ -80,25 +80,24 @@ async function expandInlineImages(rendered, Context) {
         if (atriType && atriId) {
           console.log('converting', atriType, atriId, { ...atri.attribs });
           promises.push(renderers[atriType].process({ ...atri.attribs }, true));
-          contextData.push({ atriId, atriType });
+          contextData.push({ atriId, atriType, attribs: {...atri.attribs } });
         }
       });
       atris = await Promise.all(promises);
 
       atris.forEach((data, i) => {
-        const { atriId } = contextData[i];
+        const { atriId, attribs } = contextData[i];
         console.log(atriId, data);
         const imgData = data.result;
-
         console.log('got', atriId, imgData.length);
 
         const imgCid = md5(imgData);
         console.log(imgCid, 'cid');
         if (Context.preview) {
-          $('#' + atriId).replaceWith('<img src="' + imgData + '">');
+          $('#' + atriId).replaceWith(`<img alt="${attribs.alt || ''}" src="${imgData}">`);
         } else {
           $('#' + atriId).replaceWith(
-            `<img id="${atriId}" src="cid:${imgCid}" />`
+            `<img id="${atriId}" alt="${attribs.alt || ''}" src="cid:${imgCid}" />`
           );
         }
 

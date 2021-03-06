@@ -124,9 +124,11 @@ exports.stripeCheckoutSession = functions.https.onCall(async (data) => {
   // ];
 
   const productIds = {};
+  let quantity = 0;
 
   items.forEach((item) => {
-    productIds[item.productId] = true;
+    productIds[item.productId] = (+productIds[item.productId] || 0) + (item.quantity || 1);
+    quantity = quantity + (item.quantity || 1);
 
     const stripeItem = {};
     stripeItem.quantity = item.quantity || 1;
@@ -148,7 +150,9 @@ exports.stripeCheckoutSession = functions.https.onCall(async (data) => {
 
   const metadata = {};
   metadata.products = JSON.stringify(Object.keys(productIds)); // array of video:thing shiro
-
+  metadata.productQuantity = JSON.stringify(productIds); // video:thing = 1
+  metadata.quantity = quantity;
+  
   const session = await _stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     allow_promotion_codes: true,

@@ -31,7 +31,7 @@
       "port": 15000
     },
     "pubsub": {
-      "port": 18000
+      "port": 18002
     },
     "ui": {
       "enabled": true
