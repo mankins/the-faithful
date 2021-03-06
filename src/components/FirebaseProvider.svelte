@@ -35,13 +35,20 @@
 
       dispatch('init', { firebase });
     }
-
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    try {
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    } catch (e) {
+      console.log('persistence local not available', e);
+    }
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
         // User is signed in.
         console.log({ user }, 'aaa');
         if (user && !user.isAnonymous) {
+          if (user.email) {
+            window.Sentry.setUser({ email: user.email });
+          }
+
           dispatch('auth-success', { user, firebase });
         } else {
           dispatch('auth-success-anonymous', { user, firebase });
@@ -260,7 +267,11 @@
       const redirectUri = `${window.location.origin}/oauth/authorize`;
       const cookieState = shortId();
       document.cookie = `_oauth_state=${cookieState}; path=/`;
-      window.location.href = `https://coil.com/oauth/auth?response_type=code&scope=${encodeURIComponent('simple_wm openid email')}&client_id=7d90b18a-2c64-4769-8ecf-63d1101f6e45&state=${cookieState}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+      window.location.href = `https://coil.com/oauth/auth?response_type=code&scope=${encodeURIComponent(
+        'simple_wm openid email'
+      )}&client_id=7d90b18a-2c64-4769-8ecf-63d1101f6e45&state=${cookieState}&redirect_uri=${encodeURIComponent(
+        redirectUri
+      )}`;
     };
 
     // dispatch any params
