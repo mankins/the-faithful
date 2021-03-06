@@ -39,6 +39,7 @@
       integrations: [new Integrations.BrowserTracing()],
       tracesSampleRate: 1.0,
     });
+    window.Sentry = window.Sentry || Sentry;
     query = parseParams(window.location.search);
 
     // check for utm &utm_source=cid&utm_medium=email&utm_campaign=Y3FAKBV4
