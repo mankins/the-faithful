@@ -8,37 +8,37 @@ steps:
 
   - id: "cloud functions deploy - slackRelay"
     name: 'gcr.io/cloud-builders/gcloud'
-    args: ['functions', 'deploy', 'slackRelay', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=slackRelay', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=256']
+    args: ['functions', 'deploy', 'slackRelay', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=slackRelay', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=512']
     waitFor: ["cloud functions install"]
     dir: 'functions'
 
   # - id: "cloud functions deploy - transcoderIn"
   #   name: 'gcr.io/cloud-builders/gcloud'
-  #   args: ['functions', 'deploy', 'transcoderIn', '--source=.', '--trigger-resource', 'video.the-faithful.com', '--trigger-event', 'google.storage.object.finalize', '--runtime', 'nodejs14', '--entry-point=transcoderIn', '--region', "${_REGION}", '--memory=256']
+  #   args: ['functions', 'deploy', 'transcoderIn', '--source=.', '--trigger-resource', 'video.the-faithful.com', '--trigger-event', 'google.storage.object.finalize', '--runtime', 'nodejs14', '--entry-point=transcoderIn', '--region', "${_REGION}", '--memory=512']
   #   waitFor: ["cloud functions install"]
   #   dir: 'functions'
 
   - id: "cloud functions deploy - stripeCheckoutSession"
     name: 'gcr.io/cloud-builders/gcloud'
-    args: ['functions', 'deploy', 'stripeCheckoutSession', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=stripeCheckoutSession', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=256']
+    args: ['functions', 'deploy', 'stripeCheckoutSession', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=stripeCheckoutSession', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=512']
     waitFor: ["cloud functions install"]
     dir: 'functions'
 
   - id: "cloud functions deploy - stripeCheckoutSuccess"
     name: 'gcr.io/cloud-builders/gcloud'
-    args: ['functions', 'deploy', 'stripeCheckoutSuccess', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=stripeCheckoutSuccess', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=256']
+    args: ['functions', 'deploy', 'stripeCheckoutSuccess', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=stripeCheckoutSuccess', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=512']
     waitFor: ["cloud functions install"]
     dir: 'functions'
 
   - id: "cloud functions deploy - userEntitlements"
     name: 'gcr.io/cloud-builders/gcloud'
-    args: ['functions', 'deploy', 'userEntitlements', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=userEntitlements', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=256']
+    args: ['functions', 'deploy', 'userEntitlements', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=userEntitlements', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=512']
     waitFor: ["cloud functions install"]
     dir: 'functions'
 
   - id: "cloud functions deploy - oauthAuthorize"
     name: 'gcr.io/cloud-builders/gcloud'
-    args: ['functions', 'deploy', 'oauthAuthorize', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=oauthAuthorize', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=256']
+    args: ['functions', 'deploy', 'oauthAuthorize', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=oauthAuthorize', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=512']
     waitFor: ["cloud functions install"]
     dir: 'functions'
 

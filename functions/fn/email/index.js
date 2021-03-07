@@ -1,5 +1,5 @@
 const { PubSub } = require('@google-cloud/pubsub');
-// const get = require('lodash.get');
+const get = require('lodash.get');
 
 const functions = require('firebase-functions');
 
@@ -9,8 +9,13 @@ const functions = require('firebase-functions');
 
 // const secrets = getSecrets('the-faithful');
 
+const mailgunJs = require('mailgun-js');
+
+let mailgun;
+
 const renderers = require('./renderers');
 const { sendEmail, composeEmail } = require('./email.js');
+const { sendEvent } = require('../../lib/events');
 
 const pubsub = new PubSub({ projectId: 'the-faithful' }); // {projectId}
 
@@ -46,6 +51,7 @@ exports.sendEmailPubSub = functions.pubsub
     console.log('Processing', context);
 
     let payload = {};
+    let events = [];
     try {
       // Decode the PubSub Message body.
       const rawPayload = message.data
@@ -74,52 +80,105 @@ exports.sendEmailPubSub = functions.pubsub
       console.log('calling sendemail', { payload, msgParams });
       const out = await sendEmail(payload, msgParams);
       console.log({ out });
+      // event: consumer charged
+      events.push(
+        sendEvent(
+          {
+            payload,
+            response: { ...out, via: 'mg' },
+            _email: email,
+          },
+          {
+            topic: 'email.sent',
+            source: 'api.email',
+            email: payload.to,
+          }
+        )
+      );
     } catch (e) {
-        console.log(e.code);
-        if (e.code !== 'invalid email format') {
-            console.log({ e, src: 'pubsub-send-email' });
-            throw new Error(`error processing send-email ${e}`);
-        }
+      console.log(e.code);
+      if (e.code !== 'invalid email format') {
+        console.log({ e, src: 'pubsub-send-email' });
+        throw new Error(`error processing send-email ${e}`);
+      }
     }
+
+    // send in ||
+    await Promise.all(events);
 
     console.log({ payload, context });
     return true;
   });
 
-exports.apiEmail = functions.https.onRequest(async (req, res) => {
-    console.log({ q: req.query });
-    const payload = { ...req.query };
+exports.webhookMailgun = functions.https.onRequest(async (req, res) => {
+  const body = req.body;
 
-    if (req.query.preview) {
-        try {
-            const email = payload.email;
-            const msgParams = {
-              templateName: payload.template,
-              email,
-              to: payload.to || email,
-              name: payload.name || '',
-            };
-            console.log('calling composeemail', { payload, msgParams });
-            const composed = await composeEmail(payload, msgParams);
-            return res.status(200).send(composed.rendered.html);          
-          } catch (e) {
-            return res.status(500).send(e.code);
-          }
-        
-    } else {
-        try {
-            const result = await publishMessage(payload);
-            return res.status(200).send(result);
-          } catch (e) {
-            return res.status(500).send(e.code);
-          }        
+  const config = await secrets;
+
+  if (!mailgun) {
+    // init
+    mailgun = mailgunJs({
+      apiKey: config.MAILGUN_PRIVATE,
+      domain: 'elvis.the-faithful.com',
+    });
+  }
+
+  if (!mailgun.validateWebhook(body.timestamp, body.token, body.signature)) {
+    console.error('Request came, but not from Mailgun');
+    res.send({ error: { message: 'Invalid signature.' } });
+    return;
+  }
+
+  // valid, add to events
+  const email = get(body, 'event-data.message.headers.to');
+
+  const ev = {
+    _email: email,
+    ...body['event-data'],
+  };
+
+  console.log({ ev });
+
+  sendEvent(ev, {
+    topic: 'email.events',
+    source: 'api.email.mg',
+    email,
+  });
+});
+
+exports.apiEmail = functions.https.onRequest(async (req, res) => {
+  console.log({ q: req.query });
+  const payload = { ...req.query };
+
+  if (req.query.preview) {
+    try {
+      const email = payload.email;
+      const msgParams = {
+        templateName: payload.template,
+        email,
+        to: payload.to || email,
+        name: payload.name || '',
+      };
+      console.log('calling composeemail', { payload, msgParams });
+      const composed = await composeEmail(payload, msgParams);
+      return res.status(200).send(composed.rendered.html);
+    } catch (e) {
+      return res.status(500).send(e.code);
     }
+  } else {
+    try {
+      const result = await publishMessage(payload);
+      return res.status(200).send(result);
+    } catch (e) {
+      return res.status(500).send(e.code);
+    }
+  }
 });
 
 exports.apiImage = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
 
-//   const config = await secrets;
+  //   const config = await secrets;
 
   if (req.method === 'OPTIONS') {
     // Send response to OPTIONS requests
