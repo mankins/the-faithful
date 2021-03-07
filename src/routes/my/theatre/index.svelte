@@ -1,3 +1,9 @@
+<script>
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+  });
+</script>
 <div class="m-6">
   <div class="pb-5 border-b border-gray-200">
     <h3

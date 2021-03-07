@@ -1,76 +1,133 @@
 <script>
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-
-  import Toast from '$components/Toast.svelte';
-  import LoginModal from '$components/LoginModal.svelte';
-
-  import AccessDenied from '$components/AccessDenied.svelte';
-  import Processing from '$components/Processing.svelte';
-
   import { onMount } from 'svelte';
 
-  import { getCookies } from '$components/utils/cookies';
+  import AccessDenied from '$components/AccessDenied.svelte';
+  import FirebaseProvider from '$components/FirebaseProvider.svelte';
+  import LoginModal from '$components/LoginModal.svelte';
+  import NavDesktopSidebar from '$components/nav/NavDesktopSidebar.svelte';
+  import NavSideMenu from '$components/nav/NavSideMenu.svelte';
+  import NavUserMenu from '$components/nav/NavUserMenu.svelte';
+  import Processing from '$components/Processing.svelte';
+  import Toast from '$components/Toast.svelte';
 
+  import { getCookies } from '$components/utils/cookies';
   import { productsEntitle } from '$components/utils/entitles.js';
   import { baseProducts } from '$components/utils/auth.js';
 
-  import { parseParams } from '$components/utils/query';
+  import { userEntitlements } from '$components/stores/entitlements.js';
+  import { page as pageStore } from '$components/stores';
 
-  import NavUserMenu from '$components/nav/NavUserMenu.svelte';
-  import NavDesktopSidebar from '$components/nav/NavDesktopSidebar.svelte';
-  import NavSideMenu from '$components/nav/NavSideMenu.svelte';
- 
+  //   import { parseParams } from '$components/utils/query';
+
   let ui = {
     sideMenuOpen: false,
   };
 
-  let loaded = false;
+  let firebase;
+  let loaded = 0;
   let entitled = false;
-  let section = 'other';
   let nextUrl = '/';
+  let page = {};
+
+  let userProducts = [...baseProducts]; // these are the products that the user has
+
+  const setEntitled = (isEntitled) => {
+    if (isEntitled) {
+      entitled = true;
+      document.cookie = `_em=1; path=${page.path}; max-age=86400`; 
+    } else {
+      entitled = false;
+      document.cookie = `_em=; path=${page.path}; max-age=-1`; // page.path?
+    }
+    return entitled;
+  };
 
   export let user = {};
-  let handleLogin = (profile) => {
-    loaded = true;
-
-    console.log({ profile });
+  let handleLogin = async (profile) => {
+    // console.log({ profile });
     if (
       !profile.detail ||
       (profile.detail.user && profile.detail.user.isAnonymous)
     ) {
       console.log('not logged in.');
-      entitled = false;
-      document.cookie = `_em=; path=/; max-age=-1`;
+      setEntitled(false);
       return;
     }
-    document.cookie = `_em=1; path=/`; // session
-
-    entitled = true;
     user = profile.detail.user;
+    loaded++;
   };
 
   const handleDbInit = async (ev) => {
-    console.log('init');
+    firebase = ev.detail.firebase;
+    const userProductsFn = firebase
+      .functions()
+      .httpsCallable('userEntitlements');
+    try {
+      const reply = await userProductsFn({});
+      const products = reply.data;
+      console.log({ products });
+      products.userProducts.forEach((product) => {
+          console.log(`adding to user products: ${product}`);
+        userProducts.push(`${product}`);
+      });
+
+      userEntitlements.set(userProducts);
+    } catch (e) {
+      console.log(e);
+    }
+    loaded++;
+  };
+
+  let handleAuthAnonymous = () => {
+    loaded++;
+    setEntitled(false);
   };
 
   let handleAuthFailure = () => {
-    entitled = false;
-    loaded = true;
-    document.cookie = `_em=; path=/; max-age=-1`;
+    setEntitled(false);
+    loaded++;
   };
 
-  onMount(async () => {
+  const checkPageEntitlement = async (pathname) => {
+    const sitePath = pathname.replace(/\W/g, ':');
+    let requiredEntitlement = `site:user${sitePath}`;
+    if (pathname.indexOf('/admin') !== -1) {
+      requiredEntitlement = `site:admin${sitePath}`;
+    }
+    // if (pathname.indexOf('/chat') !== -1) {
+    //   requiredEntitlement = `site:admin${sitePath}`;
+    // }
+    const ent = await productsEntitle(userProducts, requiredEntitlement);
+    // console.log({ pathname, sitePath, requiredEntitlement, ent });
+    setEntitled(ent);
+    return ent;
+  };
+
+  onMount(() => {
+    loaded = 0;
+    page.path = window.location.pathname;
     nextUrl = window.location.href;
     let cookies = getCookies(document.cookie);
     if (cookies._em) {
-      entitled = true; // default to speed up
+        // entitled = true; // default to speed up
     }
-    if (window.location.href.indexOf('tickets') !== -1) {
-      section = 'tickets';
-    }
-    if (window.location.pathname === '/my') {
-      section = 'dashboard';
-    }
+
+    pageStore.subscribe(async (newPage) => {
+    //   console.log('----page', page, newPage);
+      page = newPage;
+      if (page && page.path) {
+        await checkPageEntitlement(page.path);
+      }
+    });
+
+    userEntitlements.subscribe(async (value) => {
+    //   console.log('------new entitlements------', { value });
+
+      // calculate current entitlement status
+      if (page.path) {
+        await checkPageEntitlement(page.path);
+      }
+    });
   });
 </script>
 
@@ -79,22 +136,21 @@
     on:init={handleDbInit}
     on:auth-success={handleLogin}
     on:auth-failure={handleAuthFailure}
-    on:auth-success-anonymous={handleAuthFailure}
+    on:auth-success-anonymous={handleAuthAnonymous}
   >
-    {#if loaded}
+    {#if loaded >= 2}
       {#if entitled}
         <div class="h-screen flex overflow-hidden bg-gray-100">
-            <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
+          <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
           {#if ui.sideMenuOpen}
             <NavSideMenu
               open={ui.sideMenuOpen}
-              {section}
               change={(now) => {
                 ui.sideMenuOpen = now;
               }}
             />
           {/if}
-          <NavDesktopSidebar {section} />
+          <NavDesktopSidebar />
 
           <div class="flex-1 overflow-auto focus:outline-none" tabindex="0">
             <div
@@ -103,7 +159,6 @@
               <button
                 on:click={() => {
                   ui.sideMenuOpen = !ui.sideMenuOpen;
-                  console.log({ ui });
                   ui = { ...ui };
                 }}
                 class="px-4 border-r border-gray-200 text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 xl:hidden"
@@ -208,7 +263,7 @@
         <LoginModal {nextUrl} />
       {/if}
     {/if}
-</FirebaseProvider>
-  <Toast />
+  </FirebaseProvider>
   <Processing processing={!loaded} />
+  <Toast />
 </div>

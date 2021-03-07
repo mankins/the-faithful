@@ -12,7 +12,7 @@ const admin = require('../../lib/firebase');
 const productsFromReceipts = async (receipts) => {
   const productIds = {};
 
-//   console.log('all receipts', receipts);
+  //   console.log('all receipts', receipts);
 
   // loop through all receipts, look for purchases and refunds
   for (const receipt of receipts) {
@@ -73,9 +73,15 @@ exports.userEntitlements = functions.https.onCall(async (data, context) => {
       }
     );
   }
+  //   console.log(get(context, 'auth.token.firebase.identities.email'));
+  // check to see if the email is set, if not, assume this is an anonymous user
+  const email = get(context, 'auth.token.email', 'anonymous');
+  let userProducts = [];
+  if (email === 'anonymous') {
+    return { userProducts, anonymous: true };
+  }
 
   const db = admin.firestore();
-  let userProducts = [];
   let user = {};
   try {
     user = await admin.auth().getUser(uid);
@@ -88,7 +94,7 @@ exports.userEntitlements = functions.https.onCall(async (data, context) => {
       }
     );
   }
-//   console.log({ user });
+  //   console.log({ user });
   const receipts = await db.collection(`email/${user.email}/receipts`).get();
   const receiptsArray = [];
   if (receipts) {
@@ -105,6 +111,25 @@ exports.userEntitlements = functions.https.onCall(async (data, context) => {
   validProducts.forEach((validProductId) => {
     userProducts.push(validProductId);
   });
+
+  // add in the ability to login
+  userProducts.push('site:user:my:*');
+
+  try {
+    const userDoc = await db.doc(`email/${user.email}`).get();
+    const userDocData = userDoc.data();
+    if (
+      userDocData &&
+      userDocData.entitlements &&
+      userDocData.entitlements.length
+    ) {
+      userDocData.entitlements.forEach((entitlement) => {
+        userProducts.push(entitlement);
+      });
+    }
+  } catch (e) {
+    console.log(e, 'userdoc entitlements');
+  }
 
   return { userProducts };
 });

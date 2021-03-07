@@ -46,13 +46,13 @@
         console.log({ user }, 'aaa');
         if (user && !user.isAnonymous) {
           if (user.email) {
-            window.Sentry.setUser({ email: user.email });
+            window.Sentry && window.Sentry.setUser({ email: user.email });
           }
 
           dispatch('auth-success', { user, firebase });
         } else {
           if (user.uid) {
-            window.Sentry.setUser({ id: user.uid });
+            window.Sentry && window.Sentry.setUser({ id: user.uid });
           }
 
           dispatch('auth-success-anonymous', { user, firebase });
