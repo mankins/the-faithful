@@ -1,7 +1,9 @@
+const functions = require('firebase-functions');
+require('../../lib/firebase');
+
 const { PubSub } = require('@google-cloud/pubsub');
 const get = require('lodash.get');
 
-const functions = require('firebase-functions');
 
 // const fetch = require('node-fetch');
 

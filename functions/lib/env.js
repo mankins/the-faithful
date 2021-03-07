@@ -39,7 +39,7 @@ const getSecrets = (project = "") => {
       })
       .then((parsed) => {
         Object.keys(parsed).forEach((key) => {
-          console.log('key', key, parsed[key]);
+          // console.log('key', key, parsed[key]);
           process.env[key] = parsed[key];
         });
         _env = parsed;

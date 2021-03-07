@@ -6,9 +6,14 @@ const { oauthAuthorize } = require('./fn/oauth');
 const { slackRelay } = require('./fn/slack');
 const { transcoderIn } = require('./fn/transcode');
 const { stripeCheckoutSession, stripeCheckoutSuccess } = require('./fn/stripe');
-const { apiImage,apiEmail,sendEmailPubSub,webhookMailgun } = require('./fn/email');
+const {
+  apiImage,
+  apiEmail,
+  sendEmailPubSub,
+  webhookMailgun,
+} = require('./fn/email');
 
-const startTime = (new Date()).toISOString();
+const startTime = new Date().toISOString();
 
 const environment =
   process.env.NODE_ENV === 'production' ? 'production' : 'dev';
