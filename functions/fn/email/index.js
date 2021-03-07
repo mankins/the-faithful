@@ -7,7 +7,7 @@ const functions = require('firebase-functions');
 
 // const getSecrets = require('../../lib/env'); // load environment config
 
-// const secrets = getSecrets('the-faithful');
+const secrets = getSecrets('the-faithful');
 
 const mailgunJs = require('mailgun-js');
 
@@ -112,6 +112,10 @@ exports.sendEmailPubSub = functions.pubsub
 
 exports.webhookMailgun = functions.https.onRequest(async (req, res) => {
   const body = req.body;
+
+  if (req.method !== 'POST') {
+    res.status(405).send('bad method');
+  }
 
   const config = await secrets;
 
