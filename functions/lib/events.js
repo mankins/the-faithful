@@ -5,7 +5,7 @@ const { sha1UrlSafe } = require('./hasher');
 
 const admin = require('./firebase');
 const { decorateEvent } = require('./decorators');
-const { dePrefix } = require('./id-utils');
+// const { dePrefix } = require('./id-utils');
 
 const MAX_PAYLOAD_LENGTH = 40960;
 

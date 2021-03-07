@@ -28,36 +28,37 @@ exports.composeEmail = composeEmail;
 exports.sendEmail = async (payload = {}, context = {}) => {
   console.log({ payload, context });
 
-    return new Promise(async (resolve, reject) => {
-    
-        const composed = await composeEmail(payload, context);
+  return new Promise((resolve, reject) => {
+    (async function () {
+      const composed = await composeEmail(payload, context);
 
-        const dataToSend = {
-            to: context.to,
-            message: composed.mime,
-        };
+      const dataToSend = {
+        to: context.to,
+        message: composed.mime,
+      };
 
-        console.log('ds', dataToSend);
+      console.log('ds', dataToSend);
 
-        const config = await secrets;
+      const config = await secrets;
 
-        if (!mailgun) {
-            // init
-            mailgun = mailgunJs({
-                apiKey: config.MAILGUN_PRIVATE,
-                domain: 'elvis.the-faithful.com',
-            });
-        }
-
-        mailgun.messages().sendMime(dataToSend, function (err, body) {
-            // mailgun.sendRaw(from, message.context.to, mimeMessage.toString(), function mailgunned(err) {
-            if (err) {
-                console.log('mg error', err);
-                return reject(err);
-            } else {
-                console.log('mg ok', body);
-                return resolve(body);
-            }
+      if (!mailgun) {
+        // init
+        mailgun = mailgunJs({
+          apiKey: config.MAILGUN_PRIVATE,
+          domain: 'elvis.the-faithful.com',
         });
-    });
+      }
+
+      mailgun.messages().sendMime(dataToSend, function (err, body) {
+        // mailgun.sendRaw(from, message.context.to, mimeMessage.toString(), function mailgunned(err) {
+        if (err) {
+          console.log('mg error', err);
+          return reject(err);
+        } else {
+          console.log('mg ok', body);
+          return resolve(body);
+        }
+      });
+    })();
+  });
 };

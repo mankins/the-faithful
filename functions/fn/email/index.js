@@ -5,7 +5,7 @@ const functions = require('firebase-functions');
 
 // const fetch = require('node-fetch');
 
-// const getSecrets = require('../../lib/env'); // load environment config
+const getSecrets = require('../../lib/env'); // load environment config
 
 const secrets = getSecrets('the-faithful');
 
