@@ -18,7 +18,7 @@
   // }
 
   let raw = JSON.parse(get(ticket, 'receipt.raw', ''));
-  console.log({ raw });
+//   console.log({ raw });
 
   const getProductFromId = (productId) => {
     return 'Virtual Premiere Weekend - The Faithful'; // TODO

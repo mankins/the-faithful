@@ -1,4 +1,18 @@
 <script>
+  import { onMount } from 'svelte';
+
+  import { userEntitlements } from '$components/stores/entitlements.js';
+  import { productsEntitle } from '$components/utils/entitles.js';
+
+  let userProducts = [];
+
+  onMount(() => {
+    userEntitlements.subscribe(async (value) => {
+      console.log('------new entitlements------', { value });
+      userProducts = value;
+    });
+  });
+
   export let open = true;
 
   export let change = () => {};
@@ -17,7 +31,7 @@
     >
       <!-- Heroicon name: home -->
       <svg
-        class="mr-4 h-6 w-6"
+        class="mr-4 h-4 w-4"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -39,14 +53,14 @@
       <a
         href="/my/tickets"
         on:click={() => {
-            open = !open;
-            change(open);
-          }}    
+          open = !open;
+          change(open);
+        }}
         class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
       >
         <!-- Heroicon name: ticket -->
         <svg
-          class="mr-4 h-6 w-6"
+          class="mr-4 h-4 w-4"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -65,14 +79,14 @@
       <a
         href="/my/theatre"
         on:click={() => {
-            open = !open;
-            change(open);
-          }}    
+          open = !open;
+          change(open);
+        }}
         class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
       >
         <!-- Heroicon name: shield-check -->
         <svg
-          class="mr-4 h-6 w-6"
+          class="mr-4 h-4 w-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -95,14 +109,14 @@
       <a
         href="/my/chat"
         on:click={() => {
-            open = !open;
-            change(open);
-          }}    
+          open = !open;
+          change(open);
+        }}
         class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
       >
         <!-- Heroicon name: chat-alt-2 -->
         <svg
-          class="mr-4 h-6 w-6"
+          class="mr-4 h-4 w-4"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -117,6 +131,68 @@
         </svg>
         Chat
       </a>
+
+      {#await productsEntitle(userProducts, 'site:admin') then entitled}
+        {#if entitled}
+          <div class="pt-6">
+            <h3
+              class="font-serif font-extrabold tracking-tight text-lg leading-6 font-medium text-gray-900"
+            >
+              Admin
+            </h3>
+
+            <a
+              href="/my/admin/users"
+              on:click={() => {
+                open = !open;
+                change(open);
+              }}
+              class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
+            >
+              <!-- Heroicon name: chat-alt-2 -->
+              <svg
+                class="mr-4 h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                />
+              </svg> Users
+            </a>
+
+            <a
+              href="/my/admin/email"
+              on:click={() => {
+                open = !open;
+                change(open);
+              }}
+              class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
+            >
+              <!-- Heroicon name: chat-alt-2 -->
+              <svg
+                class="mr-4 h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                />
+              </svg>Email
+            </a>
+          </div>
+        {/if}
+      {/await}
     </div>
   </div>
 </nav>
