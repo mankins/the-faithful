@@ -42,10 +42,40 @@ steps:
     waitFor: ["cloud functions install"]
     dir: 'functions'
 
+  - id: "cloud functions deploy - webhookMailgun"
+    name: 'gcr.io/cloud-builders/gcloud'
+    args: ['functions', 'deploy', 'webhookMailgun', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=webhookMailgun', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=512']
+    waitFor: ["cloud functions install"]
+    dir: 'functions'
+
+  - id: "cloud functions deploy - apiEmail"
+    name: 'gcr.io/cloud-builders/gcloud'
+    args: ['functions', 'deploy', 'apiEmail', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=apiEmail', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=512']
+    waitFor: ["cloud functions install"]
+    dir: 'functions'
+
+  - id: "cloud functions deploy - apiImage"
+    name: 'gcr.io/cloud-builders/gcloud'
+    args: ['functions', 'deploy', 'apiImage', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=apiImage', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=512']
+    waitFor: ["cloud functions install"]
+    dir: 'functions'
+
+  - id: "cloud functions deploy - eventsFirehosePubSub"
+    name: 'gcr.io/cloud-builders/gcloud'
+    args: ['functions', 'deploy', 'eventsFirehosePubSub', '--source=.', '--trigger-topic', 'events', '--runtime', 'nodejs14', '--entry-point=eventsFirehosePubSub', '--allow-unauthenticated', '--region', "${_REGION}", '--retry', '--memory=512']
+    waitFor: ["cloud functions install"]
+    dir: 'functions'
+
+  - id: "cloud functions deploy - sendEmailPubSub"
+    name: 'gcr.io/cloud-builders/gcloud'
+    args: ['functions', 'deploy', 'sendEmailPubSub', '--source=.', '--trigger-topic', 'send-email', '--runtime', 'nodejs14', '--entry-point=sendEmailPubSub', '--allow-unauthenticated', '--region', "${_REGION}", '--retry', '--memory=512']
+    waitFor: ["cloud functions install"]
+    dir: 'functions'
+
   - id: "build image - ssr"
     name: 'gcr.io/kaniko-project/executor:latest'
     waitFor: ['-']
-    args: ["--destination=gcr.io/${PROJECT_ID}/${_SERVICE_NAME}",'--cache=true','--cache-ttl=4h', '--build-arg', "COMMIT_SHA=${SHORT_SHA}"]
+    args: ["--destination=gcr.io/${PROJECT_ID}/${_SERVICE_NAME}",'--cache=false','--cache-ttl=4h', '--build-arg', "COMMIT_SHA=${SHORT_SHA}"]
  
   - id: "build image - ingress"
     name: "gcr.io/cloud-builders/docker"
