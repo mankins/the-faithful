@@ -111,8 +111,6 @@ exports.sendEmailPubSub = functions.pubsub
   });
 
 exports.webhookMailgun = functions.https.onRequest(async (req, res) => {
-  const body = req.body;
-
   if (req.method !== 'POST') {
     res.status(405).send('bad method');
   }
@@ -127,9 +125,12 @@ exports.webhookMailgun = functions.https.onRequest(async (req, res) => {
     });
   }
 
+  const body = req.body;
+  console.log({ body });
+    
   if (!mailgun.validateWebhook(body.timestamp, body.token, body.signature)) {
     console.error('Request came, but not from Mailgun');
-    res.send({ error: { message: 'Invalid signature.' } });
+    res.status(400).send({ error: { message: 'Invalid signature' } });
     return;
   }
 
