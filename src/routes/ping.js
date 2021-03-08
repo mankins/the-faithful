@@ -1,4 +1,4 @@
-export async function get(req, res, next) {
+export async function get(req, context) {
   return Promise.resolve({
     status: 200,
     headers: {

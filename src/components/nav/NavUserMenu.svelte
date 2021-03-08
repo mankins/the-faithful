@@ -29,7 +29,7 @@ export let user = {};
           aria-haspopup="true"
           aria-expanded="true">
           <span class="sr-only">Open user menu</span>
-          {#if true || user.photoURL}
+          {#if user.photoURL}
             <img
               class="inline-block h-8 w-8 rounded-full"
               src={gravatar(user.email)}
