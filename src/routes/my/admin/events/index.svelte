@@ -228,7 +228,7 @@
         <ul class="-mb-8">
           {#each events as ev, i}
             <li class="py-4">
-              <EventRow {ev} />
+              <EventRow {ev} isLast={i == (events.length -1)} />
             </li>
           {/each}
         </ul>

@@ -1,7 +1,15 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-  
+
+   function getEntitlements (doc) {
+    return doc.data.entitlements;   
+   }
+
+	function isIn (lookingFor, doc) {
+    return (lookingFor in getEntitlements(doc));
+  }
+
   match /announce/{email} {
       allow read: if (request.auth.uid != null) && ((request.auth.uid == resource.data.uid) || resource == null);
       allow update, delete: if request.auth != null && request.auth.uid == resource.data.uid;
@@ -18,15 +26,11 @@ service cloud.firestore {
       allow read: if (request.auth.uid != null) && ((request.auth.token.email == email) || resource == null);
     }
 
-   function getEntitlements (doc) {
-    return doc.data.entitlements;   
-   }
-
-	function isIn (lookingFor, doc) {
-    return (lookingFor in getEntitlements(doc));
-  }
-
     match /events/{eventId} {
+      allow read: if (request.auth.uid != null) && (request.auth.token.email != null) && isIn('site:admin', get(/databases/$(database)/documents/email/$(request.auth.token.email))) || resource == null;
+    }
+
+    match /email/{emailId} {
       allow read: if (request.auth.uid != null) && (request.auth.token.email != null) && isIn('site:admin', get(/databases/$(database)/documents/email/$(request.auth.token.email))) || resource == null;
     }
 

@@ -14,6 +14,8 @@
 
   export let goal;
   export let goals = [];
+  export let autoplay = false;
+  export let loop = false;
 
   if (goal && (goals.length === 0)) {
     goals.push(goal); // fires at 0
@@ -26,13 +28,20 @@
 
   onMount(async () => {
     const Plyr = await import('plyr');
-    player = new Plyr.default('#video-player', {
+    let cfg = {
       debug: false,
+      autoplay,
       keyboard: { focused: true, global: true },
       ratio: '16:9',
       title,
       previewThumbnails,
-    });
+    };
+    if (loop) {
+      cfg.media = cfg.media || {};
+      cfg.media.loop = loop;
+      cfg.click = false;
+    }
+    player = new Plyr.default('#video-player', cfg);
     window.player = window.player || player; // debugging
 
     // player.on('play', () => {
@@ -79,7 +88,7 @@
 
 <div class="flex flex-col max-h-screen bg-black">
   <!-- svelte-ignore a11y-media-has-caption -->
-  <video controls id="video-player" {poster}>
+  <video controls id="video-player" {poster} {loop}>
     {#if captionsSrc}
       <track
         kind="captions"

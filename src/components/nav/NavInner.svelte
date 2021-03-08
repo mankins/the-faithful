@@ -106,6 +106,7 @@
         </svg>
         Watch
       </a>
+{#if false}
       <a
         href="/my/chat"
         on:click={() => {
@@ -131,7 +132,7 @@
         </svg>
         Chat
       </a>
-
+{/if}
       {#await productsEntitle(userProducts, 'site:admin') then entitled}
         {#if entitled}
           <div class="pt-6">

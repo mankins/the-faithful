@@ -1,6 +1,6 @@
 <script>
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import EventRow from '$components/EventRow.svelte';
+  import UserRow from '$components/UserRow.svelte';
   import { parseParams } from '$components/utils/query';
 
   import { onMount } from 'svelte';
@@ -14,7 +14,8 @@
 
   let usersFound = false;
   let cursor;
-  let pageSize = 25;
+  let pageSize = 10;
+  let noMore = false;
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
@@ -36,33 +37,19 @@
       loaded = true;
       return;
     }
-    const docsRef = db.collection(`users`);
+    const docsRef = db.collection(`email`);
     try {
       let snapshot;
-      if (cursor) {
-        if (email) {
-          snapshot = await docsRef
-            .where('_email', '==', email)
-            .orderBy('_ts')
-            .endBefore(cursor)
-            .limitToLast(pageSize)
-            .get();
-        } else {
-          snapshot = await docsRef
-            .orderBy('_ts')
-            .endBefore(cursor)
-            .limitToLast(pageSize)
-            .get();
-        }
+
+      if (email) {
+        snapshot = await docsRef.get(email);
       } else {
-        if (email) {
-          snapshot = await docsRef
-            .where('_email', '==', email)
-            .orderBy('_ts')
-            .limitToLast(pageSize)
-            .get();
+        if (cursor) {
+          // snapshot = await docsRef.endBefore(cursor).limitToLast(pageSize).get();
+          snapshot = await docsRef.startAfter(cursor).limit(pageSize).get();
+
         } else {
-          snapshot = await docsRef.orderBy('_ts').limitToLast(pageSize).get();
+          snapshot = await docsRef.limit(pageSize).get();
         }
       }
 
@@ -72,16 +59,15 @@
         usersFound = false;
         const empty = [];
         users = [...empty];
+        noMore = true;
         return;
       } else {
         snapshot.forEach((doc) => {
           const ev = doc.data();
+          ev.email = doc.id;
           users.push(ev);
+          cursor = doc.id;
         });
-        cursor = users[0]._ts;
-        users = users.reverse();
-        usersFound = true;
-        console.log({ users });
       }
     } catch (e) {
       console.error('event err', e);
@@ -90,56 +76,48 @@
   };
 
   const loadMore = async () => {
-    console.log('load more');
-    const docsRef = db.collection(`users`);
+    console.log('load more', {email});
+
     try {
       let snapshot;
-      if (cursor) {
-        if (email) {
-          snapshot = await docsRef
-            .where('_email', '==', email)
-            .orderBy('_ts')
-            .endBefore(cursor)
-            .limitToLast(pageSize)
-            .get();
-        } else {
-          snapshot = await docsRef
-            .orderBy('_ts')
-            .endBefore(cursor)
-            .limitToLast(pageSize)
-            .get();
-        }
+      let docsRef;
+
+      if (email) {
+        snapshot = await db.collection(`email`).doc(email).get();
       } else {
-        if (email) {
-          snapshot = await docsRef
-            .where('_email', '==', email)
-            .orderBy('_ts')
-            .limitToLast(pageSize)
-            .get();
+        docsRef = db.collection(`email`);
+
+        if (cursor) {
+          // snapshot = await docsRef.endBefore(cursor).limitToLast(pageSize).get();
+          snapshot = await docsRef.orderBy(firebase.firestore.FieldPath.documentId()).startAfter(cursor).limit(pageSize).get();
+
         } else {
-          snapshot = await docsRef.orderBy('_ts').limitToLast(pageSize).get();
+          snapshot = await docsRef.limit(pageSize).get();
         }
       }
 
       if (snapshot.empty) {
         // no thumbs
-        console.log('no users');
-        const empty = [];
-        users = [...empty];
+        console.log('no more users');
+        noMore = true;
         return;
       } else {
-        let batch = [];
-        snapshot.forEach((doc) => {
-          batch.push(doc.data());
-        });
-        batch = batch.reverse();
-        batch.forEach((ev) => {
-          cursor = ev._ts;
+        if (email) {
+let u = snapshot.data();
+u.email = email;
+          users.push(u);
+          cursor = email;
+          users = [...users];
+noMore = true;
+        } else {
+          snapshot.forEach((doc) => {
+          const ev = doc.data();
+          ev.email = doc.id;
           users.push(ev);
+          cursor = doc.id;
+          users = [...users];
         });
-        users = [...users];
-        usersFound = true;
-        console.log({ users });
+        }
       }
     } catch (e) {
       console.error('event err', e);
@@ -147,13 +125,14 @@
   };
 
   const doFilter = async () => {
-    users = [];
+    const empty = [];
+    users = [...empty];
     cursor = '';
+    noMore = false;
     await loadMore();
   };
 
   const filterKeyDown = (iev) => {
-    let key = iev.key;
     let keyCode = iev.keyCode;
     if (keyCode === 13) {
       doFilter();
@@ -226,9 +205,9 @@
 
       <div class="flow-root">
         <ul class="-mb-8">
-          {#each users as ev, i}
+          {#each users as user, i}
             <li class="py-4">
-              <EventRow {ev} />
+              <UserRow {user} isLast={i == (users.length -1)}/>
             </li>
           {/each}
         </ul>
@@ -255,7 +234,8 @@
           <h3 class="p-2">No matches</h3>
         </div>
       {:else}
-        <div class="mt-8">
+      {#if !noMore}
+        <div class="mt-8 mb-8">
           <button
             on:click={() => {
               loadMore();
@@ -266,6 +246,7 @@
             More
           </button>
         </div>
+        {/if}
       {/if}
     </div>
   {/if}
