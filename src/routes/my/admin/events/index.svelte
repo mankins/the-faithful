@@ -10,6 +10,7 @@
   let loaded = false;
   let user = {};
   let events = [];
+  let email = ''; // no filter
 
   let eventsFound = false;
   let cursor;
@@ -39,15 +40,38 @@
     try {
       let snapshot;
       if (cursor) {
-        snapshot = await docsRef.orderBy('_ts').endBefore(cursor).limitToLast(pageSize).get();
+        if (email) {
+          snapshot = await docsRef
+            .where('_email', '==', email)
+            .orderBy('_ts')
+            .endBefore(cursor)
+            .limitToLast(pageSize)
+            .get();
+        } else {
+          snapshot = await docsRef
+            .orderBy('_ts')
+            .endBefore(cursor)
+            .limitToLast(pageSize)
+            .get();
+        }
       } else {
-        snapshot = await docsRef.orderBy('_ts').limitToLast(pageSize).get();
+        if (email) {
+          snapshot = await docsRef
+            .where('_email', '==', email)
+            .orderBy('_ts')
+            .limitToLast(pageSize)
+            .get();
+        } else {
+          snapshot = await docsRef.orderBy('_ts').limitToLast(pageSize).get();
+        }
       }
 
       if (snapshot.empty) {
         // no thumbs
         console.log('no events');
         eventsFound = false;
+        const empty = [];
+        events = [...empty];
         return;
       } else {
         snapshot.forEach((doc) => {
@@ -57,7 +81,7 @@
         cursor = events[0]._ts;
         events = events.reverse();
         eventsFound = true;
-        console.log({events});
+        console.log({ events });
       }
     } catch (e) {
       console.error('event err', e);
@@ -71,14 +95,37 @@
     try {
       let snapshot;
       if (cursor) {
-        snapshot = await docsRef.orderBy('_ts').endBefore(cursor).limitToLast(pageSize).get();
+        if (email) {
+          snapshot = await docsRef
+            .where('_email', '==', email)
+            .orderBy('_ts')
+            .endBefore(cursor)
+            .limitToLast(pageSize)
+            .get();
+        } else {
+          snapshot = await docsRef
+            .orderBy('_ts')
+            .endBefore(cursor)
+            .limitToLast(pageSize)
+            .get();
+        }
       } else {
-        snapshot = await docsRef.orderBy('_ts').limitToLast(pageSize).get();
+        if (email) {
+          snapshot = await docsRef
+            .where('_email', '==', email)
+            .orderBy('_ts')
+            .limitToLast(pageSize)
+            .get();
+        } else {
+          snapshot = await docsRef.orderBy('_ts').limitToLast(pageSize).get();
+        }
       }
 
       if (snapshot.empty) {
         // no thumbs
         console.log('no events');
+        const empty = [];
+        events = [...empty];
         return;
       } else {
         let batch = [];
@@ -92,12 +139,25 @@
         });
         events = [...events];
         eventsFound = true;
-        console.log({events});
+        console.log({ events });
       }
     } catch (e) {
       console.error('event err', e);
     }
+  };
 
+  const doFilter = async () => {
+    events = [];
+    cursor = '';
+    await loadMore();
+  };
+
+  const filterKeyDown = (iev) => {
+    let key = iev.key;
+    let keyCode = iev.keyCode;
+    if (keyCode === 13) {
+      doFilter();
+    }
   };
 
   onMount(async () => {
@@ -136,12 +196,17 @@
             <input
               type="text"
               name="email"
+              bind:value={email}
+              on:keydown={filterKeyDown}
               id="email"
-              class="focus:ring-faithful-500 focus:border-faithful-500 block w-full rounded-none rounded-l-md pl-10 sm:text-sm border-gray-300"
+              class="focus:border-gray-50 focus:border-0 focus:ring-0 block w-full rounded-none rounded-l-md pl-10 sm:text-sm border-gray-300"
               placeholder="elvis@grace.land"
             />
           </div>
           <button
+            on:click={() => {
+              doFilter();
+            }}
             class="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-faithful-500 focus:border-faithful-500"
           >
             <span>Filter</span>
@@ -162,19 +227,46 @@
       <div class="flow-root">
         <ul class="-mb-8">
           {#each events as ev, i}
-          <li class="py-4">            
-            <EventRow {ev} />
-          </li>
+            <li class="py-4">
+              <EventRow {ev} />
+            </li>
           {/each}
         </ul>
-
       </div>
 
-      <div class="mt-8">
-      <button on:click={() => { loadMore()}} type="button" class="pl-4 pr-4 inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-faithful-600 hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500">
-        More
-      </button>
+      {#if events.length === 0}
+        <div
+          class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12 flex"
+        >
+          <svg
+            class="text-faithful-800 h-10 w-10 ml-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <h3 class="p-2">No matches</h3>
+        </div>
+      {:else}
+        <div class="mt-8">
+          <button
+            on:click={() => {
+              loadMore();
+            }}
+            type="button"
+            class="pl-4 pr-4 inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-faithful-600 hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+          >
+            More
+          </button>
+        </div>
+      {/if}
     </div>
-    </div>
-{/if}
+  {/if}
 </FirebaseProvider>
