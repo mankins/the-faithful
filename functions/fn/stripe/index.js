@@ -9,6 +9,7 @@ const getSecrets = require('../../lib/env'); // load environment config
 const { formatCurrency } = require('../../lib/i18n');
 const { shortId } = require('../../lib/short-uuid');
 const admin = require('../../lib/firebase');
+const { sendEvent } = require('../../lib/events');
 
 const { getProductName, getProductDescription } = require('../../lib/data');
 
@@ -25,12 +26,13 @@ const stripeConfig = async () => {
     webhook: config.STRIPE_WEBHOOK,
     //            ...functions.config().stripe,
   };
-    
-    // use test keys in dev if they're defined
+
+  // use test keys in dev if they're defined
   if (process.env.FUNCTIONS_EMULATOR === 'true') {
     if (config.STRIPE_PUBLIC_TEST) {
       conf.pub = config.STRIPE_PUBLIC_TEST;
       conf.secret = config.STRIPE_SECRET_TEST;
+      conf.webhook = config.STRIPE_WEBHOOK_TEST;
       console.log({ conf });
     }
   }
@@ -51,6 +53,148 @@ const stripe = async () => {
 
   return { _stripe, config: _stripeConfig };
 };
+
+const processChargeEvent = (ev) => {
+  const paid = get(ev, 'data.object.paid');
+  const id = get(ev, 'data.object.id');
+  const amount = get(ev, 'data.object.amount');
+  const currency = get(ev, 'data.object.currency');
+  const metadata = get(ev, 'data.object.metadata', {});
+
+  let minEv = { id, amount, currency, metadata, paid };
+  minEv._ts = new Date(Date.now()).toISOString();
+  minEv.src = 'stripe';
+  minEv.stripeCustomerId = `${get(ev, 'data.object.customer')}`;
+  minEv.email = `${get(ev, 'data.object.billing_details.email')}`;
+  minEv.name = `${get(ev, 'data.object.billing_details.name')}`;
+  minEv.created = `${get(ev, 'data.object.created')}`;
+  minEv.livemode = `${get(ev, 'data.object.livemode')}`;
+  minEv.details = `${JSON.stringify(
+    get(ev, 'data.object.payment_method_details')
+  )}`;
+  minEv.type = 'receipt';
+  minEv.paperUrl = `${get(ev, 'data.object.receipt_url')}`;
+  minEv.status = `${get(ev, 'data.object.status')}`;
+
+  return minEv;
+};
+
+const recordChargeRefunded = async (ev) => {
+  const amount = get(ev, 'data.object.amount_refunded');
+  const currency = get(ev, 'data.object.currency');
+  const livemode = get(ev, 'data.object.livemode');
+  const metadata = get(ev, 'data.object.metadata', {});
+  const email = get(ev, 'data.object.billing_details.email');
+  const status = get(ev, 'data.object.status');
+  const refunded = get(ev, 'data.object.refunded');
+
+  const entry = {
+    ts: new Date(Date.now()).toISOString(),
+    email,
+    type: 'refund',
+    amount,
+    currency,
+    metadata,
+    livemode,
+    status,
+    refunded,
+  };
+
+  return entry;
+};
+
+exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
+  const signature = req.headers['stripe-signature'];
+
+  const stripeProps = await stripe();
+  const { _stripe, config } = stripeProps;
+
+  //  console.log({ signature, body: req.rawBody, config });
+  let events = [];
+  let ev;
+  try {
+    ev = _stripe.webhooks.constructEvent(
+      req.rawBody,
+      signature,
+      config.webhook
+    );
+    console.log(ev);
+  } catch (err) {
+    if (err.message && err.message.indexOf('No signatures found') !== -1) {
+      console.log('bad signature');
+    } else {
+      console.log({ err });
+    }
+    res.status(400).end();
+    return;
+  }
+
+  // Handle the event
+  let minEvent = {}; // we don't store everything, but just what we need to show the business value
+  try {
+    console.log('new event-----', JSON.stringify(ev, null, 2));
+
+    switch (ev.type) {
+      // case 'payment_intent.succeeded': {
+      //   //        const paymentIntent = ev.data.object;
+      //   console.log('PaymentIntent was successful!');
+      //   break;
+      // }
+      // case 'charge.captured': {
+      //   // await processCaptureEvent(ev);
+      //   break;
+      // }
+      case 'charge.succeeded': {
+        minEvent = await processChargeEvent(ev);
+        break;
+      }
+      case 'charge.refunded': {
+        minEvent = await recordChargeRefunded(ev);
+        break;
+      }
+      // ... handle other event types
+      // on payment success -> add to future-capture-log, update user receipt (24hour expiry)
+      // on payment captureed -> create user receipt with no expiry
+      default: {
+        // we don't know the exact shape to get the email
+        events.push(
+          sendEvent(
+            { ...ev },
+            {
+              topic: ev.type,
+              source: 'stripe.webhook',
+            }
+          )
+        );
+      }
+    }
+
+    if (minEvent && Object.keys(minEvent)) {
+      events.push(
+        sendEvent(
+          {
+            payload: minEvent,
+            _email: minEvent.email,
+          },
+          {
+            topic: ev.type,
+            source: 'stripe.webhook',
+            email: minEvent.email,
+          }
+        )
+      );
+    }
+  } catch (e) {
+    console.log('error:', e);
+    res.status(500).end();
+    return;
+  }
+
+  // send in || to pubsub topic
+  await Promise.all(events);
+
+  return res.send(JSON.stringify({ ok: true }));
+});
 
 exports.stripeCheckoutSession = functions.https.onCall(async (data) => {
   const items = get(data, 'items', '[]');
@@ -127,7 +271,8 @@ exports.stripeCheckoutSession = functions.https.onCall(async (data) => {
   let quantity = 0;
 
   items.forEach((item) => {
-    productIds[item.productId] = (+productIds[item.productId] || 0) + (item.quantity || 1);
+    productIds[item.productId] =
+      (+productIds[item.productId] || 0) + (item.quantity || 1);
     quantity = quantity + (item.quantity || 1);
 
     const stripeItem = {};
@@ -152,7 +297,7 @@ exports.stripeCheckoutSession = functions.https.onCall(async (data) => {
   metadata.products = JSON.stringify(Object.keys(productIds)); // array of video:thing shiro
   metadata.productQuantity = JSON.stringify(productIds); // video:thing = 1
   metadata.quantity = quantity;
-  
+
   const session = await _stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     allow_promotion_codes: true,
@@ -179,13 +324,14 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
     console.log(`----UID-----${uid}-------SESSION--${sessionId}----`);
     // verify Firebase Auth ID token and presence of UID
     if (!context.auth || !uid) {
-      throw new functions.https.HttpsError(
-        'unauthenticated',
-        'Request had invalid credentials',
-        {
-          error: 'invalid credentials',
-        }
-      );
+      // throw new functions.https.HttpsError(
+      //   'unauthenticated',
+      //   'Request had invalid credentials',
+      //   {
+      //     error: 'invalid credentials',
+      //   }
+      // );
+      console.log('--invalid credentials would have thrown here--', { auth: context.auth, uid });
     }
 
     let session;

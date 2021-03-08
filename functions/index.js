@@ -5,7 +5,7 @@ const { eventsIn, eventsFirehosePubSub } = require('./fn/events');
 const { oauthAuthorize } = require('./fn/oauth');
 const { slackRelay } = require('./fn/slack');
 const { transcoderIn } = require('./fn/transcode');
-const { stripeCheckoutSession, stripeCheckoutSuccess } = require('./fn/stripe');
+const { stripeCheckoutSession, stripeCheckoutSuccess, stripeWebhook } = require('./fn/stripe');
 const {
   apiImage,
   apiEmail,
@@ -28,6 +28,7 @@ exports.eventsIn = eventsIn;
 exports.slackRelay = slackRelay;
 exports.stripeCheckoutSession = stripeCheckoutSession;
 exports.stripeCheckoutSuccess = stripeCheckoutSuccess;
+exports.stripeWebhook = stripeWebhook;
 exports.userEntitlements = userEntitlements;
 exports.oauthAuthorize = oauthAuthorize;
 exports.apiImage = apiImage;
