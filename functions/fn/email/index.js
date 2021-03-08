@@ -155,6 +155,8 @@ exports.webhookMailgun = functions.https.onRequest(async (req, res) => {
     source: 'api.email.mg',
     email,
   });
+    
+    return res.status(200).send('ok');
 });
 
 exports.apiEmail = functions.https.onRequest(async (req, res) => {
