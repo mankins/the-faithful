@@ -7,6 +7,7 @@
   import Nav from '$components/nav/Nav.svelte';
   import Toast from '$components/Toast.svelte';
   import { fireGoal } from '$components/utils/analytics';
+  import { sendEvent } from '$components/utils/events';
 
   import firebase from 'firebase/app';
   import 'firebase/auth';
@@ -58,7 +59,9 @@
         console.log({ session });
 
         setTimeout(() => {
-          if (
+            sendEvent({topic:'cart.checkout.completed', livemode: session.livemode, amount: session.amount, currency: session.currency});
+
+            if (
             session.livemode &&
             session.amount &&
             session.currency === 'usd'
@@ -78,6 +81,9 @@
       } catch (e) {
         window.pushToast(`Error completing transaction. ${e.message}`, 'alert');
         waiter = `Bummer: error completing your request. [${e.message}] Email support?`;
+
+        sendEvent({topic:'cart.checkout.error', message: e.message});
+
         Sentry.captureException(e);
       }
 
@@ -170,7 +176,7 @@
               class="text-lg leading-6 font-medium text-gray-900"
               id="modal-headline"
             >
-              Creating tickets
+              Please wait...
             </h3>
             <div class="mt-2">
               <p class="text-sm text-gray-500">

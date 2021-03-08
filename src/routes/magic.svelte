@@ -1,8 +1,4 @@
 <script>
-  import { handleLoginAction } from '$components/utils/auth';
-  import Footer from '$components/nav/Footer.svelte';
-  //   import Nav from '$components/nav/Nav.svelte';
-  import Toast from '$components/Toast.svelte';
 
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
@@ -10,6 +6,10 @@
   import 'firebase/auth';
   import 'firebase/firestore';
   import { firebaseConfig } from '$components/config/index.js';
+
+  import { sendEvent } from '$components/utils/events';
+  import Footer from '$components/nav/Footer.svelte';
+  import Toast from '$components/Toast.svelte';
 
   let authActions;
   let processing = true;
@@ -33,6 +33,8 @@
         // result.additionalUserInfo.profile == null
         // You can check if the user is new or existing:
         // result.additionalUserInfo.isNewUser
+        sendEvent({topic:'user.login.completed', email, type:'magic'});
+
         window.location.href = nextUrl || '/';
       })
       .catch((error) => {

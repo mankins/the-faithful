@@ -200,6 +200,7 @@ const eventsIn = async (req, res) => {
 
       try {
         const events = getEventsFromQuery(req);
+        // console.log({ events, context });
         await processEvents(events, context);
       } catch (e) {
         return handleErrors(e, res);
@@ -210,7 +211,12 @@ const eventsIn = async (req, res) => {
 
     case 'POST':
       try {
-        await processEvents(req.body, context);
+        const payload = JSON.parse(req.body);
+        if (Array.isArray(payload)) {
+          await processEvents(payload, context);
+        } else {
+          throw new Error('bad body format, should be an array');
+        }
       } catch (e) {
         return handleErrors(e, res);
       }
@@ -221,6 +227,7 @@ const eventsIn = async (req, res) => {
     case 'OPTIONS':
       // Send response to OPTIONS requests
       //functions.logger.info({cors: req}, {structuredData: true});
+      res.set('Access-Control-Allow-Origin', 'https://www.the-faithful.com,http://localhost:5000');
       res.set('Access-Control-Allow-Methods', 'POST');
       res.set('Access-Control-Allow-Headers', 'Content-Type,Authorization');
       res.set('Access-Control-Max-Age', '3600');

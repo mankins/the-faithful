@@ -5,6 +5,7 @@
   import Processing from '$components/Processing.svelte';
   import { getCookies } from '$components/utils/cookies';
   import { parseParams } from '$components/utils/query';
+  import { sendEvent } from '$components/utils/events';
 
   import { onMount } from 'svelte';
 
@@ -31,8 +32,10 @@
  
       if (authResponse && authResponse.firebaseToken) {
         const userCredential = await firebase.auth().signInWithCustomToken(authResponse.firebaseToken);
-        console.log({userCredential});
+        console.log({userCredential: JSON.stringify(userCredential)});
+        sendEvent({ topic: 'user.login.success', type: 'coil' });
       }
+
       if (authResponse && authResponse.btpToken) {
          document.cookie = `_coil_btp=${authResponse.btpToken}; path=/`; // session
          document.cookie = '_oauth_state=; path=/; max-age=-1';

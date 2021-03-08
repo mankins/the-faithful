@@ -3,7 +3,7 @@
     import { page as pageStore } from '$components/stores';
     import { handleLoginAction } from '$components/utils/auth';
     import Toast from '$components/Toast.svelte';
-  
+
     let authActions;
     let page = {};
     pageStore.subscribe((value) => {

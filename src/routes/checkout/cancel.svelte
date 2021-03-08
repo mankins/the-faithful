@@ -5,8 +5,11 @@
   import Nav from '$components/nav/Nav.svelte';
   import Toast from '$components/Toast.svelte';
   import { fireGoal } from '$components/utils/analytics';
+  import { sendEvent } from '$components/utils/events';
 
   onMount(async () => {
+    sendEvent({topic:'cart.checkout.cancelled' });
+
     fireGoal('QXAJUTWH', 0);
   });
 </script>

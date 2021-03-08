@@ -7,6 +7,8 @@
 
   import { shortId } from '$components/utils/short-uuid';
 
+  import { sendEvent } from '$components/utils/events';
+
   export let logout = false;
 
   const dispatch = createEventDispatcher();
@@ -95,6 +97,8 @@
         });
     };
     actions.clickMagicLinkSignin = async (email, onAuth = '/') => {
+      sendEvent({ topic: 'user.login.started', email, type: 'magic' });
+
       const actionCodeSettings = {
         url: `${window.location.origin}/magic?next=${encodeURIComponent(
           onAuth
@@ -117,6 +121,7 @@
         })
         .catch((error) => {
           window.pushToast(`Unable to send email. ${error.message}`, 'alert');
+          sendEvent({ topic: 'user.login.error', email, type: 'magic' });
         });
     };
     actions.clickUserPassSignup = async (email, password) => {
@@ -268,6 +273,8 @@
 
     actions.clickCoilSignin = async (nextUrl) => {
       console.log('coil signin!');
+      sendEvent({ topic: 'user.login.started', type: 'coil' });
+
       const redirectUri = `${window.location.origin}/oauth/authorize`;
       const cookieState = shortId();
       document.cookie = `_oauth_state=${cookieState}; path=/`;
@@ -282,6 +289,8 @@
 
     // dispatch any params
     if (logout) {
+      sendEvent({ topic: 'user.logout' });
+
       firebase
         .auth()
         .signOut()

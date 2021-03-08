@@ -5,6 +5,7 @@
   import { fade, fly } from 'svelte/transition';
   import Item from '$components/cart/Item.svelte';
   import { fireGoal } from '$components/utils/analytics';
+  import { sendEvent } from '$components/utils/events';
 
   import firebase from 'firebase/app';
   import 'firebase/auth';
@@ -51,6 +52,9 @@
   const handleCheckout = async () => {
     checkingOut = true;
     const base = window.location.origin || 'https://www.the-faithful.com';
+
+    sendEvent({topic:'cart.checkout.started', items});
+
     const stripeCheckoutSession = firebase
       .functions()
       .httpsCallable('stripeCheckoutSession');
