@@ -34,7 +34,7 @@ var Handlebars = require("../../handlebars");module.exports = Handlebars.templat
     + alias4(((helper = (helper = lookupProperty(helpers,"ctaUrlLoginReceipt") || (depth0 != null ? lookupProperty(depth0,"ctaUrlLoginReceipt") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"ctaUrlLoginReceipt","hash":{},"data":data,"loc":{"start":{"line":354,"column":21},"end":{"line":354,"column":43}}}) : helper)))
     + "?email="
     + alias4(((helper = (helper = lookupProperty(helpers,"to") || (depth0 != null ? lookupProperty(depth0,"to") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"to","hash":{},"data":data,"loc":{"start":{"line":354,"column":50},"end":{"line":354,"column":56}}}) : helper)))
-    + "\">\n                <img class=\"atri\" id=\"ctaImg\" type=\"cta\" button=\"VIEW YOUR RECEIPT\" />\n            </a>\n        </td>\n    </tr>\n";
+    + "\">\n                <img class=\"atri\" id=\"ctaImg\" type=\"cta\" button=\"VIEW YOUR PASS\" />\n            </a>\n        </td>\n    </tr>\n";
 },"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=container.hooks.helperMissing, alias3="function", alias4=container.escapeExpression, lookupProperty = container.lookupProperty || function(parent, propertyName) {
         if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {

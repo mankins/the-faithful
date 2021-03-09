@@ -24,7 +24,7 @@ const pubsub = new PubSub({ projectId: 'the-faithful' }); // {projectId}
 const TOPIC_EMAIL = 'send-email';
 const CREATE_TOPIC_EMAIL = false;
 
-async function publishMessage(data) {
+const publishMessage = async (data) => {
   // Publishes the message as a string
   if (CREATE_TOPIC_EMAIL) {
     const [topic] = await pubsub.createTopic(TOPIC_EMAIL);
@@ -37,6 +37,7 @@ async function publishMessage(data) {
   console.log(`Message ${messageId} published.`);
   return { messageId, data };
 }
+exports.publishMessage = publishMessage;
 
 exports.sendEmailPubSub = functions.pubsub
   .topic(TOPIC_EMAIL)

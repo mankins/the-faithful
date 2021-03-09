@@ -10,6 +10,7 @@ const { formatCurrency } = require('../../lib/i18n');
 const { shortId } = require('../../lib/short-uuid');
 const admin = require('../../lib/firebase');
 const { sendEvent } = require('../../lib/events');
+const { publishMessage } = require('../email');
 
 const { getProductName, getProductDescription } = require('../../lib/data');
 
@@ -67,7 +68,7 @@ const stripe = async () => {
   return { _stripe, _stripe_test, config: _stripeConfig };
 };
 
-const processChargeEvent = (ev) => {
+const processChargeEvent = async (ev) => {
   const paid = get(ev, 'data.object.paid');
   const id = get(ev, 'data.object.id');
   const amount = get(ev, 'data.object.amount');
@@ -88,6 +89,21 @@ const processChargeEvent = (ev) => {
   minEv.type = 'receipt';
   minEv.paperUrl = `${get(ev, 'data.object.receipt_url')}`;
   minEv.status = `${get(ev, 'data.object.status')}`;
+
+  if (minEv.email) {
+    const payload = {
+      template: 'receipt',
+      to: minEv.email,
+      name: minEv.name,
+      receiptUrl: minEv.paperUrl
+    };
+    
+    try {
+      minEv.receiptEmail = await publishMessage(payload);
+    } catch (e) {
+      console.log('receipt email error', e);
+    }  
+  }
 
   return minEv;
 };
