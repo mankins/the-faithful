@@ -15,14 +15,23 @@
             Home
           </a>
         </div>
-
+        
         <div class="px-5 py-2">
             <a
-              href="mailto:info@fishinhand.com?subject=press+the+faithful"
+              href="https://www.notion.so/The-Faithful-FAQ-s-05fe7a8a5566447e82181a4068198ac4"
               target="_blank"
               class="text-base text-gray-400 hover:text-gray-300"
             >
-              Press Inquires
+              FAQ
+            </a>
+          </div>
+        <div class="px-5 py-2">
+            <a
+              href="/press/the-faithful-press-kit.pdf"
+              target="_blank"
+              class="text-base text-gray-400 hover:text-gray-300"
+            >
+              Press Kit
             </a>
           </div>
   
@@ -35,7 +44,8 @@
             Contact
           </a>
         </div>
-      </nav>
+
+    </nav>
       <div class="mt-8 flex justify-center space-x-6">
         <a
           href="https://www.facebook.com/thefaithfulfilm/"

@@ -18,7 +18,7 @@
   // }
 
   let raw = JSON.parse(get(ticket, 'receipt.raw', ''));
-//   console.log({ raw });
+  //   console.log({ raw });
 
   const getProductFromId = (productId) => {
     return 'Virtual Premiere Weekend - The Faithful'; // TODO
@@ -70,6 +70,18 @@
           </ul>
         </dd>
       </div>
+      {#if JSON.stringify(get(ticket, 'receipt.products', '')).includes('video:thefaithful:202103')}
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">Description</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+            <p>
+              This pass allows you to join any live screening between March
+              19-21, 2021.
+            </p>
+            <p>Screenings are twice daily, at 2pm and 7pm EDT.</p>
+          </dd>
+        </div>
+      {/if}
       {#if parseInt(get(raw, 'metadata.quantity'), 10)}
         <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Quantity</dt>

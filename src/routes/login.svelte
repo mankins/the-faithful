@@ -1,7 +1,18 @@
 <script>
+  import LoginModal from '$components/LoginModal.svelte';
+  import { parseParams } from '$components/utils/query';
 
-import LoginModal from '$components/LoginModal.svelte';
+  import { onMount } from 'svelte';
 
+  let query = {};
+  let email = '';
+
+  onMount(async () => {
+    query = parseParams(window.location.search);
+    if (query && query.email) {
+      email = query.email;
+    }
+  });
 </script>
 
-<LoginModal />
+<LoginModal {email} />

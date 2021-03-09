@@ -1,4 +1,7 @@
 {
   "subject": "The Faithful Receipt",
-  "teaser": "Thank you very much"
+  "teaser": "Thank you very much. Your passes are reserved.",
+  "receiptUrl": "",
+  "ctaUrl": "https://www.the-faithful.com/my",
+  "ctaUrlLoginReceipt": "https://www.the-faithful.com/my/tickets"
 }

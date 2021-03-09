@@ -35,7 +35,7 @@ exports.process = async (params, isInline) => {
     var fgStyle = params.fg || '#ffffff';
 
     var w = parseInt(params.w || 600, 10);
-    var h = parseInt(params.h || 290, 10);
+    var h = parseInt(params.h || 320, 10);
 
     surface = params.surface || context.custom(w, h);
     var ctx = surface.ctx;
@@ -94,9 +94,9 @@ exports.process = async (params, isInline) => {
 
     ctx.font = 'normal ' + smallTextSize + 'px recoleta';
     m = ctx.measureText(line);
-    textLeft = parseInt(params.textleft, 10) || ((w / 2) - parseInt(m.width / 2, 10));
-    ctx.fillStyle = smallStyle || smallStyle2 || fgStyle;
-    ctx.fillText(line, textLeft, 273 + offset);
+    textLeft = ((w - parseInt(m.width, 10)) / 2);
+    ctx.fillStyle = smallStyle2 || smallStyle || fgStyle;
+    ctx.fillText(line, textLeft, 275 + offset);
 
     // if we have a CTA button, add it:
     var buttonStyle = params.buttonstyle || 'normal 16px recoleta';

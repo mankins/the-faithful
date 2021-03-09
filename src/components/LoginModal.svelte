@@ -9,7 +9,7 @@
     pageStore.subscribe((value) => {
       page = value;
     });
-    let email = '';
+    export let email = '';
     let password = '';
     export let nextUrl = '/';
   </script>

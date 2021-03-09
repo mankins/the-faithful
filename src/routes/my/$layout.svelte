@@ -10,6 +10,7 @@
   import Processing from '$components/Processing.svelte';
   import Toast from '$components/Toast.svelte';
 
+  import { parseParams } from '$components/utils/query';
   import { getCookies } from '$components/utils/cookies';
   import { productsEntitle } from '$components/utils/entitles.js';
   import { baseProducts } from '$components/utils/auth.js';
@@ -28,13 +29,15 @@
   let entitled = false;
   let nextUrl = '/';
   let page = {};
+  let query = {};
+  let email = '';
 
   let userProducts = [...baseProducts]; // these are the products that the user has
 
   const setEntitled = (isEntitled) => {
     if (isEntitled) {
       entitled = true;
-      document.cookie = `_em=1; path=${page.path}; max-age=86400`; 
+      document.cookie = `_em=1; path=${page.path}; max-age=86400`;
     } else {
       entitled = false;
       document.cookie = `_em=; path=${page.path}; max-age=-1`; // page.path?
@@ -67,7 +70,7 @@
       const products = reply.data;
       console.log({ products });
       products.userProducts.forEach((product) => {
-          console.log(`adding to user products: ${product}`);
+        console.log(`adding to user products: ${product}`);
         userProducts.push(`${product}`);
       });
 
@@ -109,11 +112,17 @@
     nextUrl = window.location.href;
     let cookies = getCookies(document.cookie);
     if (cookies._em) {
-        // entitled = true; // default to speed up
+      // entitled = true; // default to speed up
+    }
+
+    // to pass along an email to the loginmodal
+    query = parseParams(window.location.search);
+    if (query && query.email) {
+      email = query.email;
     }
 
     pageStore.subscribe(async (newPage) => {
-    //   console.log('----page', page, newPage);
+      //   console.log('----page', page, newPage);
       page = newPage;
       if (page && page.path) {
         await checkPageEntitlement(page.path);
@@ -121,7 +130,7 @@
     });
 
     userEntitlements.subscribe(async (value) => {
-    //   console.log('------new entitlements------', { value });
+      //   console.log('------new entitlements------', { value });
 
       // calculate current entitlement status
       if (page.path) {
@@ -260,7 +269,7 @@
           message={`Sorry you don't have access to this as ${user.email}`}
         />
       {:else}
-        <LoginModal {nextUrl} />
+        <LoginModal {nextUrl} {email} />
       {/if}
     {/if}
   </FirebaseProvider>

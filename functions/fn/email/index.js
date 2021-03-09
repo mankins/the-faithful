@@ -160,7 +160,7 @@ exports.webhookMailgun = functions.https.onRequest(async (req, res) => {
 });
 
 exports.apiEmail = functions.https.onRequest(async (req, res) => {
-  console.log({ q: req.query });
+//   console.log({ q: req.query });
   const payload = { ...req.query };
 
   if (req.query.preview) {
