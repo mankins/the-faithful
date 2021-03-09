@@ -3,7 +3,8 @@ const baseProducts = [
   'video:pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ', // trailer 2021-02-12
   'video:LICidNn6bbaPjiIwJpOMEzZx7tO72H2IKeFTyLH4c3s', // paulo 2021-03-05
   'video:*:trailer',
-  'video:cYCe7XwFeEoy8hHoJ7OzbNbvynwUhkwd01Ep00JoueMwA'
+  'video:cYCe7XwFeEoy8hHoJ7OzbNbvynwUhkwd01Ep00JoueMwA',
+  'video:taMah02Uj0286rdwiMyPoh8F6CFF4Uqo4HNQPmojRYGJM'
   // 'site:user:my:*',
   // 'video:*:preview'
 ];

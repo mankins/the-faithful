@@ -9,7 +9,7 @@
   <section class="overflow-hidden sm:overflow-auto">
     <VideoPlayer
       poster="/img/trailer-cover-1b.jpg"
-      videoId="cYCe7XwFeEoy8hHoJ7OzbNbvynwUhkwd01Ep00JoueMwA"
+      videoId="taMah02Uj0286rdwiMyPoh8F6CFF4Uqo4HNQPmojRYGJM"
       captionsSrc=""
       autoplay={true}
       loop={true}
