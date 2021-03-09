@@ -12,9 +12,11 @@
       <span class="text-base font-medium text-gray-500">/ month</span>
     </p>
     <a
-      href="https://help.coil.com/docs/general-info/intro-to-coil/index.html"
+      href="https://coil.com/signup"
+      rel="nofollow"
+      target="_blank"
       class="mt-8 block w-full bg-gray-600 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
-      >Learn about Coil</a
+      >Add Coil Pass</a
     >
   </div>
   <div class="pt-6 pb-8 px-6">
