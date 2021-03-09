@@ -87,27 +87,30 @@
 <svelte:head>
   <meta name="twitter:site" content="@TheFaithful" />
   <title
-    >The Faithful: The King, The Pope, The Princess – A Movie by
-    Annie Berman.</title
+    >The Faithful: The King, The Pope, The Princess – A Movie by Annie Berman.</title
   >
   <meta
-  property="og:image"
-  content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+    property="og:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
   />
 
-<meta
-  property="twitter:image"
-  content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  <meta
+    property="twitter:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+  <meta property="twitter:card" content="summary_large_image" />
 
-/>
-<meta property="twitter:card" content="summary_large_image" />
-
-<meta property="og:video" content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4" />
-<meta property="og:video:secure_url" content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4" />
-<meta property="og:video:type" content="video/mp4" />
-<meta property="og:video:width" content="640" />
-<meta property="og:video:height" content="360" />
-
+  <meta
+    property="og:video"
+    content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4"
+  />
+  <meta
+    property="og:video:secure_url"
+    content="https://stream.mux.com/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ/low.mp4"
+  />
+  <meta property="og:video:type" content="video/mp4" />
+  <meta property="og:video:width" content="640" />
+  <meta property="og:video:height" content="360" />
 </svelte:head>
 
 <div class="min-h-screen bg-faithful-500 overscroll-x-contain overflow-hidden">
@@ -157,8 +160,13 @@
 
     <div class="w-5/6 md:w-4/6">
       <p class="text-justify text-gray-600">
-        Limited virtual cinema screenings are available from March 18-21, 2021.
-        All screenings are live events with the filmmakers present.
+        Virtual screenings are available opening weekend Friday, March 19 -
+        Sunday, March 21st, 2021, with a special sneak preview for <a
+          class="underline"
+          href="https://www.coil.com/">Coil</a
+        > subscribers Thursday, March 18th. All screenings are live events with the
+        filmmakers present. Your ticket grants you access to any or all of the showtimes
+        listed.
       </p>
     </div>
   </div>
@@ -209,4 +217,4 @@
   </aside>
   <Footer />
 </div>
-{#if false}<slot></slot>{/if}
+{#if false}<slot />{/if}

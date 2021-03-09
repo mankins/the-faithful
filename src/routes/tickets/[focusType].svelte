@@ -158,8 +158,20 @@
 
     <div class="w-5/6 md:w-4/6">
       <p class="text-justify text-gray-600">
-        Limited virtual cinema screenings are available from March 18-21, 2021.
-        All screenings are live events with the filmmakers present.
+        {#if focusType.includes('opening')}
+          Virtual screenings are available opening weekend Friday, March 19 -
+          Sunday, March 21st, 2021. All screenings are live events with the
+          filmmakers present. Your ticket grants you access to any or all of the
+          showtimes listed.
+        {:else}
+          Virtual screenings are available opening weekend Friday, March 19 -
+          Sunday, March 21st, 2021, with a special sneak preview for <a
+            class="underline"
+            href="https://www.coil.com/">Coil</a
+          > subscribers Thursday, March 18th. All screenings are live events with
+          the filmmakers present. Your ticket grants you access to any or all of
+          the showtimes listed.
+        {/if}
       </p>
     </div>
   </div>
