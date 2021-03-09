@@ -71,8 +71,7 @@
 <svelte:head>
   <meta name="twitter:site" content="@TheFaithful" />
   <title
-    >Preview for The Faithful: The King, The Pope, The Princess – A Movie by
-    Annie Berman.</title
+    >The Faithful - Tickets</title
   >
   <meta
     property="og:image"

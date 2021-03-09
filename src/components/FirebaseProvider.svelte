@@ -96,7 +96,7 @@
           window.pushToast(`Unable to reset email. ${error.message}`, 'alert');
         });
     };
-    actions.clickMagicLinkSignin = async (email, onAuth = '/') => {
+    actions.clickMagicLinkSignin = async (email, onAuth = '/my') => {
       sendEvent({ topic: 'user.login.started', email, type: 'magic' });
 
       const actionCodeSettings = {

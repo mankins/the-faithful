@@ -15,7 +15,7 @@
   let processing = true;
   let requireEmail = false;
   let email;
-  let nextUrl = '/?logged=1';
+  let nextUrl = '/my';
 
   let status = 'Hold on...';
   let subStatus = 'TCB';
@@ -35,7 +35,7 @@
         // result.additionalUserInfo.isNewUser
         sendEvent({topic:'user.login.completed', email, type:'magic'});
 
-        window.location.href = nextUrl || '/';
+        window.location.href = nextUrl || '/my';
       })
       .catch((error) => {
         // Some error occurred, you can inspect the code: error.code
