@@ -10,22 +10,11 @@ exports.process = async (params, isInline) => {
    *            h         - height of image
    *            bg        - background color
    *            fg        - foreground color
-   *            bigText, smallText, and mediumText for the text
+   *            minfont   - min font size
+   *            maxfont   - max font size
+   *            font      - font face
+   *            text for the text
    */
-
-  function fitTextOnCanvas(ctx, text, fontface, width) {
-    // start with a large font size
-    let fontsize = 300;
-
-    // lower the font size until the text fits the canvas
-    do {
-      fontsize--;
-      ctx.font = fontsize + 'px ' + fontface;
-    } while ((ctx.measureText(text).width) > width);
-    console.log(fontsize, ctx.width, ctx.measureText(text).width);
-    return fontsize;
-  }
-
   
   let surface;
   
