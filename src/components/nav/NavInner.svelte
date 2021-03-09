@@ -3,14 +3,22 @@
 
   import { userEntitlements } from '$components/stores/entitlements.js';
   import { productsEntitle } from '$components/utils/entitles.js';
+  import { getCookies } from '$components/utils/cookies';
 
   let userProducts = [];
+  let testMode = false;
 
   onMount(() => {
     userEntitlements.subscribe(async (value) => {
       console.log('------new entitlements------', { value });
       userProducts = value;
     });
+
+    let cookies = getCookies(document.cookie);
+    if (cookies._test_mode) {
+        testMode = true;
+    }
+
   });
 
   export let open = true;
@@ -206,6 +214,61 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
                   </svg>Events
             </a>
+            <button
+              on:click={() => {
+                  testMode = !testMode;
+                  if (testMode) {
+                    document.cookie = '_test_mode=1; path=/;';
+                  } else {
+                    document.cookie = '_test_mode=; path=/; max-age=-1';
+                  }
+                  alert(`Test mode is now ${testMode}`);
+              }}
+              class="group flex items-center mt-4 px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white "
+            >
+          {#if testMode}
+          <div class="p-1 pl-3 pr-3 bg-red-500 opacity-50 text-white rounded-full flex flex-row">
+            <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="mr-2 mt-1 h-4 w-4 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+          </svg>
+  
+            In Test Mode</div>
+          {:else}
+          <span class="p-1 pl-3 pr-3 bg-gray-500 opacity-50 text-white rounded-full flex flex-row">
+            <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="mr-2 mt-1 h-4 w-4 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+          </svg>
+  
+            
+            Normal Checkout</span>
+
+          
+          {/if}
+        </button>
+
+
 
         </div>
         {/if}

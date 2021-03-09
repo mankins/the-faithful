@@ -1,24 +1,24 @@
 <script>
   import TinyGesture from 'tinygesture';
 
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import Item from '$components/cart/Item.svelte';
   import { fireGoal } from '$components/utils/analytics';
   import { sendEvent } from '$components/utils/events';
+  import { getCookies } from '$components/utils/cookies';
 
   import firebase from 'firebase/app';
   import 'firebase/auth';
   import 'firebase/firestore';
   import { firebaseConfig } from '$components/config/index.js';
 
-  const dispatch = createEventDispatcher();
-
   export let opened = false;
   export let items = [];
 
   let loaded = false;
   let checkingOut = false;
+  let testMode = false;
 
   let saveItems = () => {
     console.log('default');
@@ -59,7 +59,7 @@
       .functions()
       .httpsCallable('stripeCheckoutSession');
     try {
-      const reply = await stripeCheckoutSession({ items, base });
+      const reply = await stripeCheckoutSession({ items, base, testMode });
       const session = reply.data;
       const stripe = window.Stripe(session.stripePubKey);
       fireGoal('P44I1858');
@@ -79,6 +79,12 @@
     if (window && window.location.href.indexOf('localhost') !== -1) {
       // dev mode
       firebase.functions().useEmulator('localhost', 15001);
+    }
+
+    let cookies = getCookies(document.cookie);
+    if (cookies._test_mode) {
+        // entitled = true; // default to speed up
+        testMode = true;
     }
 
     saveItems = (i) => {

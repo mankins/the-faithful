@@ -8,6 +8,7 @@
   import Toast from '$components/Toast.svelte';
   import { fireGoal } from '$components/utils/analytics';
   import { sendEvent } from '$components/utils/events';
+  import { getCookies } from '$components/utils/cookies';
 
   import firebase from 'firebase/app';
   import 'firebase/auth';
@@ -16,6 +17,7 @@
 
   let sessionId = '';
   let processing = true;
+  let testMode = false;
 
   let waiter = 'Almost there...';
   const waits = [
@@ -42,6 +44,12 @@
       firebase.functions().useEmulator('localhost', 15001);
     }
 
+    let cookies = getCookies(document.cookie);
+    if (cookies._test_mode) {
+        // entitled = true; // default to speed up
+        testMode = true;
+    }
+
     try {
       // empty cart
       window &&
@@ -54,7 +62,7 @@
         .functions()
         .httpsCallable('stripeCheckoutSuccess');
       try {
-        const reply = await stripeCheckoutSuccess({ sessionId });
+        const reply = await stripeCheckoutSuccess({ sessionId, testMode });
         const session = reply.data;
         console.log({ session });
 

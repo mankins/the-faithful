@@ -16,6 +16,7 @@ const { getProductName, getProductDescription } = require('../../lib/data');
 const secrets = getSecrets('the-faithful');
 
 let _stripe;
+let _stripe_test;
 
 const stripeConfig = async () => {
   const config = await secrets;
@@ -37,6 +38,12 @@ const stripeConfig = async () => {
     }
   }
 
+  if (config.STRIPE_PUBLIC_TEST) {
+    conf.pubTest = config.STRIPE_PUBLIC_TEST;
+    conf.secretTest = config.STRIPE_SECRET_TEST;
+    conf.webhookTest = config.STRIPE_WEBHOOK_TEST;
+  }
+
   return conf;
 };
 
@@ -44,14 +51,20 @@ const stripe = async () => {
   const _stripeConfig = await stripeConfig();
 
   if (typeof _stripe !== 'undefined') {
-    return { _stripe, config: _stripeConfig };
+    return { _stripe, _stripe_test, config: _stripeConfig };
   }
 
   _stripe = new Stripe(_stripeConfig.secret, {
     apiVersion: '2020-08-27',
   });
 
-  return { _stripe, config: _stripeConfig };
+  if (_stripeConfig.pubTest) {
+    _stripe_test = new Stripe(_stripeConfig.secretTest, {
+      apiVersion: '2020-08-27',
+    });  
+  }
+
+  return { _stripe, _stripe_test, config: _stripeConfig };
 };
 
 const processChargeEvent = (ev) => {
@@ -107,7 +120,7 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
   const signature = req.headers['stripe-signature'];
 
   const stripeProps = await stripe();
-  const { _stripe, config } = stripeProps;
+  const { _stripe, config } = stripeProps; // ignores test mode extra switch
 
   //  console.log({ signature, body: req.rawBody, config });
   let events = [];
@@ -199,6 +212,7 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
 exports.stripeCheckoutSession = functions.https.onCall(async (data) => {
   const items = get(data, 'items', '[]');
   const baseUrl = get(data, 'base', 'https://www.the-faithful.com');
+  const testMode = get(data, 'testMode', false);
 
   // TODO: get url of this request and use it to form the baseUrl
   // console.log({ todo: context });
@@ -213,7 +227,16 @@ exports.stripeCheckoutSession = functions.https.onCall(async (data) => {
 
   // const config = await secrets;
   const stripeProps = await stripe();
-  const { _stripe } = stripeProps;
+  let _stripe;
+  let stripePubKey;
+  if (testMode) {
+    _stripe = stripeProps._stripe_test;
+    stripePubKey = stripeProps.config.pubTest;
+  } else {
+    // production
+    stripePubKey = stripeProps.config.pub;
+    _stripe = stripeProps._stripe;
+  }
 
   const lineItems = [];
 
@@ -310,16 +333,23 @@ exports.stripeCheckoutSession = functions.https.onCall(async (data) => {
   // console.log({ stripeProps: stripeProps.config.pub });
   // http://localhost:5000/checkout/success?session_id=cs_test_b1VppFxojQNZyu708HCLeA3UCByepbbsQaf3FJQfvuxZ3jHd3EYluDK12s
   //http://localhost:5000/checkout/success?session_id=cs_test_b1tsZsr6H1xwb9Wcio5HSXq8i4GEiBYyxecLvb39323VfxTVMb2ZOTP04z
-  return { id: session.id, stripePubKey: stripeProps.config.pub };
+  return { id: session.id, stripePubKey };
 });
 
 exports.stripeCheckoutSuccess = functions.https.onCall(
   async (data, context) => {
     const sessionId = get(data, 'sessionId', '');
+    const testMode = get(data, 'testMode', false);
 
     const stripeProps = await stripe();
-    const { _stripe } = stripeProps;
-
+    let _stripe;
+    if (testMode) {
+      _stripe = stripeProps._stripe_test;
+    } else {
+      // production
+      _stripe = stripeProps._stripe;
+    }
+  
     const uid = get(context, 'auth.uid');
     console.log(`----UID-----${uid}-------SESSION--${sessionId}----`);
     // verify Firebase Auth ID token and presence of UID
