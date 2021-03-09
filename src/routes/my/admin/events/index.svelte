@@ -170,7 +170,7 @@
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   {#if loaded}
-    <div class="m-6">
+    <div class="m-6 pb-12 mb-8">
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700"
           >Filter</label

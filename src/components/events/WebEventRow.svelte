@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import Ago from '$components/Ago.svelte';
   import { colorizer } from '$components/utils/colorizer.js';
+  import EventFlair from '$components/events/EventFlair.svelte';
 
   import get from 'lodash.get';
 
@@ -91,11 +92,12 @@
     </span>
   </div>
   <div class="min-w-0 flex-1 pt-1.5 flex justify-between align-end space-x-4">
-    <div class="flex-1 flex flex-col justify-start align-start">
+    <div class="flex flex-row justify-end pt-2 pb-2 w-full">
+    <div class="flex-1 flex flex-col justify-start align-start mr-12">
       <p class="text-sm text-gray-500">
         {get(ev, 'payload.email', '')}
       </p>
-      <h3 class="text-sm font-medium">
+      <h3 class="text-sm font-medium font-mono">
         {#if get(ev, 'payload.topic', '') !== ''}
           {get(ev, 'payload.topic', '')}
         {:else}
@@ -103,11 +105,13 @@
         {/if}
       </h3>
     </div>
+    <EventFlair {ev} />
+    </div>
     {#if opened}
       <div><pre class="text-xs">{JSON.stringify(ev,null,2)}</pre></div>
     {/if}
     <div class="text-right text-sm whitespace-nowrap text-gray-500">
-      <p class="text-sm text-gray-500"><Ago at={ev._ts} /></p>
+      <p class="text-sm text-gray-500 pt-2"><Ago at={ev._ts} /></p>
     </div>
   </div>
 </div>
