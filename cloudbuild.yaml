@@ -12,6 +12,12 @@ steps:
     waitFor: ["cloud functions install"]
     dir: 'functions'
 
+  - id: "cloud functions deploy - updateEmailSegmentIndex"
+    name: 'gcr.io/cloud-builders/gcloud'
+    args: ['functions', 'deploy', 'updateEmailSegmentIndex', '--source=.', '--trigger-event=providers/cloud.firestore/eventTypes/document.write', '--trigger-resource=projects/the-faithful/databases/(default)/documents/email/{email}/{collection}/{docId}', '--runtime', 'nodejs14', '--entry-point=updateEmailSegmentIndex', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=512', "--set-env-vars", "GCLOUD_PROJECT=${PROJECT_ID},COMMIT_SHA=${SHORT_SHA}"]
+    waitFor: ["cloud functions install"]
+    dir: 'functions'
+
   # - id: "cloud functions deploy - transcoderIn"
   #   name: 'gcr.io/cloud-builders/gcloud'
   #   args: ['functions', 'deploy', 'transcoderIn', '--source=.', '--trigger-resource', 'video.the-faithful.com', '--trigger-event', 'google.storage.object.finalize', '--runtime', 'nodejs14', '--entry-point=transcoderIn', '--region', "${_REGION}", '--memory=512', "--set-env-vars", "GCLOUD_PROJECT=${PROJECT_ID},COMMIT_SHA=${SHORT_SHA},COMMIT_SHA=${SHORT_SHA}"]

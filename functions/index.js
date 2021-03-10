@@ -1,5 +1,6 @@
 'use strict';
 
+const { updateEmailSegmentIndex } = require('./fn/db');
 const { userEntitlements } = require('./fn/entitlements');
 const { eventsIn, eventsFirehosePubSub } = require('./fn/events');
 const { oauthAuthorize } = require('./fn/oauth');
@@ -35,9 +36,12 @@ exports.apiImage = apiImage;
 exports.apiEmail = apiEmail;
 exports.webhookMailgun = webhookMailgun;
 
-// event functions
+// pubsub event functions
 exports.sendEmailPubSub = sendEmailPubSub;
 exports.eventsFirehosePubSub = eventsFirehosePubSub;
+
+// firebase event functions
+exports.updateEmailSegmentIndex = updateEmailSegmentIndex;
 
 // deprecated, TODO: remove
 exports.transcoderIn = transcoderIn;
