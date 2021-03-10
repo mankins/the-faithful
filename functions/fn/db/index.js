@@ -9,7 +9,6 @@ exports.updateEmailSegmentIndex = functions.firestore
     // document whenever we create something in a sub-colleciton
 
     // this is definitely a bit expensive/weird. A rewrite should correct this TODO
-
     const email = context.params.email;
 
     const collections = await admin
@@ -18,7 +17,7 @@ exports.updateEmailSegmentIndex = functions.firestore
       .listCollections();
     const segments = collections.map((col) => col.id);
 
-    console.log({ segments });
+    // console.log({ segments });
 
     const docRef = admin.firestore().collection('email').doc(email);
 

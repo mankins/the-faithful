@@ -14,7 +14,7 @@ const productsFromReceipts = async (receipts) => {
 
   //   console.log('all receipts', receipts);
 
-  // loop through all receipts, look for purchases and refunds
+  // loop through all receipts, look for purchases, guest and refunds
   for (const receipt of receipts) {
     // sort by timestamp?
     try {
@@ -34,6 +34,13 @@ const productsFromReceipts = async (receipts) => {
         if (refundedProducts && refundedProducts.length) {
           refundedProducts.forEach((productId) => {
             productIds[productId] = (productIds[productId] ?? 0) - 1;
+          });
+        }
+      } else if (receipt.receipt.type === 'guest') {
+        const giftedProducts = receipt.receipt.products || [];
+        if (giftedProducts && giftedProducts.length) {
+          giftedProducts.forEach((productId) => {
+            productIds[productId] = (productIds[productId] ?? 0) + 1;
           });
         }
       } else {
@@ -100,7 +107,7 @@ exports.userEntitlements = functions.https.onCall(async (data, context) => {
   if (receipts) {
     receipts.forEach((rec) => {
       const receiptData = rec.data();
-      console.log({ receiptData });
+      // console.log({ receiptData });
 
       receiptsArray.push(receiptData);
     });
