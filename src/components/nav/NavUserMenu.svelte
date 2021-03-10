@@ -62,6 +62,9 @@ export let user = {};
       transition:fade
       class:hidden={ui.userMenuOpen === false}
       class="origin-top-right absolute hidden right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+      <div class="bg-gray-50 text-xs p-2 font-serif font-thin m-auto text-center">
+        {user.email}
+      </div>
       <div
         class="py-1"
         role="menu"
