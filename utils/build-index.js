@@ -68,7 +68,6 @@ const getAllEmails = async () => {
 
     // now update the user's document to include these segments
     await updateEmailSegments({ email, segments });
-    process.exit();
   }
 
   const emailsNow = await getAllEmails();

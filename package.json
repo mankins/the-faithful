@@ -32,6 +32,7 @@
 		"oidc-client": "^1.11.5",
 		"plyr": "^3.6.4",
 		"postcss-cli": "^8.3.1",
+		"pretty-print-json": "^1.0.0",
 		"qrcode-svg-table": "^1.1.2",
 		"request": "^2.88.2",
 		"sass": "^1.32.7",

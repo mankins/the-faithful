@@ -7,17 +7,30 @@
     export let right = 0;
 
     export let steps = 100;
+    export let threshold = 100;
+    export let inView = () => {};
 
+    let thresholdMet = false;
     let element;
     let percent;
     let observer;
     let unobserve = () => {};
+    
     let intersectionObserverSupport = false;
 
     function intersectPercent(entries) {
+        let initialThreshold = thresholdMet;
         entries.forEach(entry => {
             percent = Math.round(Math.ceil(entry.intersectionRatio * 100));
-        })
+        });
+
+        // call fn when we change visibility
+        if (!initialThreshold && (percent >= threshold))  {
+            thresholdMet = true;
+            inView(percent);
+        } else if (percent < threshold) {
+            thresholdMet = false;
+        }
     }
 
     function stepsToThreshold(steps) {

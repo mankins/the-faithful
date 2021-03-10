@@ -2,6 +2,7 @@
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
   import EventRow from '$components/EventRow.svelte';
   import { parseParams } from '$components/utils/query';
+  import Visibility from '$components/Visibility.svelte';
 
   import { onMount } from 'svelte';
 
@@ -224,7 +225,7 @@
       <!-- <div>
         <ul class="divide-y divide-gray-200"> -->
 
-      <div class="flow-root">
+      <div class="flow-root overflow-auto">
         <ul class="-mb-8">
           {#each events as ev, i}
             <li class="py-4">
@@ -256,6 +257,13 @@
         </div>
       {:else}
         <div class="mt-8">
+          <Visibility
+          threshold={10}
+          steps={100}
+          inView={() => {
+            loadMore();
+          }}
+        >
           <button
             on:click={() => {
               loadMore();
@@ -265,6 +273,7 @@
           >
             More
           </button>
+          </Visibility>
         </div>
       {/if}
     </div>

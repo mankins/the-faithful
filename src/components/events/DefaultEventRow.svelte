@@ -3,6 +3,7 @@
   import Ago from '$components/Ago.svelte';
   import { colorizer } from '$components/utils/colorizer.js';
   import EventFlair from '$components/events/EventFlair.svelte';
+  import JSPretty from '$components/JSPretty.svelte';
 
   import get from 'lodash.get';
 
@@ -92,7 +93,7 @@
       <EventFlair {ev} />
     </div>
     {#if opened}
-      <div><pre class="text-xs">{JSON.stringify(ev,null,2)}</pre></div>
+      <div><pre class="text-xs"><JSPretty obj={ev} /></pre></div>
     {/if}
     <div class="text-right text-sm whitespace-nowrap text-gray-500 pt-2">
       <p class="text-sm text-gray-500"><Ago at={ev._ts} /></p>

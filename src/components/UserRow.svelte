@@ -1,6 +1,8 @@
 <script>
   import { onMount } from 'svelte';
   import { colorizer } from '$components/utils/colorizer.js';
+  import Pill from '$components/Pill.svelte';
+  import JSPretty from '$components/JSPretty.svelte';
 
   import get from 'lodash.get';
 
@@ -36,6 +38,7 @@
       }
     }}
   >
+
     <div>
       <span
         class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white"
@@ -65,7 +68,7 @@
         {/if}
       </span>
     </div>
-    <div class="min-w-0 flex-1 pt-1.5 flex justify-between align-end space-x-4">
+    <div class="min-w-0 w-full flex-2 pt-1.5 flex justify-between align-end space-x-4">
       <div class="flex-1 flex flex-col justify-start align-start">
         <p class="text-sm text-gray-500">
           {get(user, 'email', '')}
@@ -73,10 +76,15 @@
         <h3 class="text-sm font-medium">
           {user.email}
         </h3>
-      </div>
-      {#if opened}
-        <div><pre class="text-xs">{JSON.stringify(user,null,2)}</pre></div>
+        {#if opened}
+        <div><pre class="tracking-tighter leading-tighter font-thin text-xs"><JSPretty obj={user} /></pre></div>
       {/if}
+      </div>
+      <div class="flex flex-row items-start justify-end">
+        {#each get(user, 'segments', []) as segment, i}
+        <Pill type={segment}>{segment}</Pill>
+        {/each}  
+      </div>
     </div>
   </div>
 </div>

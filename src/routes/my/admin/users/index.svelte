@@ -2,6 +2,7 @@
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
   import UserRow from '$components/UserRow.svelte';
   import { parseParams } from '$components/utils/query';
+  import Visibility from '$components/Visibility.svelte';
 
   import { onMount } from 'svelte';
 
@@ -16,6 +17,8 @@
   let cursor;
   let pageSize = 10;
   let noMore = false;
+
+  let segment = "";
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
@@ -44,6 +47,13 @@
       if (email) {
         snapshot = await docsRef.get(email);
       } else {
+        if (segment) {
+          snapshot = await docsRef
+            .where('segments', 'array-contains', segment)
+            .orderBy('_ts')
+            .limitToLast(pageSize)
+            .get();
+        } else {
         if (cursor) {
           // snapshot = await docsRef.endBefore(cursor).limitToLast(pageSize).get();
           snapshot = await docsRef.startAfter(cursor).limit(pageSize).get();
@@ -51,6 +61,7 @@
         } else {
           snapshot = await docsRef.limit(pageSize).get();
         }
+      }
       }
 
       if (snapshot.empty) {
@@ -86,6 +97,13 @@
         snapshot = await db.collection(`email`).doc(email).get();
       } else {
         docsRef = db.collection(`email`);
+        if (segment) {
+          snapshot = await docsRef
+            .where('segments', 'array-contains', segment)
+            .orderBy('_ts')
+            .limitToLast(pageSize)
+            .get();
+        } else {
 
         if (cursor) {
           // snapshot = await docsRef.endBefore(cursor).limitToLast(pageSize).get();
@@ -94,6 +112,7 @@
         } else {
           snapshot = await docsRef.limit(pageSize).get();
         }
+      }
       }
 
       if (snapshot.empty) {
@@ -236,6 +255,12 @@ noMore = true;
       {:else}
       {#if !noMore}
         <div class="mt-8 mb-8">
+          
+          <Visibility
+          threshold={10}
+          steps={100}
+          inView={() => {loadMore()}}
+        >
           <button
             on:click={() => {
               loadMore();
@@ -245,6 +270,7 @@ noMore = true;
           >
             More
           </button>
+          </Visibility>
         </div>
         {/if}
       {/if}
