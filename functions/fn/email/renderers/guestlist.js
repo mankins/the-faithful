@@ -1,4 +1,4 @@
-const drawMultilineText = require('canvas-multiline-text')
+// const drawMultilineText = require('canvas-multiline-text')
 
 const context = require('../context'); // drawing context
 

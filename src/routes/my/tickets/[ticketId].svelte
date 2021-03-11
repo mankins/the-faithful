@@ -18,6 +18,7 @@
   let loaded = false;
   let user = {};
   let ticket = {};
+  let stripeData = {};
   export let ticketId;
   let ticketFound = false;
 
@@ -54,6 +55,17 @@
       } else {
         ticket = doc.data();
         // console.log({ ticket });
+        if (ticket && ticket.receipt && ticket.receipt.src === 'stripe') {
+          try {
+            const receiptDetails = firebase
+              .functions()
+              .httpsCallable('receiptDetails');
+            const reply = await receiptDetails({ ticket });
+            stripeData = reply.data;
+          } catch (ee) {
+            console.log({ ee });
+          }
+        }
         loaded = true;
         ticketFound = true;
       }
@@ -70,9 +82,7 @@
 
 <svelte:head>
   <meta name="twitter:site" content="@TheFaithful" />
-  <title
-    >The Faithful - Tickets</title
-  >
+  <title>The Faithful - Tickets</title>
   <meta
     property="og:image"
     content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
@@ -96,14 +106,28 @@
         </h3>
       </div>
       {#if ticketFound}
-        <Ticket {ticket} />
+        <Ticket {ticket} {stripeData} />
       {:else}
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12 flex" transition:fade>
-        <svg class="text-faithful-800 h-10 w-10 ml-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        <h3 class="p-2">Ticket not found</h3>
-      </div>    
+        <div
+          class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12 flex"
+          transition:fade
+        >
+          <svg
+            class="text-faithful-800 h-10 w-10 ml-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <h3 class="p-2">Ticket not found</h3>
+        </div>
       {/if}
     </div>
   {/if}

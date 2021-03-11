@@ -352,6 +352,77 @@ exports.stripeCheckoutSession = functions.https.onCall(async (data) => {
   return { id: session.id, stripePubKey };
 });
 
+exports.receiptDetails = functions.https.onCall(
+  async (data, context) => {
+    const ticket = get(data, 'ticket', {});
+    const testMode = get(data, 'testMode', false);
+    const liveMode = get(data, 'ticket.livemode', false);
+
+    const stripeProps = await stripe();
+    let _stripe;
+    if (testMode || !liveMode) {
+      _stripe = stripeProps._stripe_test;
+    } else {
+      // production
+      _stripe = stripeProps._stripe;
+    }
+  
+    const uid = get(context, 'auth.uid');
+    console.log(`----UID-----${uid}-------`);
+    // verify Firebase Auth ID token and presence of UID
+    if (!context.auth || !uid) {
+      // throw new functions.https.HttpsError(
+      //   'unauthenticated',
+      //   'Request had invalid credentials',
+      //   {
+      //     error: 'invalid credentials',
+      //   }
+      // );
+      console.log('--invalid credentials would have thrown here--', { auth: context.auth, uid });
+    }
+
+    // see if this is a type we know about
+    let ticketType = get(ticket, 'receipt.src', 'unknown');
+    if (ticketType !== 'stripe') {
+      return { ticket, status: 'no-additional-info' };     
+    }
+
+    let raw = JSON.parse(get(ticket, 'receipt.raw', '{}'));
+    let pi = get(raw, 'payment_intent');
+    let customerId = get(raw, 'customer');
+    if (!customerId) {
+      console.log('no customer');
+      return { ticket, status: 'no-additional-info' };     
+    }
+
+    // let customer;
+    let payment;
+
+    try {
+      // customer = await _stripe.customers.retrieve(customerId);
+      payment = await _stripe.paymentIntents.retrieve(pi);
+    } catch (error) {
+      console.log('retrieve cus/pi error.', error);
+      return { ticket, status: 'no-additional-info', error: error.code };     
+    }
+
+    let receiptUrl = get(payment, 'charges.data[0].receipt_url');
+    let paid = get(payment, 'charges.data[0].paid');
+    let refunded = get(payment, 'charges.data[0].refunded', false);
+
+    const output = {
+      refunded,
+      paid,
+      receiptUrl,
+      // customer,
+      // payment
+    };
+    // console.log({ output });
+
+    return output;
+  }
+);
+
 exports.stripeCheckoutSuccess = functions.https.onCall(
   async (data, context) => {
     const sessionId = get(data, 'sessionId', '');

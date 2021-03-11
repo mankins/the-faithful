@@ -1,8 +1,8 @@
 const admin = require('./firebase');
 const FieldValue = admin.firestore.FieldValue;
 
-exports.getCampaign = async (campaignId) => {
-  const doc = await admin.firestore().collection('campaign').doc(campaignId).get();
+exports.getCampaign = async (campaignName) => {
+  const doc = await admin.firestore().collection('campaign').doc(campaignName).get();
 
   if (!doc.exists) {
     throw new Error('missing campaign');
@@ -13,7 +13,7 @@ exports.getCampaign = async (campaignId) => {
 
 exports.createCampaign = async (campaign) => {
 
-  const docRef = admin.firestore().collection('campaign').doc(campaign.campaignId);
+  const docRef = admin.firestore().collection('campaign').doc(campaign.campaignName);
 
   return await docRef.set(
     {

@@ -7,7 +7,7 @@ exports.getSegmentEmails = async (segmentId) => {
 
   let emails = [];
 
-  snapshot = await docsRef
+  let snapshot = await docsRef
     .where('segments', 'array-contains', segmentId)
     .orderBy('_ts')
     .get();
@@ -17,7 +17,8 @@ exports.getSegmentEmails = async (segmentId) => {
   }
 
   snapshot.forEach((doc) => {
-    emails.push(doc.id);
+    const data = doc.data();
+    emails.push({ email: doc.id, ...data });
   });
 
   return emails;

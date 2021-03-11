@@ -1,7 +1,7 @@
-const admin = require('./firebase');
+// const admin = require('./firebase');
 // const FieldValue = admin.firestore.FieldValue;
 
-exports.createGiftReceipt = async ({src}) => {
+exports.createGiftReceipt = async () => {
 
 // TODO
 

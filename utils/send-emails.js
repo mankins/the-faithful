@@ -167,19 +167,26 @@ let config;
 
   // SEGMENTS
   if (myArgs[0] === 'send') {
-    const campaignName = optimist.argv.campaignName;
+    const campaignName = slugify(optimist.argv.campaignName, {remove: /[*+~.()'"!:@\\]/g});
     const segment = optimist.argv.segment;
+    const debug = optimist.argv.debug;
     const limit = parseInt(optimist.argv.limit, 10) || 1;
 
     if (!segment || !campaignName) {
       console.log(
-        'Usage: send-email send --segment $segment --campaignName campaign-name-here [--limit 1]'
+        'Usage: send-email send --segment $segment --campaignName campaign-name-here [--limit 1] --debug'
       );
       process.exit(1);
     }
 
+    if (debug) {
+      console.log({ segment, campaignName });
+    }
+
     const emails = await getSegmentEmails(segment);
-    console.log({ emails });
+    if (debug) {
+      console.log({ emails });
+    }
 
     // fetch the campaign to send to
     let campaign = {};
@@ -188,6 +195,7 @@ let config;
     } catch (e) {
       console.log(e);
       console.log('You may need to create the campaign first.');
+      console.log(`send-emails campaign create --campaignName ${campaignName}`)
       process.exit(1);
     }
     console.log({ campaign });
@@ -218,7 +226,7 @@ let config;
   if (myArgs[0] === 'campaign') {
     if (!myArgs[1]) {
       console.log(
-        'Usage: send-email campaign create [--campaignId="abc"] [--template="xyz"]'
+        'Usage: send-email campaign create [--campaignName="abc"] [--template="xyz"]'
       );
       process.exit(1);
     }
@@ -226,9 +234,9 @@ let config;
       const questions = [
         {
           type: 'text',
-          name: 'campaignId',
-          initial: optimist.argv.campaignId, // --campaignId=abc
-          message: 'Campaign ID (no spaces)?',
+          name: 'campaignName',
+          initial:  slugify(optimist.argv.campaignName, {remove: /[*+~.()'"!:@\\]/g}),
+          message: 'Campaign Name (dash-case)?',
           validate: (input) => {
             return input.match(/^[\w-]+$/);
           },
@@ -251,7 +259,7 @@ let config;
 
       if (response.commit) {
         const campaign = {
-          campaignId: response.campaignId,
+          campaignName: slugify(response.campaignName, {remove: /[*+~.()'"!:@\\]/g}),
           template: response.template,
         };
         await createCampaign(campaign);
