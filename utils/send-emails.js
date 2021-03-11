@@ -3,6 +3,7 @@ const fs = require('fs');
 const prompts = require('prompts');
 const optimist = require('optimist');
 const parse = require('csv-parse');
+const slugify = require('slugify');
 
 const getSecrets = require('../functions/lib/env'); // load environment config
 const admin = require('../functions/lib/firebase');
@@ -91,12 +92,14 @@ let config;
             row.tags = row.tags.map((tag) => {
               tag = tag.replace(' and ', '');
               tag = tag.replace(/\"/g, '');
+              tag = slugify(tag, {remove: /[*+~.()'"!:@\\]/g});
               return tag;
             });
             // still a mess donor: / ...
           }
           if (row.donation) {
             row.donation = row.donation.replace('$', '');
+            row.donation = row.donation.replace('n', '');
             row.donation = parseInt(row.donation, 10) || row.donation;
           }
         }

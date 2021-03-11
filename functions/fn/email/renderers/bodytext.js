@@ -8,6 +8,7 @@ exports.process = async (params, isInline) => {
    *   params:
    *            w         - width of image
    *            h         - height of image
+   *            y         - y offset
    *            bg        - background color
    *            fg        - foreground color
    *            minfont   - min font size
@@ -25,6 +26,7 @@ exports.process = async (params, isInline) => {
 
     var w = parseInt(params.w || 600, 10);
     var h = parseInt(params.h || 100, 10);
+    var y = parseInt(params.y || 20, 10);
 
     surface = params.surface || context.custom(w, h);
     var ctx = surface.ctx;
@@ -42,7 +44,7 @@ exports.process = async (params, isInline) => {
       {
         rect: {
           x: 50,
-          y: 20,
+          y,
           width: w - 70,
           height: h - 20
         },
