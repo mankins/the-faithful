@@ -1,5 +1,5 @@
 <script>
-  import LoginModal from '$components/LoginModal.svelte';
+  import LoginModal from '$components/modals/LoginModal.svelte';
   import { parseParams } from '$components/utils/query';
 
   import { onMount } from 'svelte';

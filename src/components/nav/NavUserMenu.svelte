@@ -8,6 +8,8 @@ const gravatar = (em) => {
 }
 
 export let user = {};
+export let navOpen = false;
+
   let ui = {
     userMenuOpen: false,
   };
@@ -27,6 +29,7 @@ export let user = {};
       for="ui-nav-menu"
       on:click={() => {
         ui.userMenuOpen = !ui.userMenuOpen;
+        navOpen = !navOpen;
       }}>
       <div>
         <button
@@ -66,7 +69,7 @@ export let user = {};
         {user.email}
       </div>
       <div
-        class="py-1"
+        class="py-1 cursor-pointer"
         role="menu"
         aria-orientation="vertical"
         aria-labelledby="options-menu">

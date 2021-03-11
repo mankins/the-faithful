@@ -27,6 +27,8 @@
     db = firebase.firestore();
   };
 
+  let handleAddGuest = async () => {}
+
   let handleLogin = async (profile) => {
     if (!profile.detail) {
       console.log('not logged in.');
@@ -55,6 +57,7 @@
       } else {
         ticket = doc.data();
         // console.log({ ticket });
+        ticket.guests = ticket.guests || [];
         if (ticket && ticket.receipt && ticket.receipt.src === 'stripe') {
           try {
             const receiptDetails = firebase
@@ -68,6 +71,23 @@
         }
         loaded = true;
         ticketFound = true;
+        console.log('zz',JSON.stringify({ticket}));
+        handleAddGuest = async (guestEmail) => {
+          try {
+            const guestList = firebase
+              .functions()
+              .httpsCallable('guestList');
+            const updated = await guestList({ ticketId, add: [{ email: guestEmail }] });
+            ticket = {...updated.data};
+            console.log(JSON.stringify({ticket}));
+            window.pushToast(`Ok, added ${guestEmail}`, 'info');
+          } catch (error) {
+            console.log({ error });
+            window.pushToast(`Unable to add email. ${error.message}`, 'alert');
+          }
+
+          // return ticket.guests || [];
+        };
       }
     } catch (e) {
       console.log('ticket err', e);
@@ -106,7 +126,7 @@
         </h3>
       </div>
       {#if ticketFound}
-        <Ticket {ticket} {stripeData} />
+        <Ticket {ticket} {stripeData} {handleAddGuest} />
       {:else}
         <div
           class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12 flex"

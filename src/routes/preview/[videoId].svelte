@@ -10,7 +10,7 @@
 
   // import Toast from '$components/Toast.svelte';
   import Footer from '$components/nav/Footer.svelte';
-  import LoginModal from '$components/LoginModal.svelte';
+  import LoginModal from '$components/modals/LoginModal.svelte';
 
   import AccessDenied from '$components/AccessDenied.svelte';
   import Processing from '$components/Processing.svelte';

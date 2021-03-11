@@ -4,7 +4,9 @@ const functions = require('firebase-functions');
 
 // const fetch = require('node-fetch');
 
-// const getSecrets = require('../../lib/env'); // load environment config
+const { createGiftReceipt } = require('../../lib/entitlements');
+const { publishMessage } = require('../email');
+
 const admin = require('../../lib/firebase');
 
 // const secrets = getSecrets('the-faithful');
@@ -61,6 +63,154 @@ const productsFromReceipts = async (receipts) => {
   // return what's left
   return Object.keys(productIds).sort();
 };
+
+exports.guestList = functions.https.onCall(async (data, context) => {
+  const ticketId = get(data, 'ticketId', '');
+  let isAdmin = get(data, 'admin', false);
+
+  const uid = get(context, 'auth.uid');
+  console.log(`----UID-----${uid}-------UID------`);
+  // verify Firebase Auth ID token and presence of UID
+  if (!context.auth || !uid) {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'Request had invalid credentials',
+      {
+        error: 'invalid credentials',
+      }
+    );
+  }
+
+  // check to see if the email is set, if not, assume this is an anonymous user
+  const requestEmail = get(context, 'auth.token.email', 'anonymous');
+  if (requestEmail === 'anonymous') {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'Request had invalid credentials',
+      {
+        error: 'invalid credentials',
+      }
+    );
+  }
+
+  // console.log(`email/${requestEmail}/receipts/${ticketId}`, { data });
+  const db = admin.firestore();
+
+  if (!isAdmin) {
+    const docRef = db
+      .collection(`email/${requestEmail}/receipts`)
+      .doc(`${ticketId}`);
+
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      throw new Error('missing ticket');
+    }
+
+    const ticket = doc.data();
+
+    if (ticket.email !== requestEmail) {
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        'Request had invalid credentials for action',
+        {
+          error: 'invalid credentials for action',
+        }
+      );
+    }
+
+    const guests = get(ticket, 'guests', []);
+    const toAdd = get(data, 'add', []);
+    const products = get(ticket, 'receipt.products', []);
+
+    // TODO quantity check?
+    await Promise.all(
+      toAdd.map(async ({ email }) => {
+        guests.push(email);
+
+        // create the guest pass
+        await createGiftReceipt({
+          src: 'purchase',
+          email,
+          originalReceiptId: ticketId,
+          gifter: requestEmail,
+          products,
+        });
+
+        // send them a welcome email
+        const payload = {
+          template: 'guest-list-1',
+          to: email,
+          gifter: requestEmail,
+        };
+
+        await publishMessage(payload);
+      })
+    );
+
+    if (guests && guests.length) {
+      await docRef.set(
+        {
+          guests,
+          _ts: admin.firestore.FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      );
+      ticket.guests = guests;
+    }
+
+    return ticket;
+  } else {
+    // is admin mode
+    let adminFound = false;
+
+    const userDoc = await db.doc(`email/${requestEmail}`).get();
+    const userDocData = userDoc.data();
+    if (
+      userDocData &&
+      userDocData.entitlements &&
+      userDocData.entitlements.length
+    ) {
+      userDocData.entitlements.forEach((entitlement) => {
+        if (entitlement === 'site:admin') {
+          adminFound = true;
+        }
+      });
+    }
+    if (!adminFound) {
+      throw new Error('Must be admin');
+    }
+
+    // add the guest
+    // create the guest pass
+    const email = get(data, 'email', '');
+    if (!email || email.indexOf('@') === -1) {
+      throw new Error('missing email');
+    }
+
+    const products = get(data, 'products', []);
+    if (!products.length) {
+      throw new Error('missing products');
+    }
+
+    await createGiftReceipt({
+      src: 'admin',
+      email,
+      gifter: requestEmail,
+      products,
+    });
+
+    // send them a welcome email
+    const payload = {
+      template: 'guest-list-1',
+      to: email,
+      gifter: requestEmail,
+    };
+
+    await publishMessage(payload);
+
+    return { ticket: {}, status: 'ok' };
+  }
+});
 
 exports.userEntitlements = functions.https.onCall(async (data, context) => {
   // lookup a user's email

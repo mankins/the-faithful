@@ -1,33 +1,27 @@
-// const admin = require('./firebase');
+const admin = require('./firebase');
+const { shortId } = require('./short-uuid');
 // const FieldValue = admin.firestore.FieldValue;
 
-exports.createGiftReceipt = async () => {
+exports.createGiftReceipt = async ({ email, gifter, originalReceiptId, src = 'internal', products = [] }) => {
 
-// TODO
+  const receipt = {};
+  receipt.id = shortId();
+  receipt.ts = new Date(Date.now()).toISOString();
+  receipt.src = src;
+  if (gifter) {
+    receipt.gifter = gifter;
+  }
+  if (originalReceiptId) {
+    receipt.originalReceiptId = originalReceiptId;
+  }
 
-  // const receipt = {};
-  // receipt.id = shortId();
-  // receipt.ts = new Date(Date.now()).toISOString();
-  // receipt.src = 'stripe';
+  receipt.products = products; // this is the most important part
+  receipt.type = 'gift';
 
-  // receipt.paid = `${total}`;
-  // receipt.raw = JSON.stringify(session);
-  // receipt.products = products; // this is the most important part
-  // receipt.type = 'payment';
+  // add products to email table
+  const db = admin.firestore();
 
-  // // add products to email table
-  // const db = admin.firestore();
+  await db.doc(`email/${email}/receipts/${receipt.id}`).set({ receipt, email });
 
-  // try {
-  //   await db
-  //     .doc(`email/${email}/receipts/${receipt.id}`)
-  //     .set({ receipt, email });
-  // } catch (ee) {
-  //   console.log('error::::email store', receipt);
-  //   throw new functions.https.HttpsError('internal', 'Internal Error', {
-  //     error: 'email store error',
-  //   });
-  // }
-
-
+  return receipt;
 };

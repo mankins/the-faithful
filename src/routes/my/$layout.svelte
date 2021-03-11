@@ -3,7 +3,7 @@
 
   import AccessDenied from '$components/AccessDenied.svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import LoginModal from '$components/LoginModal.svelte';
+  import LoginModal from '$components/modals/LoginModal.svelte';
   import NavDesktopSidebar from '$components/nav/NavDesktopSidebar.svelte';
   import NavSideMenu from '$components/nav/NavSideMenu.svelte';
   import NavUserMenu from '$components/nav/NavUserMenu.svelte';
@@ -24,6 +24,7 @@
     sideMenuOpen: false,
   };
 
+  let navOpen = false;
   let firebase;
   let loaded = 0;
   let entitled = false;
@@ -163,7 +164,8 @@
 
           <div class="flex-1 overflow-auto focus:outline-none" tabindex="0">
             <div
-              class="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 xl:border-none"
+              class="relative z-0 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 xl:border-none"
+              class:z-10={navOpen}
             >
               <button
                 on:click={() => {
@@ -254,7 +256,7 @@
 
                   <!-- Profile dropdown -->
                   <div class="ml-3 relative">
-                    <NavUserMenu {user} />
+                    <NavUserMenu {user} bind:navOpen={navOpen} />
                   </div>
                 </div>
               </div>

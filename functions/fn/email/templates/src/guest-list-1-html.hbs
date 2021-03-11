@@ -2,7 +2,7 @@
     <tr>
         <td valign="top" class="headerContent">
             <a href="{{ctaUrl}}">
-                <img class="atri" id="topImg" type="guestlist" h="220" textLeft="25" smallText1="Join us as we watch The Faithful live"
+                <img class="atri" id="topImg" type="guestlist" h="220" textLeft="25" smallText1="Join us as we watch The Faithful live."
                     smallStyle="#333333" medStyle="#000000" bigStyle="#000000" smallText2="Showtimes from March 19-21 at 2pm & 7pm EDT"
                     medText="" bigText="You're on our Guest List" />
             </a>
@@ -73,6 +73,25 @@
             </a>
         </td>
     </tr>
+            {{#if gifter}}
+    <tr>
+        <td valign="top" class="headerContent">
+            <a href="{{ctaUrl}}">
+                <img class="atri" id="topImg2g" type="bodytext" h="60" y="20" minfont="24" maxfont="24" font="recoleta-bold"
+                    fg="#000000" text="Who gave me this ticket?" />
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" class="headerContent">
+            <a href="{{ctaUrl}}">
+                <img class="atri" id="topImg3g" type="bodytext" h="60" minfont="10" maxfont="24" fg="#333333"
+                    text="You can thank your friend {{gifter}}" />
+            </a>
+        </td>
+    </tr>
+    {{/if}}
+
     <tr>
         <td valign="top" class="headerContent">
             <a href="{{ctaUrlLogin}}?email={{to}}">
