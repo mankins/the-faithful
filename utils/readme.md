@@ -2,6 +2,26 @@
 
 Odds and ends that we need to make the site
 
+## Create Campaign
+
+```
+➜  node send-emails campaign create --campaignName guest-list-1                               
+```
+
+## Add users to guest list
+
+```
+% node send-emails.js guest --segment grantor --campaignName guest-list-1 --limit 50 --debug 
+```
+
+## Import list
+
+```
+% node send-emails.js import --segment guest-list-form --file ./tmp/guest-list-form.csv --limit 1000 
+```
+
+The CSV should have a header row: `email,first,last,tags,source,donation`
+
 # build-index
 
 In firebase we use paths like `/email/$email/$segment`. `$segment` is a subcollection of the collection `/email/$email`. In order to index this though we need data in the document at `/email/$email` ...so `build-index` populates these indicies. Going forward these should be automatically populated, but this may help re-connect things occasionally.

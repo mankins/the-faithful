@@ -71,7 +71,6 @@
         }
         loaded = true;
         ticketFound = true;
-        console.log('zz',JSON.stringify({ticket}));
         handleAddGuest = async (guestEmail) => {
           try {
             const guestList = firebase
@@ -79,7 +78,6 @@
               .httpsCallable('guestList');
             const updated = await guestList({ ticketId, add: [{ email: guestEmail }] });
             ticket = {...updated.data};
-            console.log(JSON.stringify({ticket}));
             window.pushToast(`Ok, added ${guestEmail}`, 'info');
           } catch (error) {
             console.log({ error });

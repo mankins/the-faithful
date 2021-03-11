@@ -2,7 +2,7 @@ const admin = require('./firebase');
 const { shortId } = require('./short-uuid');
 const FieldValue = admin.firestore.FieldValue;
 
-exports.getSegmentEmails = async (segmentId) => {
+exports.getSegmentEmails = async (segmentId, returnRef) => {
   const docsRef = admin.firestore().collection('email');
 
   let emails = [];
@@ -18,7 +18,14 @@ exports.getSegmentEmails = async (segmentId) => {
 
   snapshot.forEach((doc) => {
     const data = doc.data();
-    emails.push({ email: doc.id, ...data });
+    let emDoc = { email: doc.id, ...data };
+
+    if (returnRef) {
+      // if requested pass the whole thing
+      emDoc.ref = doc;
+    }
+
+    emails.push(emDoc);
   });
 
   return emails;

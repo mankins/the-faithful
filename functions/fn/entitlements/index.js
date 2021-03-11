@@ -2,8 +2,6 @@ const get = require('lodash.get');
 
 const functions = require('firebase-functions');
 
-// const fetch = require('node-fetch');
-
 const { createGiftReceipt } = require('../../lib/entitlements');
 const { publishMessage } = require('../email');
 

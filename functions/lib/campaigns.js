@@ -21,5 +21,20 @@ exports.createCampaign = async (campaign) => {
       _ts: FieldValue.serverTimestamp(),
     },
     { merge: true }
+  );  
+};
+
+exports.updateEmailCampaigns = async (campaigns, email) => {
+
+  const docRef = admin.firestore()
+    .collection('email')
+    .doc(`${email}`);
+
+  return await docRef.set(
+    {
+      campaigns,
+      _ts: admin.firestore.FieldValue.serverTimestamp(),
+    },
+    { merge: true }
   );
 };
