@@ -27,7 +27,8 @@ exports.process = async (params, isInline) => {
     var w = parseInt(params.w || 600, 10);
     var h = parseInt(params.h || 100, 10);
     var y = parseInt(params.y || 20, 10);
-
+    var ws = parseInt(params.ws || 70, 10);
+    
     surface = params.surface || context.custom(w, h);
     var ctx = surface.ctx;
 
@@ -45,7 +46,7 @@ exports.process = async (params, isInline) => {
         rect: {
           x: 50,
           y,
-          width: w - 70,
+          width: w - ws,
           height: h - 20
         },
         font: params.font || 'recoleta',
@@ -55,7 +56,6 @@ exports.process = async (params, isInline) => {
         maxFontSize: parseInt(params.maxfont,10) || 120
       } );
    
-
     if (isInline) {
       surface.result = await surface.canvas.toDataURL();
     } else {
