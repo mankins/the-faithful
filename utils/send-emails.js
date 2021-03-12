@@ -9,8 +9,15 @@ const get = require('lodash.get');
 const getSecrets = require('../functions/lib/env'); // load environment config
 const admin = require('../functions/lib/firebase');
 
-const { getSegmentEmails, importEmailSegment } = require('../functions/lib/segments');
-const { getCampaign, createCampaign, updateEmailCampaigns } = require('../functions/lib/campaigns');
+const {
+  getSegmentEmails,
+  importEmailSegment,
+} = require('../functions/lib/segments');
+const {
+  getCampaign,
+  createCampaign,
+  updateEmailCampaigns,
+} = require('../functions/lib/campaigns');
 const { createGiftReceipt } = require('../functions/lib/entitlements');
 const { publishMessage } = require('../functions/fn/email'); // TODO: refactor
 
@@ -94,7 +101,7 @@ let config;
             row.tags = row.tags.map((tag) => {
               tag = tag.replace(' and ', '');
               tag = tag.replace(/\"/g, '');
-              tag = slugify(tag, {remove: /[*+~.()'"!:@\\]/g});
+              tag = slugify(tag, { remove: /[*+~.()'"!:@\\]/g });
               return tag;
             });
             // still a mess donor: / ...
@@ -169,14 +176,17 @@ let config;
 
   // SEGMENTS
   if (myArgs[0] === 'send') {
-    const campaignName = slugify(optimist.argv.campaignName, {remove: /[*+~.()'"!:@\\]/g});
+    const campaignName = slugify(optimist.argv.campaignName, {
+      remove: /[*+~.()'"!:@\\]/g,
+    });
     const segment = optimist.argv.segment;
     const debug = optimist.argv.debug;
     const limit = parseInt(optimist.argv.limit, 10) || 1;
+    const yes = optimist.argv.yes;
 
     if (!segment || !campaignName) {
       console.log(
-        'Usage: send-email send --segment $segment --campaignName campaign-name-here [--limit 1] --debug'
+        'Usage: send-email send --segment $segment --campaignName campaign-name-here [--limit 1] --debug --yes'
       );
       process.exit(1);
     }
@@ -197,7 +207,7 @@ let config;
     } catch (e) {
       console.log(e);
       console.log('You may need to create the campaign first.');
-      console.log(`send-emails campaign create --campaignName ${campaignName}`)
+      console.log(`send-emails campaign create --campaignName ${campaignName}`);
       process.exit(1);
     }
     console.log({ campaign });
@@ -214,17 +224,73 @@ let config;
     console.log(
       `Going to send campaign ${campaignName} to segment ${segment}, limited to ${limit}`
     );
-    const response = await prompts(questions);
-    console.log(response);
+    let response = {};
+    if (yes) {
+      response.commit = true;
+    } else {
+      response = await prompts(questions);
+    }
+    if (optimist.argv.debug) {
+      console.log(response);
+    }
 
     if (response.commit) {
-      console.log('Would send');
+      if (debug) {
+        console.log(emails);
+      }
+
+      let done = 0;
+      await Promise.all(
+        emails.map(async (doc) => {
+          if (limit && done >= limit) {
+            return;
+          }
+
+          const campaigns = get(doc, 'campaigns', []);
+          const segments = get(doc, 'segments', []);
+          if (campaigns.includes(campaignName)) {
+            console.log('skipping (already sent)', doc.email);
+            return;
+          }
+          if (segments.includes('receipts')) {
+            console.log('skipping (already paid)', doc.email);
+            return;
+          }
+          done++;
+          if (debug) {
+            console.log(doc);
+          }
+
+          const email = doc.email;
+          if (!email) {
+            console.log('missing email');
+            process.exit(1);
+          }
+
+          if (true) {
+            // if we're here, we haven't sent to this campaign before
+            const payload = {
+              template: 'yr-invited',
+              to: email,
+            };
+
+            const status = await publishMessage(payload);
+            if (debug) {
+              console.log({ status });
+            }
+          }
+
+          // if we made it here we should update the "campaign so we don't send again"
+          campaigns.push(campaignName);
+          await updateEmailCampaigns(campaigns, email);
+        })
+      );
     } else {
       console.log('send aborted');
     }
   }
 
-    // SEND RECEIPTS
+  // SEND RECEIPTS
   if (myArgs[0] === 'receipts') {
     const debug = optimist.argv.debug;
     const limit = parseInt(optimist.argv.limit, 10) || 1;
@@ -239,39 +305,51 @@ let config;
 
     // get users we've already sent the receipts to
     const done = {};
-    const querySnapshot2 = await admin.firestore().collectionGroup('events').where('payload.template', '==', 'receipt').get();
+    const querySnapshot2 = await admin
+      .firestore()
+      .collectionGroup('events')
+      .where('payload.template', '==', 'receipt')
+      .get();
     querySnapshot2.forEach((doc) => {
       const data = doc.data();
       const email = get(data, 'payload.to');
       done[email] = true;
-  console.log(doc.id, ' => ', email);
-});
+      console.log(doc.id, ' => ', email);
+    });
 
-const querySnapshot3 = await admin.firestore().collectionGroup('events').where('payload.template', '==', 'receipt-late').get();
-querySnapshot3.forEach((doc) => {
-  const data = doc.data();
-  const email = get(data, 'payload.to');
-  done[email] = true;
-console.log(doc.id, ' LATE => ', email);
-});
+    const querySnapshot3 = await admin
+      .firestore()
+      .collectionGroup('events')
+      .where('payload.template', '==', 'receipt-late')
+      .get();
+    querySnapshot3.forEach((doc) => {
+      const data = doc.data();
+      const email = get(data, 'payload.to');
+      done[email] = true;
+      console.log(doc.id, ' LATE => ', email);
+    });
 
     const toDo = {};
-const querySnapshot = await admin.firestore().collectionGroup('receipts').where('receipt.type', '==', 'payment').get();
-querySnapshot.forEach((doc) => {
-  const data = doc.data();
-  const email = data.email;
-  if (done[email]) {
-    console.log('skipping (sent already)', email);
-    return;
-  }
-  toDo[email] = data;
-});
+    const querySnapshot = await admin
+      .firestore()
+      .collectionGroup('receipts')
+      .where('receipt.type', '==', 'payment')
+      .get();
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const email = data.email;
+      if (done[email]) {
+        console.log('skipping (sent already)', email);
+        return;
+      }
+      toDo[email] = data;
+    });
 
     console.log({ toDo });
     let count = 0;
     await Promise.all(
       Object.keys(toDo).map(async (email) => {
-        if (limit && (count >= limit)) {
+        if (limit && count >= limit) {
           return;
         }
         if (debug) {
@@ -287,137 +365,138 @@ querySnapshot.forEach((doc) => {
         if (debug) {
           console.log({ payload, status });
         }
-      }));
+      })
+    );
 
     process.exit();
-  }  
+  }
 
+  // SEND TICKETS
+  if (myArgs[0] === 'guest') {
+    const campaignName = slugify(optimist.argv.campaignName, {
+      remove: /[*+~.()'"!:@\\]/g,
+    });
+    const segment = optimist.argv.segment;
+    const debug = optimist.argv.debug;
+    const limit = parseInt(optimist.argv.limit, 10) || 1;
+    const yes = optimist.argv.yes;
+    const gifter = optimist.argv.gifter || 'annie@the-faithful.com';
 
-    // SEND TICKETS
-    if (myArgs[0] === 'guest') {
-      const campaignName = slugify(optimist.argv.campaignName, {remove: /[*+~.()'"!:@\\]/g});
-      const segment = optimist.argv.segment;
-      const debug = optimist.argv.debug;
-      const limit = parseInt(optimist.argv.limit, 10) || 1;
-      const yes = optimist.argv.yes;
-      const gifter = optimist.argv.gifter || 'annie@the-faithful.com';
-  
-      if (!segment || !campaignName) {
-        console.log(
-          'Usage: send-email guest --segment $segment --campaignName campaign-name-here [--limit 1] --debug'
-        );
-        process.exit(1);
-      }
-  
-      if (debug) {
-        console.log({ segment, campaignName });
-      }
-  
-      const emails = await getSegmentEmails(segment);
-      if (debug) {
-        console.log({ emails });
-      }
-  
-      // fetch the campaign to send to
-      let campaign = {};
-      try {
-        campaign = await getCampaign(campaignName);
-      } catch (e) {
-        console.log(e);
-        console.log('You may need to create the campaign first.');
-        console.log(`send-emails campaign create --campaignName ${campaignName}`)
-        process.exit(1);
-      }
-      console.log({ campaign });
-  
-      // are you sure you want to send to list, limit set to
-      const questions = [
-        {
-          type: 'confirm',
-          name: 'commit',
-          message: `Are you sure you sure?`,
-          initial: false,
-        },
-      ];
+    if (!segment || !campaignName) {
       console.log(
-        `Going to add users to guest list and send via campaign ${campaignName} to segment ${segment}, limited to ${limit}`
+        'Usage: send-email guest --segment $segment --campaignName campaign-name-here [--limit 1] --debug'
       );
-      let response = {};
-      if (yes) {
-        response.commit = true;
-      } else {
-        response = await prompts(questions);
-      }
-      if (optimist.argv.debug) {
-        console.log(response);
-      }
-  
-      if (response.commit) {
-        if (debug) {
-          console.log(emails);
-        }
-
-        let done = 0;
-        await Promise.all(
-          emails.map(async (doc) => {
-            if (limit && (done >= limit)) {
-              return;
-            }
-
-            const campaigns = get(doc, 'campaigns', []);
-            const segments = get(doc, 'segments', []);
-            if (campaigns.includes(campaignName)) {
-              console.log('skipping (already sent)', doc.email);
-              return;
-            }
-            if (segments.includes('receipts')) {
-              console.log('skipping (already paid)', doc.email);
-              return;
-            }
-            done++;
-            if (debug) {
-              console.log(doc);
-            }
-
-            const email = doc.email;
-            if (!email) {
-              console.log('missing email');
-              process.exit(1);
-            }
-
-            if (true) {
-              // if we're here, we haven't sent to this campaign before
-              await createGiftReceipt({
-                src: segment || 'unknown',
-                campaignName,
-                email,
-                gifter,
-                products: ['video:thefaithful']
-              });
-    
-              // send them a welcome email
-              const payload = {
-                template: 'guest-list-1',
-                to: email,
-                gifter,
-              };
-    
-              const status = await publishMessage(payload);
-              if (debug) {
-                console.log({ status });
-              }
-            }
-            // if we made it here we should update the "campaign so we don't send again"
-            campaigns.push(campaignName);
-            await updateEmailCampaigns(campaigns, email);      
-          })
-        );
-
-      } else {
-        console.log('send aborted');
-      }
+      process.exit(1);
     }
-  
+
+    if (debug) {
+      console.log({ segment, campaignName });
+    }
+
+    const emails = await getSegmentEmails(segment);
+    if (debug) {
+      console.log({ emails });
+    }
+
+    // fetch the campaign to send to
+    let campaign = {};
+    try {
+      campaign = await getCampaign(campaignName);
+    } catch (e) {
+      console.log(e);
+      console.log('You may need to create the campaign first.');
+      console.log(`send-emails campaign create --campaignName ${campaignName}`);
+      process.exit(1);
+    }
+    console.log({ campaign });
+
+    // are you sure you want to send to list, limit set to
+    const questions = [
+      {
+        type: 'confirm',
+        name: 'commit',
+        message: `Are you sure you sure?`,
+        initial: false,
+      },
+    ];
+    console.log(
+      `Going to add users to guest list and send via campaign ${campaignName} to segment ${segment}, limited to ${limit}`
+    );
+    let response = {};
+    if (yes) {
+      response.commit = true;
+    } else {
+      response = await prompts(questions);
+    }
+    if (optimist.argv.debug) {
+      console.log(response);
+    }
+
+    if (response.commit) {
+      if (debug) {
+        console.log(emails);
+      }
+
+      let done = 0;
+      await Promise.all(
+        emails.map(async (doc) => {
+          if (limit && done >= limit) {
+            return;
+          }
+
+          const campaigns = get(doc, 'campaigns', []);
+          const segments = get(doc, 'segments', []);
+          if (campaigns.includes(campaignName)) {
+            console.log('skipping (already sent)', doc.email);
+            return;
+          }
+          if (segments.includes('receipts')) {
+            console.log('skipping (already paid)', doc.email);
+            return;
+          }
+          done++;
+          if (debug) {
+            console.log(doc);
+          }
+
+          const email = doc.email;
+          if (!email) {
+            console.log('missing email');
+            process.exit(1);
+          }
+
+          if (true) {
+            // if we're here, we haven't sent to this campaign before
+            await createGiftReceipt({
+              src: segment || 'unknown',
+              campaignName,
+              email,
+              gifter,
+              products: ['video:thefaithful'],
+            });
+
+            // send them a welcome email
+            const payload = {
+              template: 'guest-list-1',
+              to: email,
+              gifter,
+            };
+
+            const status = await publishMessage(payload);
+            if (debug) {
+              console.log({ status });
+            }
+          }
+          // if we made it here we should update the "campaign so we don't send again"
+          campaigns.push(campaignName);
+          await updateEmailCampaigns(campaigns, email);
+        })
+      );
+    } else {
+      console.log('send aborted');
+    }
+  }
+
   // CAMPAIGNS
   if (myArgs[0] === 'campaign') {
     if (!myArgs[1]) {
@@ -431,7 +510,9 @@ querySnapshot.forEach((doc) => {
         {
           type: 'text',
           name: 'campaignName',
-          initial:  slugify(optimist.argv.campaignName, {remove: /[*+~.()'"!:@\\]/g}),
+          initial: slugify(optimist.argv.campaignName, {
+            remove: /[*+~.()'"!:@\\]/g,
+          }),
           message: 'Campaign Name (dash-case)?',
           validate: (input) => {
             return input.match(/^[\w-]+$/);
@@ -455,7 +536,9 @@ querySnapshot.forEach((doc) => {
 
       if (response.commit) {
         const campaign = {
-          campaignName: slugify(response.campaignName, {remove: /[*+~.()'"!:@\\]/g}),
+          campaignName: slugify(response.campaignName, {
+            remove: /[*+~.()'"!:@\\]/g,
+          }),
           template: response.template,
         };
         await createCampaign(campaign);
