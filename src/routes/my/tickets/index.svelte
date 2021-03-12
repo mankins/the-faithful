@@ -30,7 +30,7 @@
     db = db || firebase.firestore();
 
     if (ticketsFound) {
-        loaded = true;
+      loaded = true;
       return;
     }
     const docsRef = db.collection(`email/${user.email}/receipts`);
@@ -99,7 +99,11 @@
             />
           </svg>
           <h3 class="p-2">No tickets found</h3>
-          <a class="p-2 underline text-faithful-900" rel="external" href="/tickets">Try the ticket booth?</a>
+          <a
+            class="p-2 underline text-faithful-900"
+            rel="external"
+            href="/tickets">Try the ticket booth?</a
+          >
         </div>
       {/if}
     </div>

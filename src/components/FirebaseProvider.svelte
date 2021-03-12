@@ -1,5 +1,5 @@
 <script>
-  import { createEventDispatcher, onMount, setContext } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
 
   import firebase from 'firebase/app';
   import 'firebase/auth';
@@ -45,7 +45,7 @@
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
         // User is signed in.
-        console.log({ user }, 'aaa');
+        // console.log({ user }, 'aaa');
         if (user && !user.isAnonymous) {
           if (user.email) {
             window.Sentry && window.Sentry.setUser({ email: user.email });

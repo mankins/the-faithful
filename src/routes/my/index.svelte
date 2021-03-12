@@ -23,7 +23,6 @@
     const ticker = setInterval(() => {
       tick();
     }, 1000);
-    console.log(`Nav to-----${window.location.href}`);
 
     return () => {
       clearInterval(ticker);

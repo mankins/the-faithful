@@ -7,6 +7,8 @@ const { oauthAuthorize } = require('./fn/oauth');
 const { slackRelay } = require('./fn/slack');
 const { transcoderIn } = require('./fn/transcode');
 const { receiptDetails, stripeCheckoutSession, stripeCheckoutSuccess, stripeWebhook } = require('./fn/stripe');
+const { channelToken } = require('./fn/channels');
+
 const {
   apiImage,
   apiEmail,
@@ -37,6 +39,7 @@ exports.apiImage = apiImage;
 exports.apiEmail = apiEmail;
 exports.webhookMailgun = webhookMailgun;
 exports.guestList = guestList;
+exports.channelToken = channelToken;
 
 // pubsub event functions
 exports.sendEmailPubSub = sendEmailPubSub;

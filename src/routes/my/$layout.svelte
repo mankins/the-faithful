@@ -18,8 +18,6 @@
   import { userEntitlements } from '$components/stores/entitlements.js';
   import { page as pageStore } from '$components/stores';
 
-  //   import { parseParams } from '$components/utils/query';
-
   let ui = {
     sideMenuOpen: false,
   };
@@ -69,9 +67,9 @@
     try {
       const reply = await userProductsFn({});
       const products = reply.data;
-      console.log({ products });
+      // console.log({ products });
       products.userProducts.forEach((product) => {
-        console.log(`adding to user products: ${product}`);
+        // console.log(`adding to user products: ${product}`);
         userProducts.push(`${product}`);
       });
 
@@ -108,7 +106,7 @@
   };
 
   onMount(() => {
-    loaded = 0;
+    // loaded = 0;
     page.path = window.location.pathname;
     nextUrl = window.location.href;
     let cookies = getCookies(document.cookie);
@@ -131,8 +129,6 @@
     });
 
     userEntitlements.subscribe(async (value) => {
-      //   console.log('------new entitlements------', { value });
-
       // calculate current entitlement status
       if (page.path) {
         await checkPageEntitlement(page.path);
@@ -256,7 +252,7 @@
 
                   <!-- Profile dropdown -->
                   <div class="ml-3 relative">
-                    <NavUserMenu {user} bind:navOpen={navOpen} />
+                    <NavUserMenu {user} bind:navOpen />
                   </div>
                 </div>
               </div>
