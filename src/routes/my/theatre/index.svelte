@@ -1,49 +1,65 @@
 <script>
   import { onMount } from 'svelte';
-  import VideoPlayer from '$components/VideoPlayer.svelte';
+  import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
   import { realtime } from '$components/stores/channel.js';
   import get from 'lodash.get';
   import timecodes from 'node-timecodes';
+  import Index from '../admin/projector/index.svelte';
 
   let theatre = {};
   let db;
   let firebase;
   let user = {};
   let skew = 0;
+  let testingOffset = 0;
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
     db = firebase.firestore();
   };
 
-const updatePlayerCursor = () => {
-  if (theatre.status === 'paused') {
-        // we should seek to this part
-        const seekTs = theatre.startTs;
-        if (playerTheatre) {
+  const updatePlayerCursor = () => {
+
+    // theatreDuration = media.duration || 1;
+    // theatreCurrentTime = timecodes.fromSeconds(media.currentTime);
+    if (!theatreDuration) {
+      console.log('no td yet');
+      return;
+    }
+    if (theatre.status === 'paused') {
+      // we should seek to this part
+      const seekTs = theatre.startTs;
+      if (playerTheatre) {
+        if (playerTheatre.playing) {
           playerTheatre.currentTime = seekTs;
-          if (playerTheatreStatus === 'playing') {
-            playerTheatre.stop();
-          }
+          setTimeout(() => {
+            playerTheatre.pause();
+          }, 500);
+        } else {
+          playerTheatre.currentTime = seekTs;
         }
       }
-      if (theatre.status === 'playing') {
-        // calculate the current position
-        const startTs = parseInt(get(theatre, 'eventTs.seconds'),10);
-        if (!startTs) {
-          return;
-        }
-        let currentTs = ((Date.now() / 1000) - startTs + skew + theatre.startTs) % theatreDuration;
+    } else if (theatre.status === 'playing') {
+      // calculate the current position
+      const startTs = parseInt(get(theatre, 'eventTs.seconds'), 10);
+      if (!startTs) {
+        return;
+      }
 
+      let currentTs =
+        (testingOffset + Date.now() / 1000 - startTs + skew + parseInt(theatre.startTs,0)) %
+        theatreDuration;
+      if (!playerTheatre.playing) {
+        playerTheatre.play();
+        setTimeout(() => {
+          playerTheatre.currentTime = currentTs;
+        }, 500);
+      } else {
         playerTheatre.currentTime = currentTs;
-
-        if (playerTheatreStatus === 'paused') {
-            playerTheatre.play();
-          }
-
       }
-};
+    }
+  };
 
   let handleLogin = async (profile) => {
     if (!profile.detail) {
@@ -57,7 +73,7 @@ const updatePlayerCursor = () => {
     db = db || firebase.firestore();
 
     const tmpRef = db.collection('tmp').doc(user.uid);
-    const now = Date.now() / 1000;
+    const now = testingOffset + Date.now() / 1000;
     await tmpRef.set(
       {
         now: firebase.firestore.FieldValue.serverTimestamp(),
@@ -71,7 +87,6 @@ const updatePlayerCursor = () => {
     const serverNow =
       get(d, 'now.seconds') + parseInt(get(d, 'now.nanoseconds')) / 1000000000;
     skew = serverNow - now;
-    // console.log(skew, Date.now(), serverNow);
 
     const docRef = db.collection('rooms').doc('theatre');
     try {
@@ -80,7 +95,7 @@ const updatePlayerCursor = () => {
         console.log('room not found');
         return;
       } else {
-        theatre = doc.data();
+        theatre = { ...doc.data() };
       }
     } catch (e) {
       console.log('error loading theatre', e);
@@ -88,10 +103,11 @@ const updatePlayerCursor = () => {
 
     const doc = db.collection('rooms').doc('theatre');
     doc.onSnapshot((docSnapshot) => {
-      theatre = docSnapshot.data();
-      updatePlayerCursor();
+      theatre = { ...docSnapshot.data() };
     });
   };
+
+  $: playerTheatre && theatre && theatreDuration && updatePlayerCursor();
 
   onMount(() => {
     // <VideoPlayer
@@ -102,9 +118,8 @@ const updatePlayerCursor = () => {
     //   loop={true}
     //   goals={[]}
     // />
-
-});
-let theatreCurrentTime;
+  });
+  let theatreCurrentTime;
   let theatreDuration;
   let playerTheatre;
   let playerTheatreStatus;
@@ -144,44 +159,43 @@ let theatreCurrentTime;
       theatreCurrentTime = timecodes.fromSeconds(media.currentTime);
     });
   };
-
 </script>
-<FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
 
-<div class="m-6">
-  <section class="overflow-hidden sm:overflow-auto">
+<FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
+  <div class="">
     <section class="overflow-hidden sm:overflow-auto">
-      <VideoPlayer
-        on:newvideoplayer={handleTheatreInit}
-        autoplay={true}
-        poster={theatre.posterUrl}
-        videoId={theatre.muxPlaybackId}
-        captionsSrc={theatre.captionsUrl}
-        videoPlayerId="video-player-theatre-1"
-      />
+      <section class="overflow-hidden sm:overflow-auto">
+        {#if theatre && theatre.muxPlaybackId}
+          <VideoPlayer
+            on:newvideoplayer={handleTheatreInit}
+            autoplay={false}
+            start={true}
+            poster={theatre.posterUrl}
+            videoId={theatre.muxPlaybackId}
+            captionsSrc={theatre.captionsUrl}
+            videoPlayerId="video-player-theatre-1"
+          />
+        {/if}
+      </section>
     </section>
 
-  </section>
+    {#if false}
+      <button
+        on:click={() => {
+          window.player.fullscreen.toggle();
+        }}
+      >
+        Toggle Full Screen
+      </button>
+    {/if}
 
-  {#if false}
-<button on:click={() => {window.player.fullscreen.toggle();}}>
-  Toggle Full Screen
-</button>
-{/if}
-
-  <div class="pb-5 border-b border-gray-200">
-    <h3
-      class="pt-12 md:pt-24 text-3xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-5xl"
-    >
-      Theatre
-    </h3>
+    <div class="pb-5 border-b border-gray-200">
+      <h3
+        class="pt-12 md:pt-24 text-3xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-5xl"
+      >
+        Theatre
+      </h3>
+    </div>
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12" />
   </div>
-  <div class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12">
-
- 
-  </div>
-
-
-  
-</div>
 </FirebaseProvider>
