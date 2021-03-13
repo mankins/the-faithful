@@ -362,6 +362,7 @@
             autoplay={false}
             start={true}
             poster={''}
+            controls={['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen']}
             videoId={theatre.muxPlaybackId}
             captionsSrc={theatre.captionsUrl}
             videoPlayerId="video-player-projector-1"

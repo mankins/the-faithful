@@ -14,6 +14,7 @@
   export let loop = false;
   export let videoPlayerId = "video-player";
   export let start = false;
+  export let controls = ['play-large', 'play', 'mute', 'volume', 'captions', 'pip', 'airplay', 'fullscreen'];
 
   const dispatch = createEventDispatcher();
 
@@ -32,7 +33,7 @@
       debug: false,
       autoplay,
       keyboard: { focused: true, global: true },
-      controls: ['play-large', 'play', 'mute', 'volume', 'captions', 'pip', 'airplay', 'fullscreen'],
+      controls,
       ratio: '16:9',
       title,
       previewThumbnails,
