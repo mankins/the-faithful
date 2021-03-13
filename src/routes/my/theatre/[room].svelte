@@ -1,3 +1,9 @@
+<script context="module">
+  export async function load({ page }) {
+    const { room } = page.params;
+    return { props: { room } };
+  }
+</script>
 <script>
   import { onMount, onDestroy } from 'svelte';
   import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
@@ -7,13 +13,13 @@
   import timecodes from 'node-timecodes';
   import Index from '../admin/projector/index.svelte';
 
+  export let room = "waiting";
   let theatre = {};
   let db;
   let firebase;
   let user = {};
   let skew = 0;
   let testingOffset = 0;
-  let room = 'preview';
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;

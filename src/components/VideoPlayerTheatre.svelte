@@ -32,6 +32,7 @@
       debug: false,
       autoplay,
       keyboard: { focused: true, global: true },
+      controls: ['play-large', 'play', 'mute', 'volume', 'captions', 'pip', 'airplay', 'fullscreen'],
       ratio: '16:9',
       title,
       previewThumbnails,

@@ -10,13 +10,13 @@
 {#if open}
   <div
     class="fixed inset-0 flex z-40"
-    transition:fly={{ x: -200, duration: 600 }}
+    transition:fly={{ x: -200, duration: 300 }}
   >
     <div class="fixed inset-0">
       <div
         class="absolute inset-0 bg-faithful-500 opacity-30"
         aria-hidden="true"
-        transition:fade={{ duration: 300 }}
+        transition:fade={{ duration: 200 }}
         on:click={() => {
           open = !open;
           change(open);

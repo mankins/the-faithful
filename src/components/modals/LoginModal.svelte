@@ -11,7 +11,7 @@
     });
     export let email = '';
     let password = '';
-    export let nextUrl = '/';
+    export let nextUrl = '/my';
   </script>
   
   <FirebaseProvider

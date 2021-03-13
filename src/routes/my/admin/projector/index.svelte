@@ -8,6 +8,7 @@
   import JSPretty from '$components/JSPretty.svelte';
   import { debounce } from '$components/utils/debounce';
   import { page as pageStore } from '$components/stores';
+  import ConfirmModal from '$components/modals/ConfirmModal.svelte';
 
   let db;
   let firebase;
@@ -23,6 +24,9 @@
   let setPaused = () => {};
   let presetSelected;
   let testingOffset = 0;
+  let warnMessage = false;
+  let warnMessageModal = false;
+  let lastWarningTimer;
 
   const handlePresetChange = () => {};
 
@@ -35,7 +39,6 @@
 
   const updatePlayerPositions = () => {
     if (!projectorDuration) {
-      console.log('no td yet');
       return;
     }
 
@@ -90,7 +93,7 @@
       return;
     }
     user = profile.detail.user;
-    console.log({ user });
+    // console.log({ user });
     firebase = firebase || profile.detail.firebase;
     db = db || firebase.firestore();
 
@@ -139,7 +142,7 @@
   let isActive = true;
   let page;
 
-  onDestroy(()=>{
+  onDestroy(() => {
     isActive = false;
   });
 
@@ -147,13 +150,8 @@
     startupTs = Date.now();
 
     pageStore.subscribe(async (newPage) => {
-        console.log('----page', page, newPage);
       page = newPage;
-      if (page && page.path) {
-        // await checkPageEntitlement(page.path);
-      }
     });
-
 
     realtime.subscribe((rt) => {
       if (rt) {
@@ -354,9 +352,7 @@
 <!-- svelte-ignore non-top-level-reactive-declaration -->
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   <div class="">
-    <div
-      class="bg-white shadow overflow-hidden max-w-full"
-    >
+    <div class="bg-white shadow overflow-hidden max-w-full">
       <section class="overflow-hidden sm:overflow-auto">
         {#if theatre.muxPlaybackId && isActive}
           <VideoPlayer
@@ -369,6 +365,17 @@
             videoPlayerId="video-player-projector-1"
           />
         {/if}
+        {#if !warnMessage && !warnMessageModal}
+          <div
+            on:click|stopPropagation|preventDefault={() => {
+              warnMessageModal = true;
+            }}
+            class="fixed inset-0 transition-opacity"
+            aria-hidden="true"
+          >
+            <div class="inset-0 opacity-95" />
+          </div>
+        {/if}
       </section>
       <div
         class="mt-4 text-faithful-900 font-mono flex flex-row justify-between"
@@ -377,20 +384,22 @@
           {projectorCurrentTime || '00:00:00'}
         </div>
       </div>
-      <div class="mt-24">
-        <h3
-          class="text-2xl font-serif text-gray-900 font-extrabold tracking-tight flex flex-row"
-        >
-          Presets
-        </h3>
-
-        <select bind:value={presetSelected} on:blur={handlePresetChange}>
-          <option value="video:the-faithful:trailer"
-            >The Faithful Trailer</option
+      {#if false}
+        <div class="mt-24">
+          <h3
+            class="text-2xl font-serif text-gray-900 font-extrabold tracking-tight flex flex-row"
           >
-          <option value="video:the-faithful">The Faithful Movie</option>
-        </select>
-      </div>
+            Presets
+          </h3>
+
+          <select bind:value={presetSelected} on:blur={handlePresetChange}>
+            <option value="video:the-faithful:trailer"
+              >The Faithful Trailer</option
+            >
+            <option value="video:the-faithful">The Faithful Movie</option>
+          </select>
+        </div>
+      {/if}
     </div>
     <div
       class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12 mt-12"
@@ -399,3 +408,31 @@
     </div>
   </div>
 </FirebaseProvider>
+<ConfirmModal
+  bind:open={warnMessageModal}
+  handleConfirm={async () => {
+    warnMessage = true;
+    clearTimeout(lastWarningTimer);
+    lastWarningTimer = setTimeout(() => {
+      warnMessage = false;
+    }, 15000);
+  }}
+>
+  <span slot="buttonyes">Unlock</span>
+  <span slot="buttoncancel">Cancel</span>
+  <span slot="confirmation">
+    <h3
+    class="text-lg leading-6 font-medium text-gray-900"
+    id="modal-headline"
+  >
+    Modify the live presentation?
+  </h3>
+  <div class="mt-4">
+    <p class="text-sm text-gray-500">
+      Changes to the timeline and start/stop are seen by everyone.
+    </p>
+  </div>
+
+
+  </span>
+</ConfirmModal>
