@@ -204,13 +204,15 @@
             // Set
             this.media.currentTime = Math.min(input, this.duration);
             let location = (input / this.duration) * 100;
-            setTimeout(() => {
+            setTimeout(() => { 
+              try {
               this.elements.inputs.seek.setAttribute('value', location);
-              this.elements.inputs.seek.setAttribute('aria-valuenow', location);
+              this.elements.inputs.seek.setAttribute('aria-valuenow', location);              
               this.elements.inputs.seek.style.setProperty(
                 '--value',
                 `${location}%`
               );
+              } catch (e) {}
             }, 0);
           }
           // Logging
