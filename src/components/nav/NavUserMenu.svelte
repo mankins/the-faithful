@@ -78,11 +78,13 @@ export let navOpen = false;
           href="/my/"
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
           role="menuitem">Lobby</a>
+          {#if false}
         <a
           href="/my/settings"
           rel="external"
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
           role="menuitem">Settings</a>
+          {/if}
         <a
           href="/logout"
           rel="external"
