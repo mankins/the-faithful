@@ -1,20 +1,166 @@
 <script>
   import { onMount } from 'svelte';
   import VideoPlayer from '$components/VideoPlayer.svelte';
+  import FirebaseProvider from '$components/FirebaseProvider.svelte';
+  import { realtime } from '$components/stores/channel.js';
+  import get from 'lodash.get';
+  import timecodes from 'node-timecodes';
+
+  let theatre = {};
+  let db;
+  let firebase;
+  let user = {};
+  let skew = 0;
+
+  const handleDbInit = async (ev) => {
+    firebase = ev.detail.firebase;
+    db = firebase.firestore();
+  };
+
+const updatePlayerCursor = () => {
+  if (theatre.status === 'paused') {
+        // we should seek to this part
+        const seekTs = theatre.startTs;
+        if (playerTheatre) {
+          playerTheatre.currentTime = seekTs;
+          if (playerTheatreStatus === 'playing') {
+            playerTheatre.stop();
+          }
+        }
+      }
+      if (theatre.status === 'playing') {
+        // calculate the current position
+        const startTs = parseInt(get(theatre, 'eventTs.seconds'),10);
+        if (!startTs) {
+          return;
+        }
+        let currentTs = ((Date.now() / 1000) - startTs + skew + theatre.startTs) % theatreDuration;
+
+        playerTheatre.currentTime = currentTs;
+
+        if (playerTheatreStatus === 'paused') {
+            playerTheatre.play();
+          }
+
+      }
+};
+
+  let handleLogin = async (profile) => {
+    if (!profile.detail) {
+      console.log('not logged in.');
+      window.location.href = '/?err=not+logged+in';
+      return;
+    }
+    user = profile.detail.user;
+    console.log({ user });
+    firebase = firebase || profile.detail.firebase;
+    db = db || firebase.firestore();
+
+    const tmpRef = db.collection('tmp').doc(user.uid);
+    const now = Date.now() / 1000;
+    await tmpRef.set(
+      {
+        now: firebase.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    const c = await tmpRef.get();
+    const d = c.data();
+    // console.log({now:d.now});
+    const serverNow =
+      get(d, 'now.seconds') + parseInt(get(d, 'now.nanoseconds')) / 1000000000;
+    skew = serverNow - now;
+    // console.log(skew, Date.now(), serverNow);
+
+    const docRef = db.collection('rooms').doc('theatre');
+    try {
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        console.log('room not found');
+        return;
+      } else {
+        theatre = doc.data();
+      }
+    } catch (e) {
+      console.log('error loading theatre', e);
+    }
+
+    const doc = db.collection('rooms').doc('theatre');
+    doc.onSnapshot((docSnapshot) => {
+      theatre = docSnapshot.data();
+      updatePlayerCursor();
+    });
+  };
 
   onMount(() => {
-  });
+    // <VideoPlayer
+    //   poster="/img/trailer-cover-1b.jpg"
+    //   videoId="taMah02Uj0286rdwiMyPoh8F6CFF4Uqo4HNQPmojRYGJM"
+    //   captionsSrc=""
+    //   autoplay={true}
+    //   loop={true}
+    //   goals={[]}
+    // />
+
+});
+let theatreCurrentTime;
+  let theatreDuration;
+  let playerTheatre;
+  let playerTheatreStatus;
+
+  const handleTheatreInit = (ev) => {
+    playerTheatre = ev.detail.player;
+
+    playerTheatre.on('play', () => {
+      // get current timestamp
+      // update room to show playing at TS, status to playing, eventTs = now
+      const media = playerTheatre.media;
+      if (!media) {
+        return;
+      }
+      playerTheatreStatus = 'playing';
+      updatePlayerCursor();
+    });
+
+    playerTheatre.on('pause', () => {
+      // get current timestamp
+      // update room to show playing at TS, status to playing, eventTs = now
+      const media = playerTheatre.media;
+      if (!media) {
+        return;
+      }
+      playerTheatreStatus = 'paused';
+    });
+
+    playerTheatre.on('timeupdate', () => {
+      const media = playerTheatre.media;
+      // console.log({ media });
+      if (!media) {
+        return;
+      }
+
+      theatreDuration = media.duration || 1;
+      theatreCurrentTime = timecodes.fromSeconds(media.currentTime);
+    });
+  };
+
 </script>
+<FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
+
 <div class="m-6">
   <section class="overflow-hidden sm:overflow-auto">
-    <VideoPlayer
-      poster="/img/trailer-cover-1b.jpg"
-      videoId="taMah02Uj0286rdwiMyPoh8F6CFF4Uqo4HNQPmojRYGJM"
-      captionsSrc=""
-      autoplay={true}
-      loop={true}
-      goals={[]}
-    />
+    <section class="overflow-hidden sm:overflow-auto">
+      <VideoPlayer
+        on:newvideoplayer={handleTheatreInit}
+        autoplay={true}
+        poster={theatre.posterUrl}
+        videoId={theatre.muxPlaybackId}
+        captionsSrc={theatre.captionsUrl}
+        videoPlayerId="video-player-theatre-1"
+      />
+    </section>
+
   </section>
 
   {#if false}
@@ -31,9 +177,11 @@
     </h3>
   </div>
   <div class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12">
-    Check back regularly as we ready the cinema.
+
+ 
   </div>
 
 
   
 </div>
+</FirebaseProvider>

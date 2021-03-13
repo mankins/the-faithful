@@ -23,31 +23,52 @@ let realtime;
 
 const channelToken = async (req, res) => {
 
-  // TODO: send token from client, verify with admin here
-  const config = await secrets;
+  if (req.method === 'OPTIONS') {
+    // Send response to OPTIONS requests
+    //functions.logger.info({cors: req}, {structuredData: true});
+    res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,sentry-trace');
+    res.set('Access-Control-Max-Age', '3600');
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Credentials', true);
+ 
+    // functions.logger.info('cors', { structuredData: true });
+    res.status(204).send('');
+    return;
+  } else if (req.method === 'GET') {
+    // TODO: send token from client, verify with admin here
+    const config = await secrets;
 
-  // we give out a token to everyone coming in from cloud function
-  // assumption is that we've auth'd them somehow and this isn't a big risk because tokens are time limited
+    // we give out a token to everyone coming in from cloud function
+    // assumption is that we've auth'd them somehow and this isn't a big risk because tokens are time limited
 
-  if (!realtime) {
-    realtime = new Ably.Rest.Promise({ key: config.ABLY_KEY });
+    if (!realtime) {
+      realtime = new Ably.Rest.Promise({ key: config.ABLY_KEY });
+    }
+
+    const clientId = 'the-faithful';
+
+    // https://ably.com/documentation/rest/authentication#token-params
+    const ttl = 4 * 60 * 60 * 1000;
+    const tokenRequest = await realtime.auth.createTokenRequest({
+      clientId,
+      ttl,
+    });
+
+    // res.set('Access-Control-Allow-Origin', '*');
+    // res.set('Access-Control-Allow-Methods', 'POST','GET');
+    // res.set('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    // res.set('Access-Control-Max-Age', '3600');
+    res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,sentry-trace');
+    res.set('Access-Control-Max-Age', '3600');
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Credentials', true);
+
+    return res.status(200).send(tokenRequest);
+  } else {
+    return res.status(405).send('');
   }
-
-  const clientId = 'the-faithful';
-
-  // https://ably.com/documentation/rest/authentication#token-params
-  const ttl = 4 * 60 * 60 * 1000;
-  const tokenRequest = await realtime.auth.createTokenRequest({
-    clientId,
-    ttl,
-  });
-
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'POST','GET');
-  res.set('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-  res.set('Access-Control-Max-Age', '3600');
-
-  return res.status(200).send(tokenRequest);
 };
 
 app.all('/', channelToken);

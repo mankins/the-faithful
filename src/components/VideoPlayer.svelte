@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, createEventDispatcher } from 'svelte';
   import '$styles/plyr.css';
   import Hls from 'hls.js';
 
@@ -16,6 +16,9 @@
   export let goals = [];
   export let autoplay = false;
   export let loop = false;
+  export let videoPlayerId = "video-player";
+
+  const dispatch = createEventDispatcher();
 
   if (goal && (goals.length === 0)) {
     goals.push(goal); // fires at 0
@@ -41,15 +44,15 @@
       cfg.media.loop = loop;
       cfg.click = false;
     }
-    player = new Plyr.default('#video-player', cfg);
-    window.player = window.player || player; // debugging
+    player = new Plyr.default(`#${videoPlayerId}`, cfg);
+    // window.player = window.player || player; // debugging
+    dispatch('newvideoplayer', { player });
 
     // player.on('play', () => {
     // });
 
     let nextGoal = 0;
 
-    let mostWatched = 0;
     player.on('timeupdate', () => {
       const media = player.media;
       if (!media) {
@@ -67,7 +70,7 @@
       }
     });
 
-    const video = document.querySelector('video');
+    const video = document.querySelector(`#${videoPlayerId}`);
 
     const videoSrc = `https://stream.mux.com/${videoId}.m3u8`;
 
@@ -88,7 +91,7 @@
 
 <div class="flex flex-col max-h-screen bg-black">
   <!-- svelte-ignore a11y-media-has-caption -->
-  <video controls id="video-player" {poster} {loop}>
+  <video controls id={videoPlayerId} {poster} {loop}>
     {#if captionsSrc}
       <track
         kind="captions"
