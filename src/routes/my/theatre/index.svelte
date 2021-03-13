@@ -1,5 +1,5 @@
 <script>
-  import { onMount,onDestroy } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
   import { realtime } from '$components/stores/channel.js';
@@ -13,6 +13,7 @@
   let user = {};
   let skew = 0;
   let testingOffset = 0;
+  let room = 'preview';
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
@@ -24,6 +25,10 @@
     // theatreCurrentTime = timecodes.fromSeconds(media.currentTime);
     if (!theatreDuration) {
       console.log('no td yet');
+      return;
+    }
+    if (theatre.type === 'waiting') {
+      // special waiting room
       return;
     }
     if (theatre.status === 'paused') {
@@ -53,7 +58,7 @@
         skew +
         parseInt(theatre.startTs, 0);
 
-        if (!playerTheatre.playing) {
+      if (!playerTheatre.playing) {
         setTimeout(() => {
           playerTheatre.currentTime = currentTs;
           setTimeout(() => {
@@ -95,7 +100,7 @@
       get(d, 'now.seconds') + parseInt(get(d, 'now.nanoseconds')) / 1000000000;
     skew = serverNow - now;
 
-    const docRef = db.collection('rooms').doc('theatre');
+    const docRef = db.collection('rooms').doc(room);
     try {
       const doc = await docRef.get();
       if (!doc.exists) {
@@ -108,7 +113,7 @@
       console.log('error loading theatre', e);
     }
 
-    const doc = db.collection('rooms').doc('theatre');
+    const doc = db.collection('rooms').doc(room);
     doc.onSnapshot((docSnapshot) => {
       theatre = { ...docSnapshot.data() };
     });
@@ -117,7 +122,7 @@
   $: playerTheatre && theatre && theatreDuration && updatePlayerCursor();
   let isActive = true;
 
-  onDestroy(()=>{
+  onDestroy(() => {
     isActive = false;
   });
 
@@ -147,10 +152,15 @@
       }
 
       setTimeout(() => {
-              if (!playerTheatre.playing) {
-                playerTheatre.play();
-              }
-            }, 1500);
+        if (!playerTheatre.playing) {
+          playerTheatre.play();
+        }
+      }, 1500);
+
+      //         if (theatre.type === 'waiting') {
+      //   // special waiting room
+      //   return;
+      // }
 
       return;
       // init theatre
@@ -233,6 +243,12 @@
 
       theatreDuration = media.duration || 1;
       theatreCurrentTime = timecodes.fromSeconds(media.currentTime);
+      if (theatre.loop) {
+        if (media.currentTime >= media.duration) {
+          media.currentTime = 1; // looper
+          playerTheatre.play();
+        }
+      }
     });
   };
 </script>
@@ -249,7 +265,7 @@
             poster={theatre.posterUrl}
             videoId={theatre.muxPlaybackId}
             captionsSrc={theatre.captionsUrl}
-            videoPlayerId="video-player-theatre-1"
+            videoPlayerId={`video-player-${room}`}
           />
         {/if}
       </section>
