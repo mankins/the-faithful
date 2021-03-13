@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount,onDestroy } from 'svelte';
   import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
   import { realtime } from '$components/stores/channel.js';
@@ -20,7 +20,6 @@
   };
 
   const updatePlayerCursor = () => {
-
     // theatreDuration = media.duration || 1;
     // theatreCurrentTime = timecodes.fromSeconds(media.currentTime);
     if (!theatreDuration) {
@@ -48,13 +47,21 @@
       }
 
       let currentTs =
-        (testingOffset + Date.now() / 1000 - startTs + skew + parseInt(theatre.startTs,0)) %
-        theatreDuration;
-      if (!playerTheatre.playing) {
-        playerTheatre.play();
+        testingOffset +
+        Date.now() / 1000 -
+        startTs +
+        skew +
+        parseInt(theatre.startTs, 0);
+
+        if (!playerTheatre.playing) {
         setTimeout(() => {
           playerTheatre.currentTime = currentTs;
-        }, 500);
+          setTimeout(() => {
+            if (!playerTheatre.playing) {
+              playerTheatre.play();
+            }
+          }, 100);
+        }, 1500);
       } else {
         playerTheatre.currentTime = currentTs;
       }
@@ -108,6 +115,11 @@
   };
 
   $: playerTheatre && theatre && theatreDuration && updatePlayerCursor();
+  let isActive = true;
+
+  onDestroy(()=>{
+    isActive = false;
+  });
 
   onMount(() => {
     // <VideoPlayer
@@ -126,6 +138,70 @@
 
   const handleTheatreInit = (ev) => {
     playerTheatre = ev.detail.player;
+    playerTheatre.on('ready', () => {
+      let media = playerTheatre.media;
+      theatreDuration = media.duration;
+      if (!media) {
+        console.log('warn - no media?', media);
+        return;
+      }
+
+      setTimeout(() => {
+              if (!playerTheatre.playing) {
+                playerTheatre.play();
+              }
+            }, 1500);
+
+      return;
+      // init theatre
+      if (theatre.status === 'paused') {
+        // we should seek to this part
+        const seekTs = parseInt(theatre.startTs, 10);
+        theatreCurrentTime = timecodes.fromSeconds(seekTs);
+        if (playerTheatre) {
+          if (playerTheatre.playing) {
+            playerTheatre.pause();
+          }
+          playerTheatre.currentTime = seekTs;
+        }
+      } else if (theatre.status === 'playing') {
+        // calculate the current position
+        const startTs = parseInt(get(theatre, 'eventTs.seconds'), 10);
+        if (!startTs) {
+          return;
+        }
+        let currentTs;
+        if (false && theatreDuration) {
+          currentTs =
+            (testingOffset +
+              Date.now() / 1000 -
+              startTs +
+              skew +
+              parseInt(theatre.startTs, 10)) %
+            theatreDuration;
+        } else {
+          currentTs =
+            testingOffset +
+            Date.now() / 1000 -
+            startTs +
+            skew +
+            parseInt(theatre.startTs, 10);
+        }
+        theatreCurrentTime = timecodes.fromSeconds(currentTs);
+        if (!playerTheatre.playing) {
+          setTimeout(() => {
+            playerTheatre.currentTime = currentTs;
+            setTimeout(() => {
+              if (!playerTheatre.playing) {
+                playerTheatre.play();
+              }
+            }, 100);
+          }, 500);
+        } else {
+          playerTheatre.currentTime = currentTs;
+        }
+      }
+    });
 
     playerTheatre.on('play', () => {
       // get current timestamp
@@ -165,7 +241,7 @@
   <div class="">
     <section class="overflow-hidden sm:overflow-auto">
       <section class="overflow-hidden sm:overflow-auto">
-        {#if theatre && theatre.muxPlaybackId}
+        {#if theatre && theatre.muxPlaybackId && isActive}
           <VideoPlayer
             on:newvideoplayer={handleTheatreInit}
             autoplay={false}
