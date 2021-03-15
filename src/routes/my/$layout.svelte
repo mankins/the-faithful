@@ -17,6 +17,7 @@
 
   import { userEntitlements } from '$components/stores/entitlements.js';
   import { page as pageStore } from '$components/stores';
+  import NavRoomControls from '../../components/nav/NavRoomControls.svelte';
 
   let ui = {
     sideMenuOpen: false,
@@ -203,9 +204,7 @@
               <div
                 class="flex-1 px-4 flex justify-between sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8 bg-transparent"
               >
-                <div class="flex-1 flex"
-                class:invisible={!smallNavMode}
-                >
+                <div class="flex-1 flex" class:invisible={!smallNavMode}>
                   <form class="w-full flex md:ml-0" action="#" method="GET">
                     <label for="search_field" class="sr-only">Chat</label>
                     <div
@@ -267,43 +266,32 @@
                 </div>
                 <div class="ml-4 flex items-center md:ml-6">
                   {#if smallNavMode}
-                  <button
-                    class={smallNavMode
-                      ? 'bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                      : 'bg-transparent p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
-                  >
-                    <span class="sr-only">Toggle Audience</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" 
-                    class="h-6 w-6"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
-                  </button>
-                    {:else}
+                    <NavRoomControls />
+                  {:else}
                     <button
-                    class={smallNavMode
-                      ? 'bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                      : 'bg-transparent p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
-                  >
-                    <span class="sr-only">View notifications</span>
-
-                    <!-- Heroicon name: bell -->
-                    <svg
-                      class="h-6 w-6"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
+                      class={smallNavMode
+                        ? 'bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                        : 'bg-transparent p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                      />
-                    </svg>
-                  </button>
+                      <span class="sr-only">View notifications</span>
+
+                      <!-- Heroicon name: bell -->
+                      <svg
+                        class="h-6 w-6"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                        />
+                      </svg>
+                    </button>
                   {/if}
 
                   <!-- Profile dropdown -->
@@ -313,7 +301,11 @@
                 </div>
               </div>
             </div>
-            <main class="flex-1 relative pb-8 z-0 overflow-y-auto h-full">
+            <main class="flex-1 relative pb-8 z-0 overflow-y-auto h-full"
+            class:bg-gray-700={smallNavMode}
+            class:border-b={smallNavMode}
+            class:border-red-100={smallNavMode}
+            >
               <slot />
             </main>
           </div>

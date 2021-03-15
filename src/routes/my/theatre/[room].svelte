@@ -10,6 +10,7 @@
   import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
   import { chats, gal, peers } from '$components/stores/gal';
+  import { fade, fly } from 'svelte/transition';
 
   // import { realtime } from '$components/stores/channel.js';
   import get from 'lodash.get';
@@ -24,6 +25,7 @@
   let user = {};
   let skew = 0;
   let testingOffset = 0;
+  let audienceMode = false;
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
@@ -241,8 +243,21 @@
       </button>
     {/if}
 
-    <div class="pb-5 border-b border-gray-200 h-screen">
+    <div class="bg-gray-800">
+      {#if audienceMode}
+    <button type="button" on:click={()=> audienceMode = false} class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-500 bg-transparent hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500">
+      Leave Audience
+    </button>
+    {:else}
+    <button on:click={()=> audienceMode = true} type="button" class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-500 bg-transparent hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500">
+      Join Audience
+    </button>
+    {/if}
+  </div>
+  {#if audienceMode}
+    <div transition:fade class="pb-5 border-b border-gray-200 h-screen">
       <Seating {room} />
     </div>
+    {/if}
   </div>
 </FirebaseProvider>
