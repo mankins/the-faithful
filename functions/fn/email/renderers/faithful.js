@@ -31,6 +31,10 @@ exports.process = async (params, isInline) => {
       defaultH = 820;
     } else if (params.logo === 'yr-invited') {
       defaultH = 345;
+    } else if (params.logo === 'drip-3.1-header') {
+      defaultH = 510;
+    } else if (params.logo === 'drip-3.2-header') {
+      defaultH = 506;
     }
 
     var w = parseInt(params.w || 600, 10);
@@ -53,7 +57,13 @@ exports.process = async (params, isInline) => {
     }
     if (params.logo === 'yr-invited') {
       ctx.drawImage(surface.assets['yr-invited-header-600px.png'], 0, 0, 600, 345); 
-    }    
+    }
+    if (params.logo === 'drip-3.1-header') {
+      ctx.drawImage(surface.assets['drip-3.1-header.png'], 0, 0, 600, 510); 
+    }
+    if (params.logo === 'drip-3.2-header') {
+      ctx.drawImage(surface.assets['drip-3.2-header.png'], 0, 0, 600, 506); 
+    }
 
     if (isInline) {
       surface.result = await surface.canvas.toDataURL();

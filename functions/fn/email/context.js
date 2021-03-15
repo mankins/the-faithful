@@ -52,6 +52,8 @@ function _addImages() {
   addImage(imgFile('the-faithful-600px.png'));
   addImage(imgFile('quote-peeps-600px.png'));
   addImage(imgFile('yr-invited-header-600px.png'));  
+  addImage(imgFile('drip-3.1-header.png'));  
+  addImage(imgFile('drip-3.2-header.png'));  
 }
 
 exports.custom = function custom(width, height) {

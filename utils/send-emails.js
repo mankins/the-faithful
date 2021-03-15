@@ -180,13 +180,15 @@ let config;
       remove: /[*+~.()'"!:@\\]/g,
     });
     const segment = optimist.argv.segment;
+    const template = optimist.argv.template;
     const debug = optimist.argv.debug;
     const limit = parseInt(optimist.argv.limit, 10) || 1;
     const yes = optimist.argv.yes;
+    const sendToPaid = optimist.argv.paid || false;
 
-    if (!segment || !campaignName) {
+    if (!segment || !campaignName || !template) {
       console.log(
-        'Usage: send-email send --segment $segment --campaignName campaign-name-here [--limit 1] --debug --yes'
+        'Usage: send-email send --segment $segment --template email-template-name --campaignName campaign-name-here [--limit 1] [--paid] --debug --yes'
       );
       process.exit(1);
     }
@@ -195,11 +197,42 @@ let config;
       console.log({ segment, campaignName });
     }
 
-    const emails = await getSegmentEmails(segment);
+    let emails = [];
+    
+    if (segment !== 'paid') {    
+    emails = await getSegmentEmails(segment);
+    } else {    
+      const toDo = {};
+      const querySnapshot = await admin
+        .firestore()
+        .collectionGroup('receipts')
+        .where('receipt.type', '==', 'payment')
+        .get();
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const email = data.email;
+        toDo[email] = data;
+      });
+  
+      if (debug) {
+        console.log({ toDo });
+      }
+
+      await Promise.all(
+        Object.keys(toDo).map(async (email) => {
+
+          const docsRef = admin.firestore().collection('email').doc(email);
+          const doc = await docsRef.get();
+          const data = doc.data();
+          let emDoc = { email: doc.id, ...data };
+        
+          emails.push(emDoc);
+        }));
+    
+  }
     if (debug) {
       console.log({ emails });
     }
-
     // fetch the campaign to send to
     let campaign = {};
     try {
@@ -222,7 +255,7 @@ let config;
       },
     ];
     console.log(
-      `Going to send campaign ${campaignName} to segment ${segment}, limited to ${limit}`
+      `Going to send campaign ${campaignName} to segment ${segment} using template ${template} with paid ${sendToPaid} limited to ${limit}`
     );
     let response = {};
     if (yes) {
@@ -252,7 +285,7 @@ let config;
             console.log('skipping (already sent)', doc.email);
             return;
           }
-          if (segments.includes('receipts')) {
+          if (!sendToPaid && segments.includes('receipts')) {
             console.log('skipping (already paid)', doc.email);
             return;
           }
@@ -270,19 +303,23 @@ let config;
           if (true) {
             // if we're here, we haven't sent to this campaign before
             const payload = {
-              template: 'yr-invited',
+              template,
               to: email,
             };
-
+            console.log({ payload });
             const status = await publishMessage(payload);
             if (debug) {
               console.log({ status });
             }
+            process.exit();
           }
 
           // if we made it here we should update the "campaign so we don't send again"
           campaigns.push(campaignName);
           await updateEmailCampaigns(campaigns, email);
+          if (debug) {
+            console.log('updated', campaigns, email);
+          }
         })
       );
     } else {

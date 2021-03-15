@@ -5,3 +5,9 @@ https://us-central1-the-faithful.cloudfunctions.net/apiEmail?template=tickets-av
 ```
 
 
+## Run the builder locally when developing
+
+```
+./builder
+```
+
