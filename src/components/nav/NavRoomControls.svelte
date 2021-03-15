@@ -5,6 +5,7 @@
   import { onMount } from 'svelte';
 
 import { userEntitlements } from '$components/stores/entitlements.js';
+import { heroMode } from '$components/stores/room.js';
 import { productsEntitle } from '$components/utils/entitles.js';
 
 let userProducts = [];
@@ -22,17 +23,25 @@ export let change = () => {};
 </script>
 
 <div>
-    {#await productsEntitle(userProducts, 'site:admin') then entitled}
-    {#if entitled}
+    {#await productsEntitle(userProducts, 'site:admin') then isAdmin}
+    {#if isAdmin}
 
   <button
-    class="bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+  on:click={() => {heroMode.update((curMode) => {
+        if (curMode === 'theatre') {
+            return 'presentation';
+        } else {
+            return 'theatre';
+        }
+      })}}
+    class="bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-none"
   >
     <span class="sr-only">Toggle Audience</span>
+    
     <svg
       class="h-6 w-6"
       xmlns="http://www.w3.org/2000/svg"
-      fill="none"
+      fill={($heroMode === 'theatre') ? "none" : "currentColor"}
       viewBox="0 0 24 24"
       stroke="currentColor"
     >

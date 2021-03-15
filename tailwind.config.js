@@ -58,5 +58,6 @@ module.exports = {
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
     require('tailwindcss-font-inter')(),
+    require('@tailwindcss/aspect-ratio'),
   ],
 };
