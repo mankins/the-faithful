@@ -4,10 +4,12 @@
     return { props: { room } };
   }
 </script>
+
 <script>
   import { onMount, onDestroy } from 'svelte';
   import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
+  import { chats, gal, peers } from '$components/stores/gal';
 
   // import { realtime } from '$components/stores/channel.js';
   import get from 'lodash.get';
@@ -15,7 +17,7 @@
   // import Index from '../admin/projector/index.svelte';
   import Seating from '$components/room/Seating.svelte';
 
-  export let room = "waiting";
+  export let room = 'waiting';
   let theatre = {};
   let db;
   let firebase;
@@ -108,6 +110,8 @@
       get(d, 'now.seconds') + parseInt(get(d, 'now.nanoseconds')) / 1000000000;
     skew = serverNow - now;
 
+    gal().connect({userName:user.email});
+
     const docRef = db.collection('rooms').doc(room);
     try {
       const doc = await docRef.get();
@@ -129,19 +133,21 @@
 
   $: playerTheatre && theatre && theatreDuration && updatePlayerCursor();
   let isActive = true;
+  let galState = {};
 
   onDestroy(() => {
     isActive = false;
   });
 
-  onMount(() => {
-
-  });
+  onMount(() => {});
 
   let theatreCurrentTime;
   let theatreDuration;
   let playerTheatre;
   let playerTheatreStatus;
+  gal().subscribe(async (newState) => {
+    galState = { ...newState };
+  });
 
   const handleTheatreInit = (ev) => {
     playerTheatre = ev.detail.player;
@@ -236,9 +242,7 @@
     {/if}
 
     <div class="pb-5 border-b border-gray-200 h-screen">
-    <div class="bg-white h-full shadow overflow-hidden sm:rounded-lg m-auto p-12">
-
-      <Seating {room} {firebase} />
-    
+      <Seating {room} />
     </div>
+  </div>
 </FirebaseProvider>

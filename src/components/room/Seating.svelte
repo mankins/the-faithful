@@ -83,7 +83,7 @@
 
   const updateSeats = debounce(() => {
     (async () => {
-      if (!room || !firebase) {
+      if (!room || !firebase || !$peers) {
         return;
       }
       console.log('should update seats', { peers: $peers, seating });
@@ -178,7 +178,7 @@
         style="-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;"
         width="500px"
         height="500px"
-        class="w-full h-full bg-black rounded-xl"
+        class="w-full h-full bg-gray-800"
       >
         {#each Object.keys(seats) as seatEmail, i}
         {#if seats[seatEmail]}
@@ -206,6 +206,7 @@
           {canvasHeight}
         />
         {/if}
+        <text x="50%" y="95%" class="text-xl opacity-50 font-extrabold tracking-tight font-serif fill-current text-faithful-500" dominant-baseline="middle" text-anchor="middle">{room}</text>    
     </svg>
     </div>
   </section>
