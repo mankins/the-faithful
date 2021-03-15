@@ -8,14 +8,15 @@
 
   export let percentX = 0;
   export let percentY = 0;
-  export let size = 25;
+  export let size = 15;
   export let canvasHeight = 0;
   export let canvasWidth = 0;
   export let email = '';
-  export let mouseDown = false;
+  let mouseDown = false;
+  let mouseDown2 = false;
 
   let svg;
-
+  let ringScale = 10;
   let coords = spring(
     { x: 0, y: 0 },
     {
@@ -26,7 +27,10 @@
 
   onMount(() => {
     // alert('a' + (percentX / 100) * canvasWidth);
+    // console.log({isSelf});
+
     if (canvasWidth && canvasHeight) {
+      
       coords = spring(
         {
           x: (percentX / 100) * canvasWidth,
@@ -55,7 +59,13 @@
     percentY = ($coords.y / canvasHeight) * 100;
   };
 
+  const calcRingScale = () => {
+    ringScale = parseInt(canvasWidth / 15,10);
+  }
+
   $: canvasHeight && canvasWidth && calculateCoords();
+  $: canvasHeight && canvasWidth && calcRingScale();
+
   // $: $coords.x && $coords.y && updateDot();
 
   //   function getMousePosition(evt) {
@@ -72,56 +82,94 @@
   //     selectedElement.setAttributeNS(null, "y", coord.y);
   // }
   // offsetLeft
+  let lastMouseDown;
+  let lastMouseDown2;
 </script>
 
-<circle
-  fill="rgba(0,0,0,0)"
-  cx={$coords.x}
-  cy={$coords.y}
-  r={size + 50}
+<g
   on:mousedown={(e) => {
+    e.preventDefault();
     if (isSelf) {
       mouseDown = true;
       size = 30;
+      updateDot();
+      clearTimeout(lastMouseDown);
+      lastMouseDown = setTimeout(() => {
+        mouseDown = false;
+      }, 2500);
     }
   }}
   on:mouseup={(e) => {
+    e.preventDefault();
     if (isSelf) {
       mouseDown = false;
-      size = 25;
-    }
-  }}
-  on:mousemove={(e) => {
-    if (mouseDown && isSelf) {
-      coords.set({ x: e.offsetX, y: e.offsetY });
+      size = 15;
       updateDot();
     }
   }}
-/>
-<g>
-<circle
-  on:mousedown={(e) => {
+  on:touchstart={(e) => {
+    e.preventDefault();
     if (isSelf) {
       mouseDown = true;
       size = 30;
+      updateDot();
+      clearTimeout(lastMouseDown);
+      lastMouseDown = setTimeout(() => {
+        mouseDown = false;
+      }, 2500);
     }
   }}
-  on:mouseup={(e) => {
+  on:touchend={(e) => {
+    e.preventDefault();
     if (isSelf) {
       mouseDown = false;
-      size = 25;
-    }
-  }}
-  on:mousemove={(e) => {
-    if (mouseDown && isSelf) {
-      coords.set({ x: e.offsetX, y: e.offsetY });
+      size = 15;
       updateDot();
     }
   }}
-  fill={colorizer(email)}
-  cx={$coords.x}
-  cy={$coords.y}
-  r={size}
-/>
-<text style="pointer-events: none;" text-anchor="middle" x={$coords.x} y={$coords.y + size / 2} fill="#ffffff">{email.substring(0,1).toUpperCase()}</text>
+  on:mousemove={(e) => {
+    e.preventDefault();
+    if (mouseDown && isSelf) {
+      coords.set({ x: e.offsetX, y: e.offsetY });
+      updateDot();
+      clearTimeout(lastMouseDown);
+      lastMouseDown = setTimeout(() => {
+        mouseDown = false;
+      }, 2500);
+    }
+  }}
+>
+  <circle
+  class:cursor-move={isSelf}
+
+    fill="rgba(0,0,0,0)"
+    cx={$coords.x}
+    cy={$coords.y}
+    r={size + (ringScale * 3)}
+    stroke="#666666"
+    stroke-width={isSelf ? 1 : 0}
+  />
+  <circle
+  class:cursor-move={isSelf}
+
+    fill="rgba(0,0,0,0)"
+    cx={$coords.x}
+    cy={$coords.y}
+    r={size + ringScale}
+    stroke="white"
+    stroke-width={isSelf ? 1 : 0}
+  />
+  <circle
+    fill={colorizer(email)}
+    fill-opacity="0.9"
+    cx={$coords.x}
+    cy={$coords.y}
+    r={size}
+  />
+  <text
+    text-anchor="middle"
+    x={$coords.x}
+    y={$coords.y + size / 2}
+    fill="#ffffff">{email.substring(0, 1).toUpperCase() || '?'}</text
+  >
 </g>

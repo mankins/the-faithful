@@ -1,7 +1,8 @@
 const cloneArray = (list) => Array.prototype.slice.apply(list);
 
+let inDebounce;
+
 export const debounce = (func, delay) => {
-  let inDebounce;
   return function () {
     const _this = this;
     const args = arguments;

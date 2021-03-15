@@ -56,7 +56,7 @@
     </h3>
   </div>
   <div class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-4">
-    <Seating />
+    <Seating room="theatre" />
 
     <pre>    
       <JSPretty obj={galState} />

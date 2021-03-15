@@ -8,6 +8,7 @@
   import { onMount, onDestroy } from 'svelte';
   import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
+
   // import { realtime } from '$components/stores/channel.js';
   import get from 'lodash.get';
   import timecodes from 'node-timecodes';
@@ -237,7 +238,7 @@
     <div class="pb-5 border-b border-gray-200 h-screen">
     <div class="bg-white h-full shadow overflow-hidden sm:rounded-lg m-auto p-12">
 
-      <Seating />
+      <Seating {room} {firebase} />
     
     </div>
 </FirebaseProvider>
