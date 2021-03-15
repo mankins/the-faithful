@@ -105,6 +105,8 @@
     return ent;
   };
 
+  let smallNavMode = false;
+
   onMount(() => {
     // loaded = 0;
     page.path = window.location.pathname;
@@ -124,6 +126,11 @@
       //   console.log('----page', page, newPage);
       page = newPage;
       if (page && page.path) {
+        if (page.path && page.path.indexOf('/theatre') !== -1) {
+          smallNavMode = true;
+        } else {
+          smallNavMode = false;
+        }
         await checkPageEntitlement(page.path);
       }
     });
@@ -160,7 +167,9 @@
 
           <div class="flex-1 overflow-auto focus:outline-none" tabindex="0">
             <div
-              class="relative z-0 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 xl:border-none"
+              class={smallNavMode
+                ? 'relative bg-black z-0 flex-shrink-0 flex h-16 border-b border-transparent xl:border-none'
+                : 'relative bg-white z-0 flex-shrink-0 flex h-16 border-b border-gray-200 xl:border-none'}
               class:z-10={navOpen}
             >
               <button
@@ -168,7 +177,9 @@
                   ui.sideMenuOpen = !ui.sideMenuOpen;
                   ui = { ...ui };
                 }}
-                class="px-4 border-r border-gray-200 text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 xl:hidden"
+                class={smallNavMode
+                  ? 'px-4 border-r border-transparent text-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-faithful-500 xl:hidden'
+                  : 'px-4 border-r border-gray-200 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-faithful-500 xl:hidden'}
               >
                 <span class="sr-only">Open sidebar</span>
                 <!-- Heroicon name: menu-alt-1 -->
@@ -190,48 +201,92 @@
               </button>
               <!-- Search bar -->
               <div
-                class="flex-1 px-4 flex justify-between sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8"
+                class="flex-1 px-4 flex justify-between sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8 bg-transparent"
               >
-                <div class="flex-1 flex invisible">
+                <div class="flex-1 flex"
+                class:invisible={!smallNavMode}
+                >
                   <form class="w-full flex md:ml-0" action="#" method="GET">
-                    <label for="search_field" class="sr-only">Search</label>
+                    <label for="search_field" class="sr-only">Chat</label>
                     <div
                       class="relative w-full text-gray-400 focus-within:text-gray-600"
                     >
                       <div
-                        class="absolute inset-y-0 left-0 flex items-center pointer-events-none"
+                        class="absolute inset-y-0 left-0 flex items-center"
                         aria-hidden="true"
                       >
-                        <!-- Heroicon name: search -->
-                        <svg
-                          class="h-5 w-5"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          aria-hidden="true"
+                        {#if false}
+                          <!-- Heroicon name: chat -->
+                          <svg
+                            class="h-5 w-5"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                            />
+                          </svg>
+                        {/if}
+                        <button
+                          class={smallNavMode
+                            ? 'bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-transparent'
+                            : 'bg-transparent p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-transparent'}
                         >
-                          <path
-                            fill-rule="evenodd"
-                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
+                          <span class="sr-only">Send emoji to audience</span>
+
+                          <svg
+                            class="h-5 w-5"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </button>
                       </div>
                       <input
                         id="search_field"
                         name="search_field"
-                        class="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm"
-                        placeholder="Search posts"
-                        type="search"
+                        class="block w-full bg-transparent h-full pl-8 pr-3 py-2 border-transparent text-gray-50 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm"
+                        placeholder="..."
+                        type="text"
                       />
                     </div>
                   </form>
                 </div>
                 <div class="ml-4 flex items-center md:ml-6">
+                  {#if smallNavMode}
                   <button
-                    class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    class={smallNavMode
+                      ? 'bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                      : 'bg-transparent p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
+                  >
+                    <span class="sr-only">Toggle Audience</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                    class="h-6 w-6"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                  </button>
+                    {:else}
+                    <button
+                    class={smallNavMode
+                      ? 'bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                      : 'bg-transparent p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
                   >
                     <span class="sr-only">View notifications</span>
+
                     <!-- Heroicon name: bell -->
                     <svg
                       class="h-6 w-6"
@@ -249,9 +304,10 @@
                       />
                     </svg>
                   </button>
+                  {/if}
 
                   <!-- Profile dropdown -->
-                  <div class="ml-3 relative">
+                  <div class="ml-3 relative opacity-50 hover:opacity-100">
                     <NavUserMenu {user} bind:navOpen />
                   </div>
                 </div>

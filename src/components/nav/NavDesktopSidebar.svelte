@@ -7,7 +7,7 @@
 </script>
 
 <div class="hidden xl:flex xl:flex-shrink-0">
-  <div class="flex flex-col w-64">
+  <div class="flex flex-col w-48">
     <div
       class="flex flex-col flex-grow bg-faithful-500 pt-5 pb-4 overflow-y-auto"
     >
