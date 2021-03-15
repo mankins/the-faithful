@@ -1,5 +1,5 @@
 <script>
-  import Arrow from '../nav/Arrow.svelte';
+  // import Arrow from '../nav/Arrow.svelte';
   import { formatCurrency } from '$components/utils/i18n';
   import { fade, fly } from 'svelte/transition';
 

@@ -8,10 +8,11 @@
   import { onMount, onDestroy } from 'svelte';
   import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import { realtime } from '$components/stores/channel.js';
+  // import { realtime } from '$components/stores/channel.js';
   import get from 'lodash.get';
   import timecodes from 'node-timecodes';
-  import Index from '../admin/projector/index.svelte';
+  // import Index from '../admin/projector/index.svelte';
+  import Seating from '$components/room/Seating.svelte';
 
   export let room = "waiting";
   let theatre = {};
@@ -133,15 +134,9 @@
   });
 
   onMount(() => {
-    // <VideoPlayer
-    //   poster="/img/trailer-cover-1b.jpg"
-    //   videoId="taMah02Uj0286rdwiMyPoh8F6CFF4Uqo4HNQPmojRYGJM"
-    //   captionsSrc=""
-    //   autoplay={true}
-    //   loop={true}
-    //   goals={[]}
-    // />
+
   });
+
   let theatreCurrentTime;
   let theatreDuration;
   let playerTheatre;
@@ -169,54 +164,6 @@
       // }
 
       return;
-      // init theatre
-      if (theatre.status === 'paused') {
-        // we should seek to this part
-        const seekTs = parseInt(theatre.startTs, 10);
-        theatreCurrentTime = timecodes.fromSeconds(seekTs);
-        if (playerTheatre) {
-          if (playerTheatre.playing) {
-            playerTheatre.pause();
-          }
-          playerTheatre.currentTime = seekTs;
-        }
-      } else if (theatre.status === 'playing') {
-        // calculate the current position
-        const startTs = parseInt(get(theatre, 'eventTs.seconds'), 10);
-        if (!startTs) {
-          return;
-        }
-        let currentTs;
-        if (false && theatreDuration) {
-          currentTs =
-            (testingOffset +
-              Date.now() / 1000 -
-              startTs +
-              skew +
-              parseInt(theatre.startTs, 10)) %
-            theatreDuration;
-        } else {
-          currentTs =
-            testingOffset +
-            Date.now() / 1000 -
-            startTs +
-            skew +
-            parseInt(theatre.startTs, 10);
-        }
-        theatreCurrentTime = timecodes.fromSeconds(currentTs);
-        if (!playerTheatre.playing) {
-          setTimeout(() => {
-            playerTheatre.currentTime = currentTs;
-            setTimeout(() => {
-              if (!playerTheatre.playing) {
-                playerTheatre.play();
-              }
-            }, 100);
-          }, 500);
-        } else {
-          playerTheatre.currentTime = currentTs;
-        }
-      }
     });
 
     playerTheatre.on('play', () => {
@@ -287,13 +234,10 @@
       </button>
     {/if}
 
-    <div class="pb-5 border-b border-gray-200">
-      <h3
-        class="pt-12 md:pt-24 text-3xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-5xl"
-      >
-        Theatre
-      </h3>
+    <div class="pb-5 border-b border-gray-200 h-screen">
+    <div class="bg-white h-full shadow overflow-hidden sm:rounded-lg m-auto p-12">
+
+      <Seating />
+    
     </div>
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12" />
-  </div>
 </FirebaseProvider>
