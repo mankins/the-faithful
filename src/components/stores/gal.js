@@ -1,26 +1,40 @@
 import { derived, writable } from 'svelte/store';
 import get from 'lodash.get';
 import GaleneProto from '$components/utils/galene-protocol.js';
-// import { shortId } from '../utils/short-uuid';
-
-const { subscribe, set, update } = writable(0);
 
 const MAX_CHAT_SIZE = 2;
 const ROOM = 'faithful';
 
 let mem = {
   room: ROOM,
+  state: 'boot',
   peers: {},
   chats: [],
   devices: [],
+  myStream: {},
+  down: {},
+  volumes: {},
+  speakerId: '',
 };
 
-let galCon;
+const { subscribe, set, update } = writable(mem);
 
 function galStore() {
-    let connect = () => { };
-    let newUpStream = () => { };
-    let disconnectStream = () => { };
+  let connect = () => {};
+  let newUpStream = () => {};
+  let disconnectStream = () => {};
+  let startStream = () => {};
+  let stopStream = () => {};
+  let initialize = () => { };
+  let endStream = () => { console.log('---WARN endstream');}
+  let setMediaStatus = () => {
+    console.log('-----WARN---MEDIA-STATUS---');
+  };
+
+  let setMedia = () => {
+    console.log('-0-WARN---setMedia---');
+  };
+  let galUser = 'anon';
 
   const setMediaChoices = async () => {
     let devices = [];
@@ -52,18 +66,20 @@ function galStore() {
     });
   };
 
-  if (typeof window !== 'undefined') {
-    const HOME_SERVER = 'wss://jp2.the-faithful.com/ws';
+  let galCon;
+  let homeServer = 'wss://jp2.the-faithful.com/ws';
 
-    let galUser = 'anon';
-    let galConnected = false;
-
+  initialize = async () => {
+    if (typeof window == 'undefined') {
+      return;
+    }
+    console.log('zzz a');
     galCon = new GaleneProto.ServerConnection();
     galCon.onconnected = async (a) => {
       console.log('on connected', a);
 
       if (!mem.devices.length) {
-        console.log('medica choices');
+        console.log('media choices');
         await setMediaChoices();
       }
 
@@ -71,10 +87,12 @@ function galStore() {
       await galCon.request('everything');
 
       update(() => {
-        mem.con = 'connected';
+        console.log('connected');
+        mem.state = 'connected';
         return { ...mem };
       });
     };
+    console.log('zzz ab');
 
     galCon.onclose = (code, reason) => {
       console.log('onclose', { code, reason });
@@ -96,7 +114,7 @@ function galStore() {
         window && window.pushToast && window.pushToast(e.message, 'alert');
       };
       c.ondowntrack = function (track, transceiver, label, stream) {
-        setMedia(c, false);
+        // setMedia(c, false);
         console.log('set media downtrack', {
           label,
           track,
@@ -117,7 +135,8 @@ function galStore() {
         }
       };
       c.onstatus = function (status) {
-        setMediaStatus(c);
+        // setMediaStatus(c);
+        c.userdata.setupMediaRequested = Date.now();
         console.log('setmediastatus');
       };
       c.onstats = (stats) => {
@@ -126,8 +145,8 @@ function galStore() {
       // if(getSettings().activityDetection)
       //     c.setStatsInterval(activityDetectionInterval);
 
-      setMedia(c, false);
-      console.log('setMedia ondownstream done');
+      //setMedia(c, false);
+      console.log('setMedia would have been called ondownstream done');
     };
 
     galCon.onuser = (id, kind, name) => {
@@ -150,9 +169,11 @@ function galStore() {
         return { ...mem };
       });
     };
+
     galCon.onjoined = (kind, group, perms, message) => {
       console.log('onjoined', { kind, group, perms, message });
     };
+
     galCon.onchat = (peerId, dest, nick, time, privileged, kind, message) => {
       console.log('onchat', {
         peerId,
@@ -173,6 +194,7 @@ function galStore() {
         return { ...mem };
       });
     };
+
     galCon.onusermessage = (
       id,
       dest,
@@ -193,103 +215,141 @@ function galStore() {
       });
     };
 
-    newUpStream = async (localId) => {
-        console.log('new up', localId);
-        let c = await galCon.newUpStream(localId);
-        c.onstatus = function (status) {
-          console.log('--new up status', { status });
-          setMediaStatus(c);
-        };
-        c.onerror = function (e) {
-          console.error(e);
-          displayError(e);
-        };
-        c.onnegotiationcompleted = function () {
-          console.log('neg completed');
-          setMaxVideoThroughput(c, getMaxVideoThroughput());
-        };
-    
-        return c;
-      };
-    
-       disconnectStream = () => {
-        galCon.close();
-      };
-          
-    connect = async ({ userName }) => {
-      try {
-          if (galCon && galCon.socket) {
-              console.log('----closing socket-----');
-          galCon.close();
-        }
+    disconnectStream = () => {
+      console.log('disconnect stream');
+      galCon.close();
+    };
+  };
 
-        if (userName) {
-          galUser = userName;
-        }
+  endStream = (kind) => {
+    // for (let id in serverConnection.up) {
+    //   let c = serverConnection.up[id];
+    //   if (kind && c.kind != kind) continue;
+    update((m) => {
+      console.log('trying to close', kind, m.myStream);
+      m.myStream.c.close();
+      // m.myStream = { c }; // relaces old?
+      return m;
+    });
+  };
 
-        console.log('connecting to gal');
-        await galCon.connect(HOME_SERVER);
-        console.log('connected');
-      } catch (e) {
-        console.error(`gal err: ${e.message}`);
-        // displayError(e.message ? e.message : "Couldn't connect to " + url);
-      } finally {
-        galConnected = true;
+  newUpStream = async (localId) => {
+    console.log('new up', localId);
+    let c = await galCon.newUpStream(localId);
+    c.onstatus = function (status) {
+      console.log('--new up status', { status });
+      // setMediaStatus(c);
+      c.userdata.setupMediaRequested = Date.now();
+    };
+    c.onerror = function (e) {
+      console.error(e);
+      displayError(e);
+    };
+    c.onnegotiationcompleted = function () {
+      console.log('neg completed');
+      setMaxVideoThroughput(c, getMaxVideoThroughput());
+    };
+
+    return c;
+  };
+
+  startStream = async ({ localId, mute = false }) => {
+    let video = {};
+    // video.width = { min: 640, ideal: 1920 };
+    // video.height = { min: 400, ideal: 1080 };
+
+    let audio = true;
+
+    let constraints = { video, audio };
+
+    let stream = null;
+
+    stream = await navigator.mediaDevices.getUserMedia(constraints); // will throw err on fail
+
+    console.log('---start upstream---', localId);
+    let c = await newUpStream(localId); // throws on err
+    c.kind = 'local';
+    c.stream = stream;
+
+    c.onclose = (replace) => {
+      console.log('closing stream', { replace });
+      stopStream(c.stream);
+      if (!replace) {
+        // Gal.delMedia(c.localId);
+        // TODO: cleanup ui?
       }
     };
 
-    //             gal.send({
-    // type: 'chat',
-    // kind: '',// or 'me',
-    // // source: 'source-id',
-    // // username: 'me',
-    // username: galUser,
-    // dest: '', // empty = everyone
-    // // privileged: false,
-    // noecho: false,
-    // value: 'hey!'
-    // });
-
-    // gal.send({
-    // type: 'usermessage',
-    // kind: '',// or 'me',
-    // // source: 'source-id',
-    // // username: 'me',
-    // username: galUser,
-    // dest: '', // empty = everyone
-    // // privileged: false,
-    // noecho: false,
-    // value: {'time':Date.now()}
-    // });
-
-    // gal.chat('matt', nick, peerId, 'hi?');
-  }
-
-  const setMediaStatus = (c) => {
-    let state = c && c.pc && c.pc.iceConnectionState;
-    let good = state === 'connected' || state === 'completed';
-    console.log({ good, localId: c.localId });
-    let media = document.getElementById('media-' + c.localId);
-    if (!media) {
-      console.warn('Setting status of unknown media.');
-      return;
-    }
-    if (good) {
-      media.classList.remove('media-failed');
-      if (c.userdata.play) {
-        if (media instanceof HTMLMediaElement)
-          media.play().catch((e) => {
-            console.error(e);
-            displayError(e);
-          });
-        delete c.userdata.play;
+    c.stream.getTracks().forEach((t) => {
+      c.labels[t.id] = t.kind;
+      if (t.kind == 'audio') {
+        if (mute) {
+          t.enabled = false;
+        }
+      } else if (t.kind == 'video') {
+        // if(settings.blackboardMode) {
+        //     /** @ts-ignore */
+        //     t.contentHint = 'detail';
+        // }
       }
-    } else {
-      media.classList.add('media-failed');
+      c.pc.addTrack(t, stream);
+    });
+    let mirrorView = true;
+    // await Gal.setMedia(c, true, mirrorView);
+    console.log({ c }, '!!');
+    // console.log('set media done');
+    update((m) => {
+      m.myStream = { c }; // relaces old?
+      return m;
+    });
+  };
+
+  connect = async ({ userName }) => {
+    try {
+      if (galCon && galCon.socket) {
+        console.log('----closing socket-----');
+        galCon.close();
+      }
+
+      if (userName) {
+        galUser = userName;
+      }
+
+      console.log('connecting to gal');
+      await galCon.connect(homeServer);
+      console.log('connected');
+      mem.state = 'connected';
+    } catch (e) {
+      console.error(`gal err: ${e.message}`);
+      // displayError(e.message ? e.message : "Couldn't connect to " + url);
     }
   };
 
-  const stopStream = (s) => {
+  // setMediaStatus = (c) => {
+  //   let state = c && c.pc && c.pc.iceConnectionState;
+  //   let good = state === 'connected' || state === 'completed';
+  //   console.log({ good, localId: c.localId });
+  //   let media = document.getElementById('media-' + c.localId);
+  //   if (!media) {
+  //     console.warn('Setting status of unknown media.');
+  //     return;
+  //   }
+  //   if (good) {
+  //     media.classList.remove('media-failed');
+  //     if (c.userdata.play) {
+  //       if (media instanceof HTMLMediaElement)
+  //         media.play().catch((e) => {
+  //           console.error(e);
+  //           displayError(e);
+  //         });
+  //       delete c.userdata.play;
+  //     }
+  //   } else {
+  //     media.classList.add('media-failed');
+  //   }
+  // };
+
+  stopStream = (s) => {
     s.getTracks().forEach((t) => {
       try {
         console.log('stopping stream');
@@ -323,14 +383,6 @@ function galStore() {
   const displayError = (e) => {
     window && window.pushToast && window.pushToast(e.message, 'alert');
   };
-
-  function showVideo() {
-    let width = window.innerWidth;
-    let video_container = document.getElementById('video-container');
-    video_container.classList.remove('no-video');
-    if (width <= 768)
-      document.getElementById('collapse-video').style.display = 'block';
-  }
 
   function isSafari() {
     let ua = navigator.userAgent.toLowerCase();
@@ -373,7 +425,8 @@ function galStore() {
     return null;
   }
 
-  const setMedia = async (c, isUp, mirror, video) => {
+  setMedia = async (c, isUp, mirror, video) => {
+    console.log('=-=-=-=-=-=setMedia?');
     let peersdiv = document.getElementById('peers');
 
     let div = document.getElementById('peer-' + c.localId);
@@ -425,22 +478,24 @@ function galStore() {
     }
 
     // setLabel(c);
-    setMediaStatus(c);
+    c.userdata.setupMediaRequested = Date.now(); //     setMediaStatus(c);
 
-    showVideo();
+    // showVideo();
     // resizePeers();
 
     if (!isUp && isSafari() && !findUpMedia('local')) {
       // Safari doesn't allow autoplay unless the user has granted media access
       try {
-        let stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        let stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
         stream.getTracks().forEach((t) => t.stop());
       } catch (e) {}
     }
   };
 
   function getMaxVideoThroughput() {
-    let v = 'low'; // TODO make config
+    let v = 'normal'; // TODO make config
     switch (v) {
       case 'lowest':
         return 150000;
@@ -460,19 +515,18 @@ function galStore() {
     subscribe,
     // addOne: () => update(n => n + 1),
     // reset: () => set(0)
+    initialize,
+    endStream,
     connect,
     newUpStream,
     setMediaStatus,
-    setMedia,
+    // setMedia,
+    startStream,
     disconnectStream,
     //   delMedia, // ui, hide, cleanup
     stopStream,
   };
 }
-
-// Use it like a regular store
-// galStore.subscribe(console.log)
-// galStore.addOne()
 
 const getPeers = (m) => {
   return m.peers;
@@ -482,6 +536,7 @@ const getChats = (m) => {
   return m.chats;
 };
 
-export const gal = galStore;
-export const peers = derived(galStore(), ($galStore) => getPeers($galStore));
-export const chats = derived(galStore(), ($galStore) => getChats($galStore));
+export const gal = galStore();
+export const peers = derived(gal, ($galStore) => getPeers($galStore));
+export const chats = derived(gal, ($galStore) => getChats($galStore));
+// export const myStream = derived(galStore())

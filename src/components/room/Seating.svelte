@@ -3,7 +3,7 @@
 
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
   import UserDot from '$components/user/UserDot.svelte';
-  import { chats, gal, peers } from '$components/stores/gal';
+  import { peers } from '$components/stores/gal';
   import get from 'lodash.get';
   import { debounce } from '$components/utils/debounce';
 
