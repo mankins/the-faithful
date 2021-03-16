@@ -82,6 +82,8 @@
     }
   };
 
+  let vols = {};
+
   const updateSeats = debounce(() => {
     (async () => {
       if (!room || !firebase || !$peers) {
@@ -98,15 +100,23 @@
         let updates = {};
         let updated = 0;
 
+        let myEmail = get(user, 'email');
+        let myPos = {};
+        myPos.x = parseInt(get(seats[myEmail], 'x', randomPosition()), 10) || 5;
+        myPos.y = parseInt(get(seats[myEmail], 'y', randomPosition()), 10) || 5;
+
         // see if we have any new peers
         Object.keys($peers).forEach((peerId) => {
           // console.log({ p: $peers[peerId] });
           const peerEmail = $peers[peerId].name || peerId;
+          let x = get(seating, `${peerEmail}.x`) || randomPosition() || 5;
+          let y = get(seating, `${peerEmail}.y`) || randomPosition() || 5;
+
           if (!seating[peerEmail]) {
             // peer not in our seets, let's update
             updates[peerEmail] = {
-              x: get(seating, `${peerEmail}.x`) || randomPosition() || 5,
-              y: get(seating, `${peerEmail}.y`) || randomPosition() || 5,
+              x,
+              y,
               email: get($peers, `${peerId}.name`, peerId),
               ts: firebase.firestore.FieldValue.serverTimestamp(),
             };
@@ -122,7 +132,8 @@
             };
             delete seats[peerEmail].ts;
           }
-          if (peerEmail === get(user, 'email')) {
+
+          if (peerEmail === myEmail) {
             // update ourselves
             // console.log(`checking for change to self - ${peerEmail}`);
             const currentSeat = seats[peerEmail] || {};
@@ -134,12 +145,8 @@
             ) {
               // console.log({ seats });
               updates[peerEmail] = {
-                x:
-                  parseInt(get(seats[peerEmail], 'x', randomPosition()), 10) ||
-                  5,
-                y:
-                  parseInt(get(seats[peerEmail], 'y', randomPosition()), 10) ||
-                  5,
+                x: myPos.x,
+                y: myPos.y,
                 email: peerEmail,
                 ts: firebase.firestore.FieldValue.serverTimestamp(),
               };
@@ -149,6 +156,36 @@
               // console.log('no change', dbSeat.x, currentSeat.x);
             }
           }
+        });
+
+        Object.keys(seats).forEach((peerEmail) => {
+          // calculate distance between us and them, then convert to a volume.
+          let x = get(seats, `${peerEmail}.x`) || randomPosition() || 5;
+          let y = get(seats, `${peerEmail}.y`) || randomPosition() || 5;
+          let myEmail = get(user, 'email');
+          let myPos = {};
+          myPos.x =
+            parseInt(get(seats[myEmail], 'x', randomPosition()), 10) || 5;
+          myPos.y =
+            parseInt(get(seats[myEmail], 'y', randomPosition()), 10) || 5;
+
+          let a = x - myPos.x;
+          let b = y - myPos.y;
+          let dist = Math.sqrt(a * a + b * b) || 0.1;
+          let cutoff = 25;
+          if (dist > cutoff) {
+            dist = cutoff;
+          }
+          let volume = 10 * (1 - (dist / cutoff));
+          if (volume > 10) {
+            volume = 10;
+          }
+          if (volume <= 1) {
+            volume = 0;
+          }
+          vols[peerEmail] = parseInt(volume,10);
+          // console.log({ vols, a, b, x, y, peerEmail, dist });
+          //  console.log({dist, volume});
         });
 
         if (updated) {
@@ -183,35 +220,44 @@
         class="w-full h-full bg-gray-800"
       >
         {#each Object.keys(seats) as seatEmail, i}
-        {#if seats[seatEmail]}
-          {#if seatEmail !== get(user, 'email')}
-            <UserDot
-              isSelf={seatEmail === get(user, 'email')}
-              size={get(seats, `${seatEmail}.size`) || DEFAULT_USER_SIZE}
-              email={seatEmail}
-              bind:percentX={seats[seatEmail].x}
-              bind:percentY={seats[seatEmail].y}
-              {canvasWidth}
-              {canvasHeight}
-            />
-            <UserAudio streams={get(seats, `${seatEmail}.streams`) || {}} email={seatEmail} />
-          {/if}
+          {#if seats[seatEmail]}
+            {#if seatEmail !== get(user, 'email')}
+              <UserDot
+                isSelf={seatEmail === get(user, 'email')}
+                size={get(seats, `${seatEmail}.size`) || DEFAULT_USER_SIZE}
+                email={seatEmail}
+                bind:percentX={seats[seatEmail].x}
+                bind:percentY={seats[seatEmail].y}
+                {canvasWidth}
+                {canvasHeight}
+              />
+              <UserAudio
+                streams={get(seats, `${seatEmail}.streams`) || {}}
+                email={seatEmail}
+                volume={vols[seatEmail]}
+              />
+            {/if}
           {/if}
         {/each}
         {#if seats[get(user, 'email')]}
-        <UserDot
-          isSelf={true}
-          size={get(seats, `${get(user, 'email')}.size`) || DEFAULT_USER_SIZE}
-          streams={get(seats, `${get(user, 'email')}.streams`) || {}}
-          email={get(user, 'email')}
-          bind:percentX={seats[get(user, 'email')].x}
-          bind:percentY={seats[get(user, 'email')].y}
-          {canvasWidth}
-          {canvasHeight}
-        />
+          <UserDot
+            isSelf={true}
+            size={get(seats, `${get(user, 'email')}.size`) || DEFAULT_USER_SIZE}
+            email={get(user, 'email')}
+            bind:percentX={seats[get(user, 'email')].x}
+            bind:percentY={seats[get(user, 'email')].y}
+            {canvasWidth}
+            {canvasHeight}
+          />
         {/if}
-        <text x="50%" y="95%" class="text-xl opacity-50 font-extrabold tracking-tight font-serif fill-current text-faithful-500" dominant-baseline="middle" text-anchor="middle">{room}</text>    
-    </svg>
+        <text
+          x="50%"
+          y="95%"
+          class="text-xl opacity-50 font-extrabold tracking-tight font-serif fill-current text-faithful-500"
+          dominant-baseline="middle"
+          text-anchor="middle">{room}</text
+        >
+      </svg>
     </div>
   </section>
 </FirebaseProvider>
