@@ -216,6 +216,7 @@ ServerConnection.prototype.close = function() {
 ServerConnection.prototype.send = function(m) {
     if(!this.socket || this.socket.readyState !== this.socket.OPEN) {
         // send on a closed socket doesn't throw
+        // console.log(this.socket, this.socket.readyState, this.socket.OPEN, '!!!!!!!!!!!');        
         throw(new Error('Connection is not open'));
     }
     return this.socket.send(JSON.stringify(m));
@@ -455,19 +456,26 @@ ServerConnection.prototype.newUpStream = function(localId) {
     let c = new Stream(this, id, localId || newLocalId(), pc, true);
     if(oldId)
         c.replace = oldId;
+    console.log('new up', { id, c });
     sc.up[id] = c;
 
     pc.onnegotiationneeded = async e => {
-            await c.negotiate();
+        console.log({ c, e }, 'NEG');
+        setTimeout(() => {
+         c.negotiate();
+
+        }, 6000);
     };
 
     pc.onicecandidate = e => {
+        console.log('ice cand', e.candidate);
         if(!e.candidate)
             return;
         c.gotLocalIce(e.candidate);
     };
 
     pc.oniceconnectionstatechange = e => {
+
         if(c.onstatus)
             c.onstatus.call(c, pc.iceConnectionState);
         if(pc.iceConnectionState === 'failed')
@@ -475,7 +483,6 @@ ServerConnection.prototype.newUpStream = function(localId) {
     };
 
     pc.ontrack = console.error;
-
     return c;
 };
 
@@ -1013,6 +1020,7 @@ Stream.prototype.close = function(replace) {
         else
             console.warn('Closing unknown stream');
     }
+    console.log('nulling sc');
     c.sc = null;
 
     if(c.onclose)
@@ -1121,7 +1129,7 @@ Stream.prototype.negotiate = async function (restartIce) {
         }
     });
 
-    c.sc.send({
+    const toSend = {
         type: 'offer',
         source: c.sc.id,
         username: c.sc.username,
@@ -1130,7 +1138,9 @@ Stream.prototype.negotiate = async function (restartIce) {
         replace: this.replace,
         labels: c.labelsByMid,
         sdp: c.pc.localDescription.sdp,
-    });
+    };
+    console.log('offer sending', {toSend});
+    c.sc.send(toSend);
     this.localDescriptionSent = true;
     this.replace = null;
     c.flushLocalIceCandidates();

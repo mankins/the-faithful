@@ -127,7 +127,7 @@
       //   console.log('----page', page, newPage);
       page = newPage;
       if (page && page.path) {
-        if (page.path && page.path.indexOf('/theatre') !== -1) {
+        if (false && page.path && page.path.indexOf('/theatre') !== -1) {
           smallNavMode = true;
         } else {
           smallNavMode = false;

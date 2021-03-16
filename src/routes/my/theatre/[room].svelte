@@ -28,8 +28,81 @@
   let testingOffset = 0;
   let audienceMode = false;
   let heroState = 'theatre';
+  let Gal;
 
-  const enableMedia = async () => {};
+  let mute = false;
+
+  const enableMedia = async () => {
+    // this should start our media stream
+    // await gal.startStream();
+
+    let video = {};
+    // video.width = { min: 640, ideal: 1920 };
+    // video.height = { min: 400, ideal: 1080 };
+
+    let audio = true;
+
+    let constraints = { video, audio };
+
+    let stream = null;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
+    } catch (e) {
+      window.pushToast(`Unable to start media. ${error.message}`, 'alert');
+      mediaEnabled = false;
+      return;
+    }
+    window.pushToast(`Audio/video started.`, 'info');
+
+    let c;
+    let localId; // ?
+    try {
+      console.log('---start upstream---', localId);
+      c = await Gal.newUpStream(localId);
+    } catch (e) {
+      console.log('newupstream err', e);
+      window.pushToast(`Audio/video start error ${e.message}`, 'alert');
+      return;
+    }
+
+    // c.kind = 'video';
+    // c.stream = stream;
+    c.kind = 'local';
+    c.stream = stream;
+
+    c.onclose = (replace) => {
+      console.log('closing stream', {replace});
+      Gal.stopStream(c.stream);
+      if (!replace) {
+        // Gal.delMedia(c.localId);
+        // TODO: cleanup ui?
+      }
+    };
+
+    c.stream.getTracks().forEach(t => {
+        c.labels[t.id] = t.kind;
+        if(t.kind == 'audio') {
+            if(mute) {
+                t.enabled = false;
+            }
+        } else if(t.kind == 'video') {
+            // if(settings.blackboardMode) {
+            //     /** @ts-ignore */
+            //     t.contentHint = 'detail';
+            // }
+        }
+        c.pc.addTrack(t, stream);
+    });
+    let mirrorView = true;
+    await Gal.setMedia(c, true, mirrorView);
+    console.log('set media done');
+    mediaEnabled = true;
+  };
+
+  const disableMedia = async () => {
+    mediaEnabled = false;
+    Gal.disconnectStream();
+  };
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
@@ -116,7 +189,8 @@
       get(d, 'now.seconds') + parseInt(get(d, 'now.nanoseconds')) / 1000000000;
     skew = serverNow - now;
 
-    gal().connect({ userName: user.email });
+    Gal = gal();
+    Gal.connect({ userName: user.email });
 
     const docRef = db.collection('rooms').doc(room);
     try {
@@ -243,16 +317,19 @@
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   <div class="">
     {#if theatre.mode === 'presentation'}
-    <div class="aspect-w-16 aspect-h-9">
-      <div class="flex max-h-screen bg-black">
-        <div class="m-auto" id="video-wrapper">
-          <h3
-            class="text-white items-center m-auto font-serif font-extrabold tracking-tight text-2xl sm:text-5xl"
-          >
-            Connect video...
-          </h3>
+      <div class="aspect-w-16 aspect-h-9" id="video-container">
+        <div class="flex max-h-screen bg-black">
+          <div class="m-auto">
+            <div id="expand-video" class="expand-video">
+              <div id="peers"></div>
+            </div>
+            <h3
+              class="text-white items-center m-auto font-serif font-extrabold tracking-tight text-2xl sm:text-5xl"
+            >
+              Connect video...
+            </h3>
+          </div>
         </div>
-      </div>
       </div>
     {:else}
       <section class="overflow-hidden sm:overflow-auto">
@@ -278,7 +355,7 @@
         Toggle Full Screen
       </button>
     {/if}
-
+{#if false}
     <div class="bg-gray-800">
       <div class="flex flex-row justify-between items-center">
         {#if audienceMode}
@@ -376,5 +453,7 @@
         </div>
       {/if}
     {/if}
+    {/if}
   </div>
+
 </FirebaseProvider>
