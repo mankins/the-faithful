@@ -4,19 +4,12 @@
 
   export let stream;
   export let videoId;
+  export let muted = true;
 
   let good;
   let state;
   let loaded = false;
   let failed = false;
-
-  //   function showVideo() {
-  //     let width = window.innerWidth;
-  //     let video_container = document.getElementById('video-container');
-  //     video_container.classList.remove('no-video');
-  //     if (width <= 768)
-  //       document.getElementById('collapse-video').style.display = 'block';
-  //   }
 
   onMount(() => {});
 
@@ -53,6 +46,6 @@
 <div class="relative" style="padding-top: 56.25%">
   {#if stream}
     <!-- svelte-ignore a11y-media-has-caption -->
-    <video class="rounded-md absolute inset-0 w-full h-full" autoplay={true} playsinline={true} bind:this={video} id={`vid-${videoId}`} />
+    <video class="rounded-md absolute inset-0 w-full h-full" muted={muted} autoplay={true} playsinline={true} bind:this={video} id={`vid-${videoId}`} />
   {/if}
 </div>

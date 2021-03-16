@@ -293,7 +293,7 @@
               <h3
                 class="text-white items-center m-auto font-serif font-extrabold tracking-tight text-2xl sm:text-5xl"
               >
-                Connect video...
+                No Video
               </h3>
             </div>
           {/if}

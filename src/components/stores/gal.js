@@ -106,7 +106,8 @@ function galStore() {
       c.onclose = function (replace) {
         if (!replace) {
           //delMedia(c.localId);
-          console.log('delMedia?');
+
+          console.log('delMedia?', {peers: mem.peers});
         }
       };
       c.onerror = function (e) {
@@ -114,7 +115,7 @@ function galStore() {
         window && window.pushToast && window.pushToast(e.message, 'alert');
       };
       c.ondowntrack = function (track, transceiver, label, stream) {
-        // setMedia(c, false);
+        // setMedia(c, false); 777
         console.log('set media downtrack', {
           label,
           track,
@@ -122,6 +123,23 @@ function galStore() {
           stream,
           id: c.id,
           c,
+        });
+        
+        // get(mem.peers[c.source], `peers.${c.id}`, c);
+        update((m) => {
+          try {
+            if (c.source && c.id && m.peers[c.source]) {
+              c.userdata.peersUpdated = Date.now();
+              let tmp = m.peers[c.source] || {};
+              tmp.streams = tmp.streams || {};
+              tmp.streams[c.source] = c;
+              
+              m.peers[c.source] = tmp;
+            } else {
+              console.log('cant find ${c.source}', m.peers);
+            }
+          } catch (e) { console.log('down c err', e); }
+            return m;
         });
       };
       c.onnegotiationcompleted = function () {
@@ -146,11 +164,16 @@ function galStore() {
       //     c.setStatsInterval(activityDetectionInterval);
 
       //setMedia(c, false);
-      console.log('setMedia would have been called ondownstream done');
+      // console.log('setMedia would have been called ondownstream done');
+      c.userdata.downstreamsUpdated = Date.now();
+      update((m) => {
+        m.down[c.id] = { c }; // relaces old?
+        return m;
+      });
     };
 
     galCon.onuser = (id, kind, name) => {
-      console.log('onuser', { id, kind, name });
+      // console.log('onuser', { id, kind, name });
       switch (kind) {
         case 'add':
           if (!get(mem, `peers.${id}`, '')) {
@@ -175,15 +198,15 @@ function galStore() {
     };
 
     galCon.onchat = (peerId, dest, nick, time, privileged, kind, message) => {
-      console.log('onchat', {
-        peerId,
-        dest,
-        nick,
-        time,
-        privileged,
-        kind,
-        message,
-      });
+      // console.log('onchat', {
+      //   peerId,
+      //   dest,
+      //   nick,
+      //   time,
+      //   privileged,
+      //   kind,
+      //   message,
+      // });
       let chatsTmp = mem.chats;
       chatsTmp.push({ peerId, dest, nick, time, privileged, kind, message });
       if (chatsTmp.length > MAX_CHAT_SIZE) {

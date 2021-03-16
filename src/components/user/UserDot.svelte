@@ -13,9 +13,7 @@
   export let canvasWidth = 0;
   export let email = '';
   let mouseDown = false;
-  let mouseDown2 = false;
 
-  let svg;
   let ringScale = 10;
   let coords = spring(
     { x: 0, y: 0 },
@@ -28,7 +26,6 @@
   onMount(() => {
     // alert('a' + (percentX / 100) * canvasWidth);
     // console.log({isSelf});
-
     if (canvasWidth && canvasHeight) {
       
       coords = spring(
