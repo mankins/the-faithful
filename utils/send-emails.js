@@ -199,14 +199,14 @@ let config;
 
     let emails = [];
     
-    if (segment !== 'paid') {    
+    if (segment !== 'gift') {    
     emails = await getSegmentEmails(segment);
     } else {    
       const toDo = {};
       const querySnapshot = await admin
         .firestore()
         .collectionGroup('receipts')
-        .where('receipt.type', '==', 'payment')
+        .where('receipt.type', '==', 'gift')
         .get();
       querySnapshot.forEach((doc) => {
         const data = doc.data();
@@ -311,7 +311,7 @@ let config;
             if (debug) {
               console.log({ status });
             }
-            process.exit();
+            // process.exit();
           }
 
           // if we made it here we should update the "campaign so we don't send again"
