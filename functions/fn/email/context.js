@@ -54,6 +54,7 @@ function _addImages() {
   addImage(imgFile('yr-invited-header-600px.png'));  
   addImage(imgFile('drip-3.1-header.png'));  
   addImage(imgFile('drip-3.2-header.png'));  
+  addImage(imgFile('drip-4-header.png'));  
 }
 
 exports.custom = function custom(width, height) {

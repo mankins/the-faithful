@@ -65,6 +65,11 @@ exports.process = async (params, isInline) => {
       ctx.drawImage(surface.assets['drip-3.2-header.png'], 0, 0, 600, 506); 
     }
 
+    // easier this way. drop in assets, reference here, set h - TODO:cleanup above
+    if (params.logofile && params.h && surface.assets[params.logofile]) {
+      ctx.drawImage(surface.assets[params.logofile], 0, 0, 600, parseInt(params.h,10)); 
+    }
+
     if (isInline) {
       surface.result = await surface.canvas.toDataURL();
     } else {
