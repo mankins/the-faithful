@@ -293,18 +293,10 @@
     {#if theatre.mode === 'presentation'}
       <div class="aspect-w-16 aspect-h-9" transition:fade>
         <div class="flex max-h-screen bg-gray-900 text-white">
-          {#if false}
-            <pre
-              class="text-xs bg-white">
-          <JSPretty obj={$talking} /></pre>
-            <pre
-              class="text-xs bg-white">
-            <JSPretty obj={$talker} /></pre>
-          {/if}
           {#if $downs[$talker] && get($downs[$talker], 'c.stream.active', false)}
             <div class="bg-gray-800 w-full">
               <UserVideo
-                muted={true}
+                muted={false}
                 stream={$downs[$talker].c}
                 videoId={$downs[$talker].c.id}
               />
@@ -470,5 +462,14 @@
         {/if}
       {/if}
     {/if}
+    {#if true}
+    <pre
+      class="text-xs bg-white">
+  <JSPretty obj={$talking} /></pre>
+    <pre
+      class="text-xs bg-white">
+    <JSPretty obj={$talker} /></pre>
+  {/if}
+
   </div>
 </FirebaseProvider>

@@ -210,7 +210,7 @@ function galStore() {
           },
           onUpdate: function (val) {
             if (val) {
-              // console.log('curr val: - down', val);999
+              // console.log('curr val: - down', val);///999
               c.userdata.voiceStrength = val;
               update((m) => {
                 if (m) {
@@ -389,7 +389,7 @@ function galStore() {
         },
         onVoiceStop: function () {
           c.userdata.voiceEnd = Date.now();
-          // console.log('voice stop - up', galUser);
+          console.log('voice stop - up', galUser);
           update((m) => {
             m.talking[galUser] = m.talking[galUser] || {};
             m.talking[galUser].voiceEnd = c.userdata.voiceEnd;
@@ -697,7 +697,7 @@ function galStore() {
   };
 
   function getMaxVideoThroughput() {
-    let v = 'normal'; // TODO make config
+    let v = 'lowest'; // TODO make config
     switch (v) {
       case 'lowest':
         return 150000;
