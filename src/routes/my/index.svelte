@@ -24,11 +24,11 @@
   let firebase;
   let db;
   let user = {};
-
   let room = 'lobby';
 
   let canWebrtc = false;
   let audienceState = 'init';
+  let mediaEnabled = false;
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
@@ -46,15 +46,58 @@
     firebase = firebase || profile.detail.firebase;
     db = db || firebase.firestore();
 
-    await gal.initialize(); // setup network connection
-    await gal.connect({ userName: user.email });
+    // await gal.initialize(); // setup network connection
+    // await gal.connect({ userName: user.email });
+    // try {
+    //   await gal.startStream({ localId: null, mute: false });
+    //   // window.pushToast(`Audio/video started.`, 'info');
+    // } catch (e) {
+    //   window.pushToast(`Unable to start media. ${e.message}`, 'alert');
+    //   console.log('error starting media', e);
+    // }
+  };
+
+let audienceMode = false;
+
+  const joinLeaveAudience = async () => {
+    try {
+    if (!audienceMode) {
+      audienceState = 'connecting';
+      await gal.initialize(); // setup network connection
+      await gal.connect({ userName: user.email });
+      audienceState = 'connected';
+      audienceMode = true;
+    } else {
+      await gal.destroy();
+      audienceMode = false;
+    }
+  }catch (e) {console.log('joinleave', e);}
+  };
+
+  const enableMedia = async () => {
+    // this should start our media stream
+    // console.log({ gal: $gal });
+    if ($gal.state !== 'connected') {
+      window.pushToast(
+        `Still starting up, try agian in a few seconds.`,
+        'alert'
+      );
+      return;
+    }
     try {
       await gal.startStream({ localId: null, mute: false });
       // window.pushToast(`Audio/video started.`, 'info');
+      mediaEnabled = true;
     } catch (e) {
       window.pushToast(`Unable to start media. ${e.message}`, 'alert');
+      mediaEnabled = false;
       console.log('error starting media', e);
     }
+  };
+
+  const disableMedia = async () => {
+    mediaEnabled = false;
+    gal.endStream('local');
   };
 
   onMount(() => {
@@ -123,6 +166,78 @@
       </dl>
     </div>
 
+    <div class="bg-gray-800">
+      <div class="flex flex-row justify-between items-center">
+        {#if audienceMode}
+          <button
+            type="button"
+            on:click={() => {
+              joinLeaveAudience();
+              disableMedia();
+            }}
+            class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-300 shadow-sm text-sm sm:text-base font-medium rounded-md text-gray-500 bg-transparent hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+          >
+            Leave <span class="hidden sm:block">&nbsp; Audience</span>
+          </button>
+          {#if mediaEnabled}
+            <button
+              type="button"
+              on:click={() => disableMedia()}
+              class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-500 shadow-sm text-sm sm:text-base font-medium rounded-md text-gray-400 bg-gray-600 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+            >
+              Disable
+              <svg
+                class="ml-2 h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
+              </svg>
+            </button>
+          {:else}
+            <button
+              type="button"
+              on:click={() => enableMedia()}
+              class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-500 shadow-sm text-sm sm:text-base font-medium rounded-md text-gray-400 bg-gray-600 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+            >
+              Enable
+              <svg
+                class="ml-2 h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
+              </svg>
+            </button>
+          {/if}
+        {:else}
+          <button
+            on:click={() => {
+              joinLeaveAudience();
+            }}
+            type="button"
+            class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-500 bg-faithful-500 opacity-80 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+          >
+            Join Audience
+          </button>
+        {/if}
+      </div>
+    </div>
+
     {#if canWebrtc}
       {#if audienceState === 'connecting'}
         <div class="flex flex-row items-center">
@@ -130,7 +245,9 @@
         </div>
       {:else}
         <div class="pb-5 border-b border-gray-200 h-screen">
+          {#if audienceMode}
           <Seating {room} />?
+          {/if}
         </div>
       {/if}
     {:else}
