@@ -31,6 +31,7 @@
   let page = {};
   let query = {};
   let email = '';
+  let chatInput;
 
   let userProducts = [...baseProducts]; // these are the products that the user has
 
@@ -107,6 +108,7 @@
   };
 
   let smallNavMode = false;
+
 
   onMount(() => {
     // loaded = 0;
@@ -255,10 +257,11 @@
                         </button>
                       </div>
                       <input
-                        id="search_field"
-                        name="search_field"
+                        id="chat"
+                        name="chat"
                         class="block w-full bg-transparent h-full pl-8 pr-3 py-2 border-transparent text-gray-50 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm"
                         placeholder="..."
+                        bind:value={chatInput}
                         type="text"
                       />
                     </div>
@@ -301,10 +304,11 @@
                 </div>
               </div>
             </div>
-            <main class="flex-1 relative pb-8 z-0 overflow-y-auto h-full"
-            class:bg-gray-700={smallNavMode}
-            class:border-b={smallNavMode}
-            class:border-red-100={smallNavMode}
+            <main
+              class="flex-1 relative pb-8 z-0 overflow-y-auto h-full"
+              class:bg-gray-700={smallNavMode}
+              class:border-b={smallNavMode}
+              class:border-red-100={smallNavMode}
             >
               <slot />
             </main>

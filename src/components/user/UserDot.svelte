@@ -26,7 +26,7 @@
     }
   );
   let vv = 0;
-  let voiceStrength = tweened(1);
+  let voiceStrength = tweened(0);
   let talkersUpdated;
 
   onMount(() => {
@@ -74,7 +74,7 @@
     Object.keys(streams).forEach((streamId) => {
       // look for our id
       let em = get(streams[streamId],'username');
-      // console.log({em, email});
+      console.log({em, email, streamId});
       if (em === email) {
         let vs = parseInt(get(streams[streamId],'userdata.voiceStrength',0),10);
 
@@ -84,6 +84,11 @@
         if (startedTalking < stoppedTalking) {
           // currently talking
           // console.log('not talking', (startedTalking - stoppedTalking));
+          voiceStrength.set(0);
+          return;
+        }
+        if (startedTalking === stoppedTalking) {
+          // init
           voiceStrength.set(0);
           return;
         }
@@ -200,7 +205,7 @@
     stroke-width={isSelf ? 1 : 0}
   />
   <circle
-    fill={colorizer(`${email}-v`)}
+    fill={colorizer(`${email}`)}
     fill-opacity="0.5"
     cx={$coords.x}
     cy={$coords.y}

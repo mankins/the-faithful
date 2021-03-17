@@ -77,8 +77,13 @@ function galStore() {
     if (typeof window == 'undefined') {
       return;
     }
-
-    galCon = new GaleneProto.ServerConnection();
+    if (galCon) {
+      // already active
+//      console.log('re-using existing galcon');
+      galCon = new GaleneProto.ServerConnection();
+    } else {
+      galCon = new GaleneProto.ServerConnection();
+    }
     galCon.onconnected = async (a) => {
       console.log('on connected', a);
 
@@ -87,7 +92,7 @@ function galStore() {
         await setMediaChoices();
       }
 
-      await galCon.join(ROOM, galUser, '');
+      await galCon.join(mem.room, galUser, '');
       await galCon.request('everything');
 
       update(() => {
@@ -106,52 +111,6 @@ function galStore() {
 
     galCon.ondownstream = (c) => {
       console.log('ondownstream', { c });
-
-      const audioContext = new AudioContext();
-      const vadOptions = {
-        onVoiceStart: function () {
-          console.log('voice start - down', c.username);
-          c.userdata.voiceStart = Date.now();
-          update((m) => {
-            m.talking[c.username] = m.talking[c.username] || {};
-            m.talking[c.username].voiceStart = c.userdata.voiceStart;
-            return m;
-          });
-        },
-        onVoiceStop: function () {
-          console.log('voice stop - down', c.username);
-          c.userdata.voiceEnd = Date.now();
-          update((m) => {
-            if (m) {
-              m.talking[c.username] = m.talking[c.username] || {};
-              m.talking[c.username].voiceEnd = c.userdata.voiceEnd;
-              return m;
-            }
-          });
-          // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
-        },
-        onUpdate: function (val) {
-          if (val) {
-            // console.log('curr val: - down', val);999
-            c.userdata.voiceStrength = val;
-          }
-          // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
-        },
-      };
-      try {
-        vad(audioContext, c.stream, vadOptions);
-      } catch (e) {
-        console.log('vad err down', e, c);
-        try {
-          setTimeout(async () => {
-            await audioContext.resume();
-            vad(audioContext, c.stream, vadOptions);
-          }, 5000);
-        } catch (ee) {
-          console.log('vad err down 2', ee);
-        }
-      }
-
       c.onclose = function (replace) {
         if (!replace) {
           //delMedia(c.localId);
@@ -202,6 +161,51 @@ function galStore() {
           // resetMedia(c);
           console.log('reset media todo');
         }
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+        const vadOptions = {
+          onVoiceStart: function () {
+            console.log('voice start - down', c.username);
+            c.userdata.voiceStart = Date.now();
+            update((m) => {
+              m.talking[c.username] = m.talking[c.username] || {};
+              m.talking[c.username].voiceStart = c.userdata.voiceStart;
+              return m;
+            });
+          },
+          onVoiceStop: function () {
+            console.log('voice stop - down', c.username);
+            c.userdata.voiceEnd = Date.now();
+            update((m) => {
+              if (m) {
+                m.talking[c.username] = m.talking[c.username] || {};
+                m.talking[c.username].voiceEnd = c.userdata.voiceEnd;
+                return m;
+              }
+            });
+            // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
+          },
+          onUpdate: function (val) {
+            if (val) {
+              // console.log('curr val: - down', val);999
+              c.userdata.voiceStrength = val;
+            }
+            // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
+          },
+        };
+        try {
+          vad(audioCtx, c.stream, vadOptions);
+        } catch (e) {
+          console.log('vad err down', e, c);
+          try {
+            setTimeout(async () => {
+              await audioCtx.resume();
+              vad(audioCtx, c.stream, vadOptions);
+            }, 2000);
+          } catch (ee) {
+            console.log('vad err down 2', ee);
+          }
+        }  
       };
       c.onstatus = function (status) {
         // setMediaStatus(c);
@@ -302,7 +306,9 @@ function galStore() {
     //   if (kind && c.kind != kind) continue;
     update((m) => {
       console.log('trying to close', kind, m.myStream);
-      m.myStream.c.close();
+      if (m.myStream && m.myStream.c) {
+        m.myStream.c.close();
+      }
       // m.myStream = { c }; // relaces old?
       return m;
     });
@@ -323,6 +329,55 @@ function galStore() {
     c.onnegotiationcompleted = function () {
       console.log('neg completed');
       setMaxVideoThroughput(c, getMaxVideoThroughput());
+      c.username = c.username || galUser;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const audioCtx = new AudioContext();
+      const vadOptions = {
+        onVoiceStart: function () {
+          console.log('voice start - up', galUser);//666
+          c.userdata.voiceStart = Date.now();
+          update((m) => {
+            m.talking[galUser] = m.talking[galUser] || {};
+            m.talking[galUser].voiceStart = c.userdata.voiceStart;
+            return m;
+          });
+          // stateContainer.innerHTML = 'Voice state: <strong>active</strong>';
+        },
+        onVoiceStop: function () {
+          c.userdata.voiceEnd = Date.now();
+          console.log('voice stop - up', galUser);
+          update((m) => {
+            m.talking[galUser] = m.talking[galUser] || {};
+            m.talking[galUser].voiceEnd = c.userdata.voiceEnd;
+            return m;
+          });
+          // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
+        },
+        onUpdate: function (val) {
+          c.userdata.voiceStrength = val;
+  
+          // console.log('curr val - up:', val);
+          // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
+        },
+      };
+      vad(audioCtx, c.stream, vadOptions);  
+      update((m) => {
+        try {
+            c.userdata.peersUpdated = Date.now();
+            let tmp = m.peers[galUser] || {};
+          tmp.streams = tmp.streams || {};
+          tmp.name = galUser;
+          tmp.id = c.id;
+            tmp.streams[c.id] = c; // galUser??
+
+          m.peers[c.id] = tmp; // ? galUser
+          console.log({ galUser, peers: m.peers });
+        } catch (e) {
+          console.log('down c err', e);
+        }
+        return m;
+      });
+
     };
 
     return c;
@@ -372,37 +427,6 @@ function galStore() {
     // await Gal.setMedia(c, true, mirrorView);
     // console.log({ c }, '!!');
     // console.log('set media done');
-
-    const audioContext = new AudioContext();
-    const vadOptions = {
-      onVoiceStart: function () {
-        console.log('voice start - up', c.username);
-        c.userdata.voiceStart = Date.now();
-        update((m) => {
-          m.talking[c.username] = m.talking[c.username] || {};
-          m.talking[c.username].voiceStart = c.userdata.voiceStart;
-          return m;
-        });
-        // stateContainer.innerHTML = 'Voice state: <strong>active</strong>';
-      },
-      onVoiceStop: function () {
-        c.userdata.voiceEnd = Date.now();
-        console.log('voice stop - up', c.username);
-        update((m) => {
-          m.talking[c.username] = m.talking[c.username] || {};
-          m.talking[c.username].voiceEnd = c.userdata.voiceEnd;
-          return m;
-        });
-        // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
-      },
-      onUpdate: function (val) {
-        c.userdata.voiceStrength = val;
-
-        // console.log('curr val - up:', val);
-        // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
-      },
-    };
-    vad(audioContext, stream, vadOptions);
     update((m) => {
       m.myStream = { c }; // relaces old?
       return m;

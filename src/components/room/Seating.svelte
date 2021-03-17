@@ -83,6 +83,7 @@
   };
 
   let vols = {};
+  let myStreams = {};
 
   const updateSeats = debounce(() => {
     (async () => {
@@ -154,6 +155,13 @@
               updated++;
             } else {
               // console.log('no change', dbSeat.x, currentSeat.x);
+            }
+            let myStream = get($peers, `${peerId}.streams`, null);
+            if (myStream) {
+              if (myStream[peerId]) {
+                myStreams[peerId] = myStream[peerId];
+              }
+              console.log({myStreams});
             }
           }
         });
@@ -247,7 +255,7 @@
             email={get(user, 'email')}
             bind:percentX={seats[get(user, 'email')].x}
             bind:percentY={seats[get(user, 'email')].y}
-            streams={get(seats, `${get(user, 'email')}.streams`) || {}}
+            streams={myStreams || {}}
             {canvasWidth}
             {canvasHeight}
           />

@@ -29,8 +29,22 @@
   let testingOffset = 0;
   let audienceMode = false;
   let heroState = 'theatre';
+  let audienceState = '';
 
   let mute = false;
+
+  const joinLeaveAudience = async () => {
+    if (!audienceMode) {
+      audienceState = 'connecting';
+      await gal.initialize(); // setup network connection
+      await gal.connect({ userName: user.email });
+      audienceState = 'connected';
+      audienceMode = true;
+    } else {
+      // keep the connection open?
+      audienceMode = false;
+    }
+  };
 
   const enableMedia = async () => {
     // this should start our media stream
@@ -44,7 +58,7 @@
     }
     try {
       await gal.startStream({ localId: null, mute: false });
-      window.pushToast(`Audio/video started.`, 'info');
+      // window.pushToast(`Audio/video started.`, 'info');
       mediaEnabled = true;
     } catch (e) {
       window.pushToast(`Unable to start media. ${e.message}`, 'alert');
@@ -162,12 +176,10 @@
     });
 
     // console.log('calling gal init');
-    await gal.initialize(); // setup network connection
-    await gal.connect({ userName: user.email });
   };
 
   const debugMyStream = () => {
-    console.log({gal: $gal});
+    console.log({ gal: $gal });
   };
 
   $: playerTheatre && theatre && theatreDuration && updatePlayerCursor();
@@ -271,11 +283,9 @@
     });
   };
 
-  // <pre class="text-xs bg-white">              
+  // <pre class="text-xs bg-white">
   //             <JSPretty obj={get($gal, 'myStream', {})}></JSPretty> </pre>
   //           </div>
-
-
 </script>
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
@@ -283,9 +293,12 @@
     {#if theatre.mode === 'presentation'}
       <div class="aspect-w-16 aspect-h-9">
         <div class="flex max-h-screen bg-gray-900">
-          {#if get($gal,'myStream.c.up', false) }
+          {#if get($gal, 'myStream.c.up', false)}
             <div transition:fade class="bg-gray-800 w-full">
-              <UserVideo stream={get($gal, 'myStream.c')} videoId={get($gal,'myStream.c.id')} />
+              <UserVideo
+                stream={get($gal, 'myStream.c')}
+                videoId={get($gal, 'myStream.c.id')}
+              />
             </div>
           {:else}
             <div class="m-auto">
@@ -329,16 +342,19 @@
           {#if audienceMode}
             <button
               type="button"
-              on:click={() => {audienceMode = false; disableMedia();}}
-              class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-500 bg-transparent hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+              on:click={() => {
+                joinLeaveAudience();
+                disableMedia();
+              }}
+              class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-300 shadow-sm text-sm sm:text-base font-medium rounded-md text-gray-500 bg-transparent hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
             >
-              Leave Audience
+              Leave <span class="hidden sm:block">Audience</span>
             </button>
             {#if mediaEnabled}
               <button
                 type="button"
                 on:click={() => disableMedia()}
-                class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-500 shadow-sm text-base font-medium rounded-md text-gray-400 bg-gray-600 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+                class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-500 shadow-sm text-sm sm:text-base font-medium rounded-md text-gray-400 bg-gray-600 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
               >
                 Disable
                 <svg
@@ -360,7 +376,7 @@
               <button
                 type="button"
                 on:click={() => enableMedia()}
-                class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-500 shadow-sm text-base font-medium rounded-md text-gray-400 bg-gray-600 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+                class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-500 shadow-sm text-sm sm:text-base font-medium rounded-md text-gray-400 bg-gray-600 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
               >
                 Enable
                 <svg
@@ -381,7 +397,7 @@
             {/if}
           {:else}
             <button
-              on:click={() => (audienceMode = true)}
+              on:click={() => {joinLeaveAudience()}}
               type="button"
               class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-500 bg-transparent hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
             >
@@ -392,9 +408,15 @@
       </div>
       {#if audienceMode}
         {#if canWebrtc}
+        {#if audienceState === 'connecting'}
+        <div class="flex flex-row items-center">
+          <h2 class="m-auto text-gray-200 font-serif p-4">Connecting to audience</h2>
+        </div>
+        {:else}
           <div transition:fade class="pb-5 border-b border-gray-200 h-screen">
             <Seating {room} />
           </div>
+          {/if}
         {:else}
           <div class="p-12">
             <div class="bg-white shadow sm:rounded-lg">
