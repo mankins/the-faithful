@@ -41,14 +41,17 @@
 		"smpte-timecode": "^1.2.3",
 		"string-hash": "^1.1.3",
 		"svelte": "^3.32.2",
+		"svelte-emoji-selector": "^1.0.1",
 		"svelte-preprocess": "^4.6.7",
 		"tailwindcss": "^2.0.3",
 		"tailwindcss-font-inter": "^2.0.0",
 		"time-ago": "^0.2.1",
-		"tinygesture": "^1.1.4"
+		"tinygesture": "^1.1.4",
+		"voice-activity-detection": "0.0.5"
 	},
 	"dependencies": {
 		"@stripe/stripe-js": "^1.12.1",
+		"audio-stream-meter": "^1.0.5",
 		"base58": "^2.0.1",
 		"firebase": "8.2.2",
 		"node-fetch": "^2.6.1",

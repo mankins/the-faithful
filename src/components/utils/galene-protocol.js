@@ -748,11 +748,17 @@ ServerConnection.prototype.gotRenegotiate = async function(id) {
  * @param {string} id
  */
 ServerConnection.prototype.gotClose = function(id) {
-    let c = this.down[id];
-    console.log(this.down, id);
-    if(!c)
-        throw new Error('unknown down stream');
-    c.close();
+    try {
+        let c = this.down[id];
+        if (!c) {
+            console.log(this.down, id);
+            console.log('unknown down stream close');
+        }
+        //        throw new Error('unknown down stream');
+        c.close();
+    } catch (e) {
+        console.log('error closing', id);
+    }
 };
 
 /**

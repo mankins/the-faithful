@@ -31,6 +31,7 @@
   let page = {};
   let query = {};
   let email = '';
+  let chatInput;
 
   let userProducts = [...baseProducts]; // these are the products that the user has
 
@@ -108,6 +109,7 @@
 
   let smallNavMode = false;
 
+
   onMount(() => {
     // loaded = 0;
     page.path = window.location.pathname;
@@ -127,7 +129,7 @@
       //   console.log('----page', page, newPage);
       page = newPage;
       if (page && page.path) {
-        if (false && page.path && page.path.indexOf('/theatre') !== -1) {
+        if (page.path && page.path.indexOf('/theatre/theatre') !== -1) {
           smallNavMode = true;
         } else {
           smallNavMode = false;
@@ -204,7 +206,7 @@
               <div
                 class="flex-1 px-4 flex justify-between sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8 bg-transparent"
               >
-                <div class="flex-1 flex" class:invisible={!smallNavMode}>
+                <div class="flex-1 flex" class:invisible={true || !smallNavMode}>
                   <form class="w-full flex md:ml-0" action="#" method="GET">
                     <label for="search_field" class="sr-only">Chat</label>
                     <div
@@ -255,10 +257,11 @@
                         </button>
                       </div>
                       <input
-                        id="search_field"
-                        name="search_field"
+                        id="chat"
+                        name="chat"
                         class="block w-full bg-transparent h-full pl-8 pr-3 py-2 border-transparent text-gray-50 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm"
                         placeholder="..."
+                        bind:value={chatInput}
                         type="text"
                       />
                     </div>
@@ -301,10 +304,11 @@
                 </div>
               </div>
             </div>
-            <main class="flex-1 relative pb-8 z-0 overflow-y-auto h-full"
-            class:bg-gray-700={smallNavMode}
-            class:border-b={smallNavMode}
-            class:border-red-100={smallNavMode}
+            <main
+              class="flex-1 relative pb-8 z-0 overflow-y-auto h-full"
+              class:bg-gray-700={smallNavMode}
+              class:border-b={smallNavMode}
+              class:border-red-100={smallNavMode}
             >
               <slot />
             </main>

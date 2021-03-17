@@ -3,7 +3,8 @@
 
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
   import UserDot from '$components/user/UserDot.svelte';
-  import { chats, gal, peers } from '$components/stores/gal';
+  import UserAudio from '$components/user/UserAudio.svelte';
+  import { peers, me } from '$components/stores/gal';
   import get from 'lodash.get';
   import { debounce } from '$components/utils/debounce';
 
@@ -33,6 +34,10 @@
 
   onMount(() => {
     isActive = true;
+    // me.subscribe((meData) => {
+    //   console.log(JSON.stringify(meData,null,1));
+    // });
+
   });
 
   const handleDbInit = async (ev) => {
@@ -47,7 +52,7 @@
       return;
     }
     user = profile.detail.user;
-    console.log({ user });
+    // console.log({ user });
     firebase = firebase || profile.detail.firebase;
     db = db || firebase.firestore();
   };
@@ -63,17 +68,17 @@
         const docRef = db.collection(`rooms/${room}/people`).doc('seating');
         const doc = await docRef.get();
         if (!doc.exists) {
-          console.log('seating not found 1');
+          // console.log('seating not found 1');
           await docRef.set({}); // race?
           //   return;
         } else {
           seating = { ...doc.data() };
-          console.log('seating found', { seating });
+          // console.log('seating found', { seating });
         }
 
         docRef.onSnapshot((docSnapshot) => {
           seating = { ...docSnapshot.data() };
-          console.log('seating updated', { seating });
+          // console.log('seating updated', { seating });
         });
       } catch (e) {
         console.log('err', { e });
@@ -81,12 +86,15 @@
     }
   };
 
+  let vols = {};
+  let myStreams = {};
+
   const updateSeats = debounce(() => {
     (async () => {
       if (!room || !firebase || !$peers) {
         return;
       }
-      console.log('should update seats', { peers: $peers, seating });
+      // console.log('should update seats', { peers: $peers, seating });
       try {
         const seatingRef = db.collection(`rooms/${room}/people`).doc('seating');
         const doc = await seatingRef.get();
@@ -97,32 +105,42 @@
         let updates = {};
         let updated = 0;
 
+        let myEmail = get(user, 'email');
+        let myPos = {};
+        myPos.x = parseInt(get(seats[myEmail], 'x', randomPosition()), 10) || 5;
+        myPos.y = parseInt(get(seats[myEmail], 'y', randomPosition()), 10) || 5;
+
         // see if we have any new peers
         Object.keys($peers).forEach((peerId) => {
-          console.log({ p: $peers[peerId] });
+          // console.log({ p: $peers[peerId] });
           const peerEmail = $peers[peerId].name || peerId;
+          let x = get(seating, `${peerEmail}.x`) || randomPosition() || 5;
+          let y = get(seating, `${peerEmail}.y`) || randomPosition() || 5;
+
           if (!seating[peerEmail]) {
             // peer not in our seets, let's update
             updates[peerEmail] = {
-              x: get(seating, `${peerEmail}.x`) || randomPosition() || 5,
-              y: get(seating, `${peerEmail}.y`) || randomPosition() || 5,
+              x,
+              y,
               email: get($peers, `${peerId}.name`, peerId),
               ts: firebase.firestore.FieldValue.serverTimestamp(),
             };
             updated++;
           }
-          console.log(seats[peerEmail]);
+          // console.log(seats[peerEmail]);
           if (!seats[peerEmail]) {
             seats[peerEmail] = {
               ...seating[peerEmail],
               ...updates[peerEmail],
               size: DEFAULT_USER_SIZE,
+              streams: get($peers, `${peerId}.streams`, {}),
             };
             delete seats[peerEmail].ts;
           }
-          if (peerEmail === get(user, 'email')) {
+
+          if (peerEmail === myEmail) {
             // update ourselves
-            console.log(`checking for change to self - ${peerEmail}`);
+            // console.log(`checking for change to self - ${peerEmail}`);
             const currentSeat = seats[peerEmail] || {};
             const dbSeat = seating[peerEmail] || {};
 
@@ -130,34 +148,67 @@
               parseInt(dbSeat.x, 10) !== parseInt(currentSeat.x, 10) ||
               parseInt(dbSeat.y, 10) !== parseInt(currentSeat.y, 10)
             ) {
-              console.log({ seats });
+              // console.log({ seats });
               updates[peerEmail] = {
-                x:
-                  parseInt(get(seats[peerEmail], 'x', randomPosition()), 10) ||
-                  5,
-                y:
-                  parseInt(get(seats[peerEmail], 'y', randomPosition()), 10) ||
-                  5,
+                x: myPos.x,
+                y: myPos.y,
                 email: peerEmail,
                 ts: firebase.firestore.FieldValue.serverTimestamp(),
               };
-              console.log(updates[peerEmail], 'updated');
+              // console.log(updates[peerEmail], 'updated');
               updated++;
             } else {
-              console.log('no change', dbSeat.x, currentSeat.x);
+              // console.log('no change', dbSeat.x, currentSeat.x);
+            }
+            let myStream = get($peers, `${peerId}.streams`, null);
+            if (myStream) {
+              if (myStream[peerId]) {
+                myStreams[peerId] = myStream[peerId];
+              }
+              // console.log({myStreams});
             }
           }
         });
 
+        Object.keys(seats).forEach((peerEmail) => {
+          // calculate distance between us and them, then convert to a volume.
+          let x = get(seats, `${peerEmail}.x`) || randomPosition() || 5;
+          let y = get(seats, `${peerEmail}.y`) || randomPosition() || 5;
+          let myEmail = get(user, 'email');
+          let myPos = {};
+          myPos.x =
+            parseInt(get(seats[myEmail], 'x', randomPosition()), 10) || 5;
+          myPos.y =
+            parseInt(get(seats[myEmail], 'y', randomPosition()), 10) || 5;
+
+          let a = x - myPos.x;
+          let b = y - myPos.y;
+          let dist = Math.sqrt(a * a + b * b) || 0.1;
+          let cutoff = 25;
+          if (dist > cutoff) {
+            dist = cutoff;
+          }
+          let volume = 10 * (1 - (dist / cutoff));
+          if (volume > 10) {
+            volume = 10;
+          }
+          if (volume <= 1) {
+            volume = 0;
+          }
+          vols[peerEmail] = parseInt(volume,10);
+          // console.log({ vols, a, b, x, y, peerEmail, dist });
+          //  console.log({dist, volume});
+        });
+
         if (updated) {
-          console.log('committing', { updates });
+          // console.log('committing', { updates });
           await seatingRef.set(updates, { merge: true });
         }
       } catch (ee) {
         console.log('error updating seats', { ee });
       }
     })();
-    console.log('called update....');
+    // console.log('called update....');
   }, 500);
 
   //   const debugSeats = debounce(() => {
@@ -181,33 +232,47 @@
         class="w-full h-full bg-gray-800"
       >
         {#each Object.keys(seats) as seatEmail, i}
-        {#if seats[seatEmail]}
-          {#if seatEmail !== get(user, 'email')}
-            <UserDot
-              isSelf={seatEmail === get(user, 'email')}
-              size={get(seats, `${seatEmail}.size`) || DEFAULT_USER_SIZE}
-              email={seatEmail}
-              bind:percentX={seats[seatEmail].x}
-              bind:percentY={seats[seatEmail].y}
-              {canvasWidth}
-              {canvasHeight}
-            />
-          {/if}
+          {#if seats[seatEmail]}
+            {#if seatEmail !== get(user, 'email')}
+              <UserDot
+                isSelf={seatEmail === get(user, 'email')}
+                size={get(seats, `${seatEmail}.size`) || DEFAULT_USER_SIZE}
+                email={seatEmail}
+                bind:percentX={seats[seatEmail].x}
+                bind:percentY={seats[seatEmail].y}
+                streams={get(seats, `${seatEmail}.streams`) || {}}
+                {canvasWidth}
+                {canvasHeight}
+              />
+              <UserAudio
+                streams={get(seats, `${seatEmail}.streams`) || {}}
+                email={seatEmail}
+                volume={vols[seatEmail]}
+              />
+            {/if}
           {/if}
         {/each}
         {#if seats[get(user, 'email')]}
-        <UserDot
-          isSelf={true}
-          size={get(seats, `${get(user, 'email')}.size`) || DEFAULT_USER_SIZE}
-          email={get(user, 'email')}
-          bind:percentX={seats[get(user, 'email')].x}
-          bind:percentY={seats[get(user, 'email')].y}
-          {canvasWidth}
-          {canvasHeight}
-        />
+          <UserDot
+            isSelf={true}
+            streamStatus={get($me, 'up.status')}
+            size={get(seats, `${get(user, 'email')}.size`) || DEFAULT_USER_SIZE}
+            email={get(user, 'email')}
+            bind:percentX={seats[get(user, 'email')].x}
+            bind:percentY={seats[get(user, 'email')].y}
+            streams={myStreams || {}}
+            {canvasWidth}
+            {canvasHeight}
+          />
         {/if}
-        <text x="50%" y="95%" class="text-xl opacity-50 font-extrabold tracking-tight font-serif fill-current text-faithful-500" dominant-baseline="middle" text-anchor="middle">{room}</text>    
-    </svg>
+        <text
+          x="50%"
+          y="95%"
+          class="text-xl opacity-50 font-extrabold tracking-tight font-serif fill-current text-faithful-500"
+          dominant-baseline="middle"
+          text-anchor="middle">{room}</text
+        >
+      </svg>
     </div>
   </section>
 </FirebaseProvider>

@@ -56,7 +56,7 @@ export let change = () => {};
   {/if}
   {/await}
 <button
-    class="bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+    class="invisible bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
   >
     <span class="sr-only">Toggle Audience</span>
     <svg

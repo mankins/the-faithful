@@ -289,6 +289,7 @@ let config;
             console.log('skipping (already paid)', doc.email);
             return;
           }
+          
           done++;
           if (debug) {
             console.log(doc);
@@ -311,7 +312,6 @@ let config;
             if (debug) {
               console.log({ status });
             }
-            // process.exit();
           }
 
           // if we made it here we should update the "campaign so we don't send again"
@@ -322,6 +322,7 @@ let config;
           }
         })
       );
+      process.exit();
     } else {
       console.log('send aborted');
     }
