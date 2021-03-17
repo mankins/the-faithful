@@ -462,7 +462,7 @@
         {/if}
       {/if}
     {/if}
-    {#if true}
+    {#if false}
     <pre
       class="text-xs bg-white">
   <JSPretty obj={$talking} /></pre>
