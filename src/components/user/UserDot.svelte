@@ -231,7 +231,9 @@
     style="font-size:8px"
     fill-opacity="0.7"
     fill="#999999">
-    {#if (streamStatus === 'stopped')}
+    <title>{streamStatus || 'stopped'}</title>
+
+    {#if ((streamStatus === 'stopped') || (!streamStatus))}
      🔴
      {:else if streamStatus === 'connected'}
      🟢    

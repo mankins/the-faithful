@@ -9,7 +9,7 @@
   import { onMount, onDestroy } from 'svelte';
   import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import { gal, talker, talking, downs } from '$components/stores/gal';
+  import { gal, talker, talking, downs, me } from '$components/stores/gal';
   import { fade, fly } from 'svelte/transition';
   import { heroMode } from '$components/stores/room.js';
   import JSPretty from '$components/JSPretty.svelte';
@@ -42,6 +42,7 @@
       audienceMode = true;
     } else {
       // keep the connection open?
+      await gal.destroy();
       audienceMode = false;
     }
   };
@@ -186,7 +187,6 @@
   // $: $gal.myStream && debugMyStream();
 
   let isActive = true;
-  let galState = {};
   let canWebrtc = true;
   let mediaEnabled = false;
 
@@ -213,10 +213,6 @@
         }
       }
       // update the document
-    });
-
-    gal.subscribe(async (newState) => {
-      galState = { ...newState };
     });
   });
 
@@ -289,6 +285,7 @@
 
   //             {#if get($gal, 'myStream.c.up', false)}
   // $: $downs && console.log($downs, 'downs');
+  // $: $downs && console.log('zzaa', get($downs[$talker], 'c.stream.active'));
 </script>
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
@@ -304,7 +301,7 @@
               class="text-xs bg-white">
             <JSPretty obj={$talker} /></pre>
           {/if}
-          {#if $downs[$talker]}
+          {#if $downs[$talker] && get($downs[$talker], 'c.stream.active', false)}
             <div class="bg-gray-800 w-full">
               <UserVideo
                 muted={true}
@@ -312,7 +309,7 @@
                 videoId={$downs[$talker].c.id}
               />
             </div>
-          {:else if get($gal, 'myStream.c')}
+          {:else if mediaEnabled && get($gal, 'myStream.c')}
             <div class="bg-gray-800 w-full is-me">
               <UserVideo
                 muted={true}
@@ -324,9 +321,13 @@
             <div class="m-auto">
               <div id="expand-video" class="expand-video" />
               <h3
-                class="text-white items-center m-auto font-serif font-extrabold tracking-tight text-2xl sm:text-5xl"
+                title={`${$talker} ${mediaEnabled}`} class="text-white items-center m-auto font-serif font-extrabold tracking-tight text-2xl sm:text-5xl"
               >
-                No Video
+              {#if audienceMode}
+                - 
+                {:else}
+                Join audience for video
+                {/if}
               </h3>
             </div>
           {/if}
@@ -356,7 +357,7 @@
         Toggle Full Screen
       </button>
     {/if}
-    {#if true}
+    {#if theatre.fancy}
       <div class="bg-gray-800">
         <div class="flex flex-row justify-between items-center">
           {#if audienceMode}
@@ -368,7 +369,7 @@
               }}
               class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-300 shadow-sm text-sm sm:text-base font-medium rounded-md text-gray-500 bg-transparent hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
             >
-              Leave <span class="hidden sm:block">Audience</span>
+              Leave <span class="hidden sm:block">&nbsp; Audience</span>
             </button>
             {#if mediaEnabled}
               <button

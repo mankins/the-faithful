@@ -129,7 +129,7 @@
       //   console.log('----page', page, newPage);
       page = newPage;
       if (page && page.path) {
-        if (page.path && page.path.indexOf('/theatre') !== -1) {
+        if (page.path && page.path.indexOf('/theatre/theatre') !== -1) {
           smallNavMode = true;
         } else {
           smallNavMode = false;
@@ -206,7 +206,7 @@
               <div
                 class="flex-1 px-4 flex justify-between sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8 bg-transparent"
               >
-                <div class="flex-1 flex" class:invisible={!smallNavMode}>
+                <div class="flex-1 flex" class:invisible={true || !smallNavMode}>
                   <form class="w-full flex md:ml-0" action="#" method="GET">
                     <label for="search_field" class="sr-only">Chat</label>
                     <div

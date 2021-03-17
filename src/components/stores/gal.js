@@ -6,7 +6,7 @@ import vad from 'voice-activity-detection';
 const MAX_CHAT_SIZE = 2;
 const ROOM = 'faithful';
 
-let mem = {
+let defaultMem = {
   room: ROOM,
   state: 'boot',
   peers: {},
@@ -15,11 +15,14 @@ let mem = {
   myStream: {},
   downs: {},
   volumes: {},
-  talking: {},  
+  talking: {},
   talkerId: '', // speaker = talker
   talkerChange: 0, // last time we changed speaker
-  me: {}
+  me: {},
 };
+
+let mem = { ...defaultMem };
+let galUser = 'anon';
 
 const { subscribe, set, update } = writable(mem);
 
@@ -30,6 +33,9 @@ function galStore() {
   let startStream = () => {};
   let stopStream = () => {};
   let initialize = () => {};
+  let destroy = () => {
+    console.log('warn default destroy');
+  };
   let endStream = () => {
     console.log('---WARN endstream');
   };
@@ -40,7 +46,6 @@ function galStore() {
   let setMedia = () => {
     console.log('-0-WARN---setMedia---');
   };
-  let galUser = 'anon';
 
   const setMediaChoices = async () => {
     let devices = [];
@@ -75,13 +80,27 @@ function galStore() {
   let galCon;
   let homeServer = 'wss://jp2.the-faithful.com/ws';
 
+  destroy = async () => {
+    if (typeof window == 'undefined') {
+      return;
+    }
+    try {
+      await galCon.close();
+    } catch (e) {
+      console.log('error destry', e);
+    }
+    set({ ...defaultMem });
+    galCon = undefined;
+    galUser = 'anon';
+  };
+
   initialize = async () => {
     if (typeof window == 'undefined') {
       return;
     }
     if (galCon) {
       // already active
-//      console.log('re-using existing galcon');
+      //      console.log('re-using existing galcon');
       galCon = new GaleneProto.ServerConnection();
     } else {
       galCon = new GaleneProto.ServerConnection();
@@ -116,8 +135,10 @@ function galStore() {
       c.onclose = function (replace) {
         if (!replace) {
           //delMedia(c.localId);
+          // update((state) => {
+          // });
 
-          console.log('delMedia?', { peers: mem.peers });
+          console.log('delMedia?', c.id, { peers: mem.peers });
         }
       };
       c.onerror = function (e) {
@@ -167,9 +188,9 @@ function galStore() {
         const audioCtx = new AudioContext();
         const vadOptions = {
           onVoiceStart: function () {
-             console.log('voice start - down', c.username);
-             c.userdata.voiceStart = Date.now();
-             update((m) => {
+            // console.log('voice start - down', c.username);
+            c.userdata.voiceStart = Date.now();
+            update((m) => {
               m.talking[c.username] = m.talking[c.username] || {};
               m.talking[c.username].voiceStart = Date.now();
               return m;
@@ -188,21 +209,24 @@ function galStore() {
             // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
           },
           onUpdate: function (val) {
-           if (val) {
+            if (val) {
               // console.log('curr val: - down', val);999
               c.userdata.voiceStrength = val;
-            update((m) => {
-              if (m) {
-                m.talking[c.username] = m.talking[c.username] || {};
-                m.talking[c.username].samples = m.talking[c.username].samples || [];
-                let samples = m.talking[c.username].samples;
-                samples.push(val);
-                m.talking[c.username].samples =samples.slice(Math.max(samples.length - 10, 0));
-                return m;
-              }
-            });
-         }
-          // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
+              update((m) => {
+                if (m) {
+                  m.talking[c.username] = m.talking[c.username] || {};
+                  m.talking[c.username].samples =
+                    m.talking[c.username].samples || [];
+                  let samples = m.talking[c.username].samples;
+                  samples.push(val);
+                  m.talking[c.username].samples = samples.slice(
+                    Math.max(samples.length - 10, 0)
+                  );
+                  return m;
+                }
+              });
+            }
+            // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
           },
         };
         try {
@@ -217,7 +241,7 @@ function galStore() {
           } catch (ee) {
             console.log('vad err down 2', ee);
           }
-        }  
+        }
       };
       c.onstatus = function (status) {
         // setMediaStatus(c);
@@ -337,7 +361,7 @@ function galStore() {
         m.me.up.status = status;
         return m;
       });
-  
+
       c.userdata.status = status;
       // setMediaStatus(c);
       c.userdata.setupMediaRequested = Date.now();
@@ -365,7 +389,7 @@ function galStore() {
         },
         onVoiceStop: function () {
           c.userdata.voiceEnd = Date.now();
-          console.log('voice stop - up', galUser);
+          // console.log('voice stop - up', galUser);
           update((m) => {
             m.talking[galUser] = m.talking[galUser] || {};
             m.talking[galUser].voiceEnd = c.userdata.voiceEnd;
@@ -375,32 +399,34 @@ function galStore() {
         },
         onUpdate: function (val) {
           c.userdata.voiceStrength = val;
-         if (val) {
+          if (val) {
             update((m) => {
               if (m) {
                 m.talking[galUser] = m.talking[galUser] || {};
                 m.talking[galUser].samples = m.talking[galUser].samples || [];
                 let samples = m.talking[galUser].samples;
                 samples.push(val);
-                m.talking[galUser].samples = samples.slice(Math.max(samples.length - 10, 0));
+                m.talking[galUser].samples = samples.slice(
+                  Math.max(samples.length - 10, 0)
+                );
                 return m;
               }
             });
-         }
+          }
 
           // console.log('curr val - up:', val);
           // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
         },
       };
-      vad(audioCtx, c.stream, vadOptions);  
+      vad(audioCtx, c.stream, vadOptions);
       update((m) => {
         try {
-            c.userdata.peersUpdated = Date.now();
-            let tmp = m.peers[galUser] || {};
+          c.userdata.peersUpdated = Date.now();
+          let tmp = m.peers[galUser] || {};
           tmp.streams = tmp.streams || {};
           tmp.name = galUser;
           tmp.id = c.id;
-            tmp.streams[c.id] = c; // galUser??
+          tmp.streams[c.id] = c; // galUser??
 
           m.peers[c.id] = tmp; // ? galUser
           console.log({ galUser, peers: m.peers });
@@ -409,20 +435,17 @@ function galStore() {
         }
         return m;
       });
-
     };
 
     return c;
   };
 
   startStream = async ({ localId, mute = false }) => {
-
     update((m) => {
       m.me.up = m.me.up || {};
       m.me.up.status = 'init';
       return m;
     });
-
 
     let video = {};
     // video.width = { min: 640, ideal: 1920 };
@@ -694,6 +717,7 @@ function galStore() {
     subscribe,
     // addOne: () => update(n => n + 1),
     // reset: () => set(0)
+    destroy,
     initialize,
     endStream,
     connect,
@@ -724,17 +748,16 @@ const getTalking = (m) => {
 };
 
 const getWhoIsTalking = (m) => {
+  const average = (arr) => arr.reduce((p, c) => p + c, 0) / arr.length;
 
-  const average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;
-  
   let lastStartedTalking = 0;
   let talker = m.talkerId; // default to the old
   let talkers = {};
   let MIN_MIC_TIME = 1500;
 
-  if ((Date.now() - m.talkerChange) < MIN_MIC_TIME) {
+  if (Date.now() - m.talkerChange < MIN_MIC_TIME) {
     return talker; // no change, they just got the mic
-    }
+  }
 
   Object.keys(m.talking).forEach((participantId) => {
     let participant = m.talking[participantId] || {};
@@ -752,13 +775,18 @@ const getWhoIsTalking = (m) => {
   Object.keys(talkers).forEach((participantId) => {
     let energy = talkers[participantId] || 0;
     if (energy > maxEnergy) {
-      talker = participantId;
-      maxEnergy = energy;
+      // if it's us and we don't have the video on, pretent it's not us
+      if (!(participantId === galUser && get(m, 'me.up.status') !== 'connected')) {
+        talker = participantId;
+        maxEnergy = energy;  
+      } else {
+        // console.log('skipping us', participantId);
+      }
     }
   });
 
   if (m.talkerId !== talker) {
-    m.talkerChange = Date.now();     
+    m.talkerChange = Date.now();
   }
 
   m.talkerId = talker || '';

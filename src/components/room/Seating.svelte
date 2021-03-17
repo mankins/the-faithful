@@ -165,7 +165,7 @@
               if (myStream[peerId]) {
                 myStreams[peerId] = myStream[peerId];
               }
-              console.log({myStreams});
+              // console.log({myStreams});
             }
           }
         });

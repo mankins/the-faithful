@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
 
   export let streams = {};
   export let email = '';
@@ -10,6 +10,10 @@
   onMount(() => {
     // console.log({ streams });
     
+  });
+
+  onDestroy(() => {
+    // console.log('destroying', audios);
   });
 
   const setupAudio = () => {
@@ -35,6 +39,7 @@
   $: volume || (volume <= 0) && console.log(volume);
 </script>
 
+{#if streams}
 <span id={`audios-${email}`}>
   {#each Object.keys(streams) as streamId, i}
     <!-- svelte-ignore a11y-media-has-caption -->
@@ -46,3 +51,4 @@
     />
   {/each}
 </span>
+{/if}

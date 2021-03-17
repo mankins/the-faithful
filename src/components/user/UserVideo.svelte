@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import get from 'lodash.get';
 
   export let stream;
@@ -10,8 +10,20 @@
   let state;
   let loaded = false;
   let failed = false;
+  let video;
 
   onMount(() => {});
+  onDestroy(() => {
+    // console.log('destroyign video', videoId);
+    // try {
+    //   if (video) {
+    //     video.removeAttribute('src');
+    //     video.load();
+    //   }
+    // } catch (e) {
+    //   console.log('error removing video');
+    // }
+  });
 
   const setupMedia = () => {
     // alert(videoId + ':' + get(stream, 'userdata.setupMediaRequested'));
@@ -34,7 +46,6 @@
     }
     loaded = true;
   };
-  let video;
 
   $: if (stream && video && video.srcObject !== stream.stream) {
     video.srcObject = stream.stream;
@@ -46,8 +57,15 @@
 <div class="relative" style="padding-top: 56.25%">
   {#if stream}
     <!-- svelte-ignore a11y-media-has-caption -->
-    <video class="rounded-md absolute inset-0 w-full h-full" muted={muted} autoplay={true} playsinline={true} bind:this={video} id={`vid-${videoId}`} />
-{:else}
-no stream{videoId}{stream}
-    {/if}
+    <video
+      class="rounded-md absolute inset-0 w-full h-full"
+      {muted}
+      autoplay={true}
+      playsinline={true}
+      bind:this={video}
+      id={`vid-${videoId}`}
+    />
+  {:else}
+    no stream{videoId}{stream}
+  {/if}
 </div>
