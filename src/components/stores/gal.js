@@ -15,8 +15,9 @@ let mem = {
   myStream: {},
   down: {},
   volumes: {},
-  talking: {},
-  speakerId: '',
+  talking: {},  
+  talkerId: '', // speaker = talker
+  talkerChange: 0, // last time we changed speaker
   me: {}
 };
 
@@ -166,11 +167,11 @@ function galStore() {
         const audioCtx = new AudioContext();
         const vadOptions = {
           onVoiceStart: function () {
-            // console.log('voice start - down', c.username);
-            c.userdata.voiceStart = Date.now();
-            update((m) => {
+             console.log('voice start - down', c.username);
+             c.userdata.voiceStart = Date.now();
+             update((m) => {
               m.talking[c.username] = m.talking[c.username] || {};
-              m.talking[c.username].voiceStart = c.userdata.voiceStart;
+              m.talking[c.username].voiceStart = Date.now();
               return m;
             });
           },
@@ -180,18 +181,28 @@ function galStore() {
             update((m) => {
               if (m) {
                 m.talking[c.username] = m.talking[c.username] || {};
-                m.talking[c.username].voiceEnd = c.userdata.voiceEnd;
+                m.talking[c.username].voiceEnd = Date.now();
                 return m;
               }
             });
             // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
           },
           onUpdate: function (val) {
-            if (val) {
+           if (val) {
               // console.log('curr val: - down', val);999
               c.userdata.voiceStrength = val;
-            }
-            // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
+            update((m) => {
+              if (m) {
+                m.talking[c.username] = m.talking[c.username] || {};
+                m.talking[c.username].samples = m.talking[c.username].samples || [];
+                let samples = m.talking[c.username].samples;
+                samples.push(val);
+                m.talking[c.username].samples =samples.slice(Math.max(samples.length - 10, 0));
+                return m;
+              }
+            });
+         }
+          // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
           },
         };
         try {
@@ -364,7 +375,19 @@ function galStore() {
         },
         onUpdate: function (val) {
           c.userdata.voiceStrength = val;
-  
+         if (val) {
+            update((m) => {
+              if (m) {
+                m.talking[galUser] = m.talking[galUser] || {};
+                m.talking[galUser].samples = m.talking[galUser].samples || [];
+                let samples = m.talking[galUser].samples;
+                samples.push(val);
+                m.talking[galUser].samples = samples.slice(Math.max(samples.length - 10, 0));
+                return m;
+              }
+            });
+         }
+
           // console.log('curr val - up:', val);
           // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
         },
@@ -696,6 +719,50 @@ const getTalking = (m) => {
   return m.talking;
 };
 
+const getWhoIsTalking = (m) => {
+
+  const average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;
+  
+  let lastStartedTalking = 0;
+  let talker = m.talkerId; // default to the old
+  let talkers = {};
+  let MIN_MIC_TIME = 1500;
+  
+  if ((Date.now() - m.talkerChange) < MIN_MIC_TIME) {
+    return talker; // no change, they just got the mic
+    }
+
+  Object.keys(m.talking).forEach((participantId) => {
+    let participant = m.talking[participantId] || {};
+    // console.log(JSON.stringify(participant,null,1));
+    let started = get(participant, 'voiceStart', 0);
+    if (started > lastStartedTalking) {
+      // talking - take average of sample
+      let sample = participant.samples || [];
+      let energy = average(sample) || 0;
+      talkers[participantId] = energy;
+    }
+  });
+
+  let maxEnergy = 0;
+  Object.keys(talkers).forEach((participantId) => {
+    let energy = talkers[participantId] || 0;
+    if (energy > maxEnergy) {
+      talker = participantId;
+      maxEnergy = energy;
+    }
+  });
+
+  if (m.talkerId !== talker) {
+    m.talkerChange = Date.now();     
+  }
+
+  m.talkerId = talker || '';
+
+  // console.log({ talker, talkers });
+  return talker;
+};
+
 const getMe = (m) => {
   // do you?
   return m.me;
@@ -705,4 +772,5 @@ export const gal = galStore();
 export const peers = derived(gal, ($galStore) => getPeers($galStore));
 export const chats = derived(gal, ($galStore) => getChats($galStore));
 export const talking = derived(gal, ($galStore) => getTalking($galStore));
+export const talker = derived(gal, ($galStore) => getWhoIsTalking($galStore));
 export const me = derived(gal, ($galStore) => getMe($galStore));

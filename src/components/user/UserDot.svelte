@@ -229,14 +229,17 @@
     x={$coords.x + 8}
     y={$coords.y - 10}
     style="font-size:8px"
+    fill-opacity="0.7"
     fill="#999999">
     {#if (streamStatus === 'stopped')}
      🔴
      {:else if streamStatus === 'connected'}
      🟢    
      {:else if streamStatus === 'started'}
-     ⚪
-    {/if}
+     ⭕
+    {:else}
+    🟡
+        {/if}
     </text
   >
   {/if}

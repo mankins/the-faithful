@@ -9,7 +9,7 @@
   import { onMount, onDestroy } from 'svelte';
   import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import { gal } from '$components/stores/gal';
+  import { gal, talker, talking } from '$components/stores/gal';
   import { fade, fly } from 'svelte/transition';
   import { heroMode } from '$components/stores/room.js';
   import JSPretty from '$components/JSPretty.svelte';
@@ -183,7 +183,7 @@
   };
 
   $: playerTheatre && theatre && theatreDuration && updatePlayerCursor();
-  $: $gal.myStream && debugMyStream();
+  // $: $gal.myStream && debugMyStream();
 
   let isActive = true;
   let galState = {};
@@ -292,8 +292,12 @@
   <div class="">
     {#if theatre.mode === 'presentation'}
       <div class="aspect-w-16 aspect-h-9">
-        <div class="flex max-h-screen bg-gray-900">
-          {#if get($gal, 'myStream.c.up', false)}
+        <div class="flex max-h-screen bg-gray-900 text-white">
+          <pre class="text-xs bg-white">
+          <JSPretty obj={$talking} /></pre>
+          <pre class="text-xs bg-white">
+            <JSPretty obj={$talker} /></pre>
+            {#if get($gal, 'myStream.c.up', false)}
             <div transition:fade class="bg-gray-800 w-full">
               <UserVideo
                 muted={true}
