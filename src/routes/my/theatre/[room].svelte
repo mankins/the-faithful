@@ -9,7 +9,7 @@
   import { onMount, onDestroy } from 'svelte';
   import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import { gal, talker, talking } from '$components/stores/gal';
+  import { gal, talker, talking, downs } from '$components/stores/gal';
   import { fade, fly } from 'svelte/transition';
   import { heroMode } from '$components/stores/room.js';
   import JSPretty from '$components/JSPretty.svelte';
@@ -286,19 +286,34 @@
   // <pre class="text-xs bg-white">
   //             <JSPretty obj={get($gal, 'myStream', {})}></JSPretty> </pre>
   //           </div>
+
+  //             {#if get($gal, 'myStream.c.up', false)}
+  // $: $downs && console.log($downs, 'downs');
 </script>
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   <div class="">
     {#if theatre.mode === 'presentation'}
-      <div class="aspect-w-16 aspect-h-9">
+      <div class="aspect-w-16 aspect-h-9" transition:fade>
         <div class="flex max-h-screen bg-gray-900 text-white">
-          <pre class="text-xs bg-white">
+          {#if false}
+            <pre
+              class="text-xs bg-white">
           <JSPretty obj={$talking} /></pre>
-          <pre class="text-xs bg-white">
+            <pre
+              class="text-xs bg-white">
             <JSPretty obj={$talker} /></pre>
-            {#if get($gal, 'myStream.c.up', false)}
-            <div transition:fade class="bg-gray-800 w-full">
+          {/if}
+          {#if $downs[$talker]}
+            <div class="bg-gray-800 w-full">
+              <UserVideo
+                muted={true}
+                stream={$downs[$talker].c}
+                videoId={$downs[$talker].c.id}
+              />
+            </div>
+          {:else if get($gal, 'myStream.c')}
+            <div class="bg-gray-800 w-full is-me">
               <UserVideo
                 muted={true}
                 stream={get($gal, 'myStream.c')}
@@ -402,7 +417,9 @@
             {/if}
           {:else}
             <button
-              on:click={() => {joinLeaveAudience()}}
+              on:click={() => {
+                joinLeaveAudience();
+              }}
               type="button"
               class="inline-flex w-auto ml-4 mr-4 mt-4 mb-4 items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-500 bg-transparent hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
             >
@@ -413,14 +430,16 @@
       </div>
       {#if audienceMode}
         {#if canWebrtc}
-        {#if audienceState === 'connecting'}
-        <div class="flex flex-row items-center">
-          <h2 class="m-auto text-gray-200 font-serif p-4">Connecting to audience</h2>
-        </div>
-        {:else}
-          <div transition:fade class="pb-5 border-b border-gray-200 h-screen">
-            <Seating {room} />
-          </div>
+          {#if audienceState === 'connecting'}
+            <div class="flex flex-row items-center">
+              <h2 class="m-auto text-gray-200 font-serif p-4">
+                Connecting to audience
+              </h2>
+            </div>
+          {:else}
+            <div transition:fade class="pb-5 border-b border-gray-200 h-screen">
+              <Seating {room} />
+            </div>
           {/if}
         {:else}
           <div class="p-12">

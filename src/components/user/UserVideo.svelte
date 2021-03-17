@@ -47,5 +47,7 @@
   {#if stream}
     <!-- svelte-ignore a11y-media-has-caption -->
     <video class="rounded-md absolute inset-0 w-full h-full" muted={muted} autoplay={true} playsinline={true} bind:this={video} id={`vid-${videoId}`} />
-  {/if}
+{:else}
+no stream{videoId}{stream}
+    {/if}
 </div>

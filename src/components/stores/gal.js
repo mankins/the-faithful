@@ -13,7 +13,7 @@ let mem = {
   chats: [],
   devices: [],
   myStream: {},
-  down: {},
+  downs: {},
   volumes: {},
   talking: {},  
   talkerId: '', // speaker = talker
@@ -235,7 +235,7 @@ function galStore() {
       // console.log('setMedia would have been called ondownstream done');
       c.userdata.downstreamsUpdated = Date.now();
       update((m) => {
-        m.down[c.id] = { c }; // relaces old?
+        m.downs[c.username || c.id] = { c }; // relaces old?
         return m;
       });
     };
@@ -711,6 +711,10 @@ const getPeers = (m) => {
   return m.peers;
 };
 
+const getDowns = (m) => {
+  return m.downs;
+};
+
 const getChats = (m) => {
   return m.chats;
 };
@@ -727,7 +731,7 @@ const getWhoIsTalking = (m) => {
   let talker = m.talkerId; // default to the old
   let talkers = {};
   let MIN_MIC_TIME = 1500;
-  
+
   if ((Date.now() - m.talkerChange) < MIN_MIC_TIME) {
     return talker; // no change, they just got the mic
     }
@@ -770,6 +774,7 @@ const getMe = (m) => {
 
 export const gal = galStore();
 export const peers = derived(gal, ($galStore) => getPeers($galStore));
+export const downs = derived(gal, ($galStore) => getDowns($galStore));
 export const chats = derived(gal, ($galStore) => getChats($galStore));
 export const talking = derived(gal, ($galStore) => getTalking($galStore));
 export const talker = derived(gal, ($galStore) => getWhoIsTalking($galStore));
