@@ -1,6 +1,7 @@
 import { derived, writable } from 'svelte/store';
 import get from 'lodash.get';
 import GaleneProto from '$components/utils/galene-protocol.js';
+import vad from 'voice-activity-detection';
 
 const MAX_CHAT_SIZE = 2;
 const ROOM = 'faithful';
@@ -14,6 +15,7 @@ let mem = {
   myStream: {},
   down: {},
   volumes: {},
+  talking: {},
   speakerId: '',
 };
 
@@ -25,8 +27,10 @@ function galStore() {
   let disconnectStream = () => {};
   let startStream = () => {};
   let stopStream = () => {};
-  let initialize = () => { };
-  let endStream = () => { console.log('---WARN endstream');}
+  let initialize = () => {};
+  let endStream = () => {
+    console.log('---WARN endstream');
+  };
   let setMediaStatus = () => {
     console.log('-----WARN---MEDIA-STATUS---');
   };
@@ -73,7 +77,7 @@ function galStore() {
     if (typeof window == 'undefined') {
       return;
     }
-    console.log('zzz a');
+
     galCon = new GaleneProto.ServerConnection();
     galCon.onconnected = async (a) => {
       console.log('on connected', a);
@@ -92,7 +96,6 @@ function galStore() {
         return { ...mem };
       });
     };
-    console.log('zzz ab');
 
     galCon.onclose = (code, reason) => {
       console.log('onclose', { code, reason });
@@ -103,11 +106,57 @@ function galStore() {
 
     galCon.ondownstream = (c) => {
       console.log('ondownstream', { c });
+
+      const audioContext = new AudioContext();
+      const vadOptions = {
+        onVoiceStart: function () {
+          console.log('voice start - down', c.username);
+          c.userdata.voiceStart = Date.now();
+          update((m) => {
+            m.talking[c.username] = m.talking[c.username] || {};
+            m.talking[c.username].voiceStart = c.userdata.voiceStart;
+            return m;
+          });
+        },
+        onVoiceStop: function () {
+          console.log('voice stop - down', c.username);
+          c.userdata.voiceEnd = Date.now();
+          update((m) => {
+            if (m) {
+              m.talking[c.username] = m.talking[c.username] || {};
+              m.talking[c.username].voiceEnd = c.userdata.voiceEnd;
+              return m;
+            }
+          });
+          // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
+        },
+        onUpdate: function (val) {
+          if (val) {
+            // console.log('curr val: - down', val);999
+            c.userdata.voiceStrength = val;
+          }
+          // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
+        },
+      };
+      try {
+        vad(audioContext, c.stream, vadOptions);
+      } catch (e) {
+        console.log('vad err down', e, c);
+        try {
+          setTimeout(async () => {
+            await audioContext.resume();
+            vad(audioContext, c.stream, vadOptions);
+          }, 5000);
+        } catch (ee) {
+          console.log('vad err down 2', ee);
+        }
+      }
+
       c.onclose = function (replace) {
         if (!replace) {
           //delMedia(c.localId);
 
-          console.log('delMedia?', {peers: mem.peers});
+          console.log('delMedia?', { peers: mem.peers });
         }
       };
       c.onerror = function (e) {
@@ -124,7 +173,7 @@ function galStore() {
           id: c.id,
           c,
         });
-        
+
         // get(mem.peers[c.source], `peers.${c.id}`, c);
         update((m) => {
           try {
@@ -133,13 +182,15 @@ function galStore() {
               let tmp = m.peers[c.source] || {};
               tmp.streams = tmp.streams || {};
               tmp.streams[c.source] = c;
-              
+
               m.peers[c.source] = tmp;
             } else {
               console.log('cant find ${c.source}', m.peers);
             }
-          } catch (e) { console.log('down c err', e); }
-            return m;
+          } catch (e) {
+            console.log('down c err', e);
+          }
+          return m;
         });
       };
       c.onnegotiationcompleted = function () {
@@ -160,6 +211,7 @@ function galStore() {
       c.onstats = (stats) => {
         console.log('stats', stats);
       };
+
       // if(getSettings().activityDetection)
       //     c.setStatsInterval(activityDetectionInterval);
 
@@ -289,7 +341,7 @@ function galStore() {
 
     stream = await navigator.mediaDevices.getUserMedia(constraints); // will throw err on fail
 
-    console.log('---start upstream---', localId);
+    console.log('---start upstream---', localId); // 888
     let c = await newUpStream(localId); // throws on err
     c.kind = 'local';
     c.stream = stream;
@@ -317,10 +369,40 @@ function galStore() {
       }
       c.pc.addTrack(t, stream);
     });
-    let mirrorView = true;
     // await Gal.setMedia(c, true, mirrorView);
-    console.log({ c }, '!!');
+    // console.log({ c }, '!!');
     // console.log('set media done');
+
+    const audioContext = new AudioContext();
+    const vadOptions = {
+      onVoiceStart: function () {
+        console.log('voice start - up', c.username);
+        c.userdata.voiceStart = Date.now();
+        update((m) => {
+          m.talking[c.username] = m.talking[c.username] || {};
+          m.talking[c.username].voiceStart = c.userdata.voiceStart;
+          return m;
+        });
+        // stateContainer.innerHTML = 'Voice state: <strong>active</strong>';
+      },
+      onVoiceStop: function () {
+        c.userdata.voiceEnd = Date.now();
+        console.log('voice stop - up', c.username);
+        update((m) => {
+          m.talking[c.username] = m.talking[c.username] || {};
+          m.talking[c.username].voiceEnd = c.userdata.voiceEnd;
+          return m;
+        });
+        // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
+      },
+      onUpdate: function (val) {
+        c.userdata.voiceStrength = val;
+
+        // console.log('curr val - up:', val);
+        // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
+      },
+    };
+    vad(audioContext, stream, vadOptions);
     update((m) => {
       m.myStream = { c }; // relaces old?
       return m;
@@ -559,7 +641,11 @@ const getChats = (m) => {
   return m.chats;
 };
 
+const getTalking = (m) => {
+  return m.talking;
+};
+
 export const gal = galStore();
 export const peers = derived(gal, ($galStore) => getPeers($galStore));
 export const chats = derived(gal, ($galStore) => getChats($galStore));
-// export const myStream = derived(galStore())
+export const talking = derived(gal, ($galStore) => getTalking($galStore));

@@ -34,7 +34,7 @@
 
   const enableMedia = async () => {
     // this should start our media stream
-    console.log({ gal: $gal });
+    // console.log({ gal: $gal });
     if ($gal.state !== 'connected') {
       window.pushToast(
         `Still starting up, try agian in a few seconds.`,
@@ -161,7 +161,7 @@
       theatre = { ...docSnapshot.data() };
     });
 
-    console.log('calling gal init');
+    // console.log('calling gal init');
     await gal.initialize(); // setup network connection
     await gal.connect({ userName: user.email });
   };

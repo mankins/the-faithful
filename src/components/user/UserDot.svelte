@@ -3,6 +3,8 @@
   import { spring, tweened } from 'svelte/motion';
   // import { cubicOut } from 'svelte/easing';
   import { onMount } from 'svelte';
+  import get from 'lodash.get';
+  import { talking } from '$components/stores/gal';
 
   export let isSelf = true;
 
@@ -12,8 +14,9 @@
   export let canvasHeight = 0;
   export let canvasWidth = 0;
   export let email = '';
-  let mouseDown = false;
+  export let streams = {};
 
+  let mouseDown = false;
   let ringScale = 10;
   let coords = spring(
     { x: 0, y: 0 },
@@ -22,6 +25,9 @@
       damping: 0.25,
     }
   );
+  let vv = 0;
+  let voiceStrength = tweened(1);
+  let talkersUpdated;
 
   onMount(() => {
     // alert('a' + (percentX / 100) * canvasWidth);
@@ -39,6 +45,10 @@
         }
       );
     }
+
+    talking.subscribe((talkers) => {
+      talkersUpdated = Date.now();
+    });
   });
 
   const calculateCoords = () => {
@@ -60,8 +70,41 @@
     ringScale = parseInt(canvasWidth / 15,10);
   }
 
+  const setupVolumeIndicator = () => {
+    Object.keys(streams).forEach((streamId) => {
+      // look for our id
+      let em = get(streams[streamId],'username');
+      // console.log({em, email});
+      if (em === email) {
+        let vs = parseInt(get(streams[streamId],'userdata.voiceStrength',0),10);
+
+        let startedTalking = get(streams[streamId],'userdata.voiceStart',0);
+        let stoppedTalking = get(streams[streamId],'userdata.voiceEnd',0);
+        // console.log(get(streams[streamId],'userdata'));
+        if (startedTalking < stoppedTalking) {
+          // currently talking
+          // console.log('not talking', (startedTalking - stoppedTalking));
+          voiceStrength.set(0);
+          return;
+        }
+        voiceStrength.set(5);
+        // setTimeout(()=> {
+        //   voiceStrength.set(4);
+        // },100);
+      }
+    });
+
+  };
+
+  // $: $voiceStrength && console.log($voiceStrength);
   $: canvasHeight && canvasWidth && calculateCoords();
   $: canvasHeight && canvasWidth && calcRingScale();
+
+  $: talkersUpdated && setupVolumeIndicator();
+
+  // setInterval(setupVolumeIndicator, 1000); //TODO
+
+  // $: streams && console.log({streams},'sss');
 
   // $: $coords.x && $coords.y && updateDot();
 
@@ -155,6 +198,13 @@
     r={size + ringScale}
     stroke="white"
     stroke-width={isSelf ? 1 : 0}
+  />
+  <circle
+    fill={colorizer(`${email}-v`)}
+    fill-opacity="0.5"
+    cx={$coords.x}
+    cy={$coords.y}
+    r={size + (10 * $voiceStrength)}
   />
   <circle
     fill={colorizer(email)}

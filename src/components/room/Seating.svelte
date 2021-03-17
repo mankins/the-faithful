@@ -228,6 +228,7 @@
                 email={seatEmail}
                 bind:percentX={seats[seatEmail].x}
                 bind:percentY={seats[seatEmail].y}
+                streams={get(seats, `${seatEmail}.streams`) || {}}
                 {canvasWidth}
                 {canvasHeight}
               />
@@ -246,6 +247,7 @@
             email={get(user, 'email')}
             bind:percentX={seats[get(user, 'email')].x}
             bind:percentY={seats[get(user, 'email')].y}
+            streams={get(seats, `${get(user, 'email')}.streams`) || {}}
             {canvasWidth}
             {canvasHeight}
           />
