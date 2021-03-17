@@ -15,6 +15,7 @@
   export let canvasWidth = 0;
   export let email = '';
   export let streams = {};
+  export let streamStatus = '';
 
   let mouseDown = false;
   let ringScale = 10;
@@ -74,9 +75,12 @@
     Object.keys(streams).forEach((streamId) => {
       // look for our id
       let em = get(streams[streamId],'username');
-      console.log({em, email, streamId});
+      // console.log({em, email, streamId});
       if (em === email) {
         let vs = parseInt(get(streams[streamId],'userdata.voiceStrength',0),10);
+
+        // let streamStatus = get(streams[streamId],'userdata.status','unknown');
+        // console.log({streamStatus});
 
         let startedTalking = get(streams[streamId],'userdata.voiceStart',0);
         let stoppedTalking = get(streams[streamId],'userdata.voiceEnd',0);
@@ -106,7 +110,7 @@
   $: canvasHeight && canvasWidth && calcRingScale();
 
   $: talkersUpdated && setupVolumeIndicator();
-
+  // $: streamStatus && console.log({streamStatus,'zz':'zz'});
   // setInterval(setupVolumeIndicator, 1000); //TODO
 
   // $: streams && console.log({streams},'sss');
@@ -211,13 +215,33 @@
     cy={$coords.y}
     r={size + (10 * $voiceStrength)}
   />
-  <circle
+  <g>
+    <circle
     fill={colorizer(email)}
     fill-opacity="0.9"
     cx={$coords.x}
     cy={$coords.y}
     r={size}
   />
+    {#if isSelf}
+    <text
+    text-anchor="middle"
+    x={$coords.x + 8}
+    y={$coords.y - 10}
+    style="font-size:8px"
+    fill="#999999">
+    {#if (streamStatus === 'stopped')}
+     🔴
+     {:else if streamStatus === 'connected'}
+     🟢    
+     {:else if streamStatus === 'started'}
+     ⚪
+    {/if}
+    </text
+  >
+  {/if}
+  </g>
+  
   <text
     text-anchor="middle"
     x={$coords.x}

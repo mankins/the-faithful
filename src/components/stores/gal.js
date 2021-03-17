@@ -17,6 +17,7 @@ let mem = {
   volumes: {},
   talking: {},
   speakerId: '',
+  me: {}
 };
 
 const { subscribe, set, update } = writable(mem);
@@ -165,7 +166,7 @@ function galStore() {
         const audioCtx = new AudioContext();
         const vadOptions = {
           onVoiceStart: function () {
-            console.log('voice start - down', c.username);
+            // console.log('voice start - down', c.username);
             c.userdata.voiceStart = Date.now();
             update((m) => {
               m.talking[c.username] = m.talking[c.username] || {};
@@ -174,7 +175,7 @@ function galStore() {
             });
           },
           onVoiceStop: function () {
-            console.log('voice stop - down', c.username);
+            // console.log('voice stop - down', c.username);
             c.userdata.voiceEnd = Date.now();
             update((m) => {
               if (m) {
@@ -308,6 +309,7 @@ function galStore() {
       console.log('trying to close', kind, m.myStream);
       if (m.myStream && m.myStream.c) {
         m.myStream.c.close();
+        m.myStream = {};
       }
       // m.myStream = { c }; // relaces old?
       return m;
@@ -319,6 +321,13 @@ function galStore() {
     let c = await galCon.newUpStream(localId);
     c.onstatus = function (status) {
       console.log('--new up status', { status });
+      update((m) => {
+        m.me.up = m.me.up || {};
+        m.me.up.status = status;
+        return m;
+      });
+  
+      c.userdata.status = status;
       // setMediaStatus(c);
       c.userdata.setupMediaRequested = Date.now();
     };
@@ -327,14 +336,14 @@ function galStore() {
       displayError(e);
     };
     c.onnegotiationcompleted = function () {
-      console.log('neg completed');
+      // console.log('neg completed');
       setMaxVideoThroughput(c, getMaxVideoThroughput());
       c.username = c.username || galUser;
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       const audioCtx = new AudioContext();
       const vadOptions = {
         onVoiceStart: function () {
-          console.log('voice start - up', galUser);//666
+          // console.log('voice start - up', galUser);//666
           c.userdata.voiceStart = Date.now();
           update((m) => {
             m.talking[galUser] = m.talking[galUser] || {};
@@ -384,6 +393,14 @@ function galStore() {
   };
 
   startStream = async ({ localId, mute = false }) => {
+
+    update((m) => {
+      m.me.up = m.me.up || {};
+      m.me.up.status = 'init';
+      return m;
+    });
+
+
     let video = {};
     // video.width = { min: 640, ideal: 1920 };
     // video.height = { min: 400, ideal: 1080 };
@@ -402,7 +419,7 @@ function galStore() {
     c.stream = stream;
 
     c.onclose = (replace) => {
-      console.log('closing stream', { replace });
+      console.log('closing stream', { stream: c.stream, replace });
       stopStream(c.stream);
       if (!replace) {
         // Gal.delMedia(c.localId);
@@ -429,6 +446,8 @@ function galStore() {
     // console.log('set media done');
     update((m) => {
       m.myStream = { c }; // relaces old?
+      m.me.up = m.me.up || {};
+      m.me.up.status = 'started';
       return m;
     });
   };
@@ -479,13 +498,21 @@ function galStore() {
   // };
 
   stopStream = (s) => {
+    let status = 'stopping';
     s.getTracks().forEach((t) => {
       try {
         console.log('stopping stream');
         t.stop();
+        status = 'stopped';
       } catch (e) {
         console.warn(e);
+        status = 'stoperr';
       }
+    });
+    update((m) => {
+      m.me.up = m.me.up || {};
+      m.me.up.status = status;
+      return m;
     });
   };
 
@@ -669,7 +696,13 @@ const getTalking = (m) => {
   return m.talking;
 };
 
+const getMe = (m) => {
+  // do you?
+  return m.me;
+};
+
 export const gal = galStore();
 export const peers = derived(gal, ($galStore) => getPeers($galStore));
 export const chats = derived(gal, ($galStore) => getChats($galStore));
 export const talking = derived(gal, ($galStore) => getTalking($galStore));
+export const me = derived(gal, ($galStore) => getMe($galStore));

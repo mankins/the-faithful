@@ -4,7 +4,7 @@
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
   import UserDot from '$components/user/UserDot.svelte';
   import UserAudio from '$components/user/UserAudio.svelte';
-  import { peers } from '$components/stores/gal';
+  import { peers, me } from '$components/stores/gal';
   import get from 'lodash.get';
   import { debounce } from '$components/utils/debounce';
 
@@ -34,6 +34,10 @@
 
   onMount(() => {
     isActive = true;
+    // me.subscribe((meData) => {
+    //   console.log(JSON.stringify(meData,null,1));
+    // });
+
   });
 
   const handleDbInit = async (ev) => {
@@ -251,6 +255,7 @@
         {#if seats[get(user, 'email')]}
           <UserDot
             isSelf={true}
+            streamStatus={get($me, 'up.status')}
             size={get(seats, `${get(user, 'email')}.size`) || DEFAULT_USER_SIZE}
             email={get(user, 'email')}
             bind:percentX={seats[get(user, 'email')].x}

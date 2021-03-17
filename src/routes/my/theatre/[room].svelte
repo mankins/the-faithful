@@ -296,6 +296,7 @@
           {#if get($gal, 'myStream.c.up', false)}
             <div transition:fade class="bg-gray-800 w-full">
               <UserVideo
+                muted={true}
                 stream={get($gal, 'myStream.c')}
                 videoId={get($gal, 'myStream.c.id')}
               />
