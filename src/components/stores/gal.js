@@ -184,7 +184,7 @@ function galStore() {
           // resetMedia(c);
           console.log('reset media todo');
         }
-        if (false) {
+        if (true) {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
           const audioCtx = new AudioContext();
           const vadOptions = {
@@ -376,7 +376,7 @@ function galStore() {
       // console.log('neg completed');
       setMaxVideoThroughput(c, getMaxVideoThroughput());
       c.username = c.username || galUser;
-      if (false) {
+      if (true) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const audioCtx = new AudioContext();
         const vadOptions = {

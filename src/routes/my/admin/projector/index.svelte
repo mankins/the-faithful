@@ -1,9 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import { realtime } from '$components/stores/channel.js';
   import get from 'lodash.get';
-  import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
   import timecodes from 'node-timecodes';
   import JSPretty from '$components/JSPretty.svelte';
   import { debounce } from '$components/utils/debounce';
@@ -27,6 +25,7 @@
   let warnMessage = false;
   let warnMessageModal = false;
   let lastWarningTimer;
+  let endOfShow = false;
 
   const handlePresetChange = () => {};
 
@@ -35,55 +34,6 @@
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
     db = firebase.firestore();
-  };
-
-  const updatePlayerPositions = () => {
-    if (!projectorDuration) {
-      return;
-    }
-
-    if (theatre.status === 'paused') {
-      // we should seek to this part
-      const seekTs = theatre.startTs;
-      projectorCurrentTime = timecodes.fromSeconds(seekTs);
-      if (playerProjector) {
-        // if (playerProjector.playing) {
-        //   playerProjector.pause();
-        // }
-        playerProjector.currentTime = seekTs;
-      } else {
-      }
-    } else if (theatre.status === 'playing') {
-      // calculate the current position
-      const startTs = parseInt(get(theatre, 'eventTs.seconds'), 10);
-      if (!startTs) {
-        return;
-      }
-      let currentTs;
-      if (projectorDuration && false) {
-        currentTs =
-          (testingOffset +
-            Date.now() / 1000 -
-            startTs +
-            skew +
-            parseInt(theatre.startTs, 10)) %
-          projectorDuration;
-      } else {
-        currentTs =
-          testingOffset +
-          Date.now() / 1000 -
-          startTs +
-          skew +
-          parseInt(theatre.startTs, 10);
-      }
-      if (playerProjector) {
-        projectorCurrentTime = timecodes.fromSeconds(currentTs);
-        if (!playerProjector.playing) {
-          playerProjector.play();
-        }
-        playerProjector.currentTime = currentTs;
-      }
-    }
   };
 
   let handleLogin = async (profile) => {
@@ -129,18 +79,12 @@
     const doc = db.collection('rooms').doc('theatre');
     doc.onSnapshot((docSnapshot) => {
       theatre = { ...docSnapshot.data() };
+      console.log('change', theatre);
     });
   };
 
-  let handleMessage = () => {
-    if (channels && channels.test) {
-      channels.test.publish('msg', { msg });
-    }
-  };
-
-  let msg;
   let isActive = true;
-  let page;
+  let muxPlaybackId;
 
   onDestroy(() => {
     isActive = false;
@@ -148,269 +92,232 @@
 
   onMount(() => {
     startupTs = Date.now();
-
-    pageStore.subscribe(async (newPage) => {
-      page = newPage;
-    });
-
-    realtime.subscribe((rt) => {
-      if (rt) {
-        console.log('rt init', rt);
-        try {
-          // rt.connection.on('connected', function (ev) {
-          //   console.log('realtime-connected!!');
-          // });
-          rt.connection.on('failed', function (ev) {
-            console.log('failed realtime connection', ev);
-          });
-
-          channels.test = rt.channels.get('test');
-          channels.test.subscribe(function (message) {
-            console.log(get(message, 'data.msg'));
-          });
-          // setInterval(()=>{
-          //   channels.test.publish('eventTYpe?', {'my':Date.now()});
-          // }, 2000);
-        } catch (e) {
-          console.log('rt-1', e);
-        }
-      }
-    });
   });
 
-  //   <input bind:value={msg}             class="block pl-10 w-full border border-transparent bg-gray-100 rounded-md px-5 py-3 text-base text-gray-900 placeholder-gray-500 shadow-sm focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-faithful-500"
-  //       placeholder="type hello"
-  // />
-  //       <button on:click={handleMessage}>Click</button>
   let lastUpdate = 0;
   let startupTs = Date.now();
   let initDone = false;
 
-  const handleProjectorInit = (ev) => {
-    playerProjector = ev.detail.player;
-    Object.defineProperty(
-      Object.getPrototypeOf(playerProjector),
-      'currentTime',
-      {
-        set(input) {
-          // Bail if media duration isn't available yet
-          if (!this.duration) {
-            return;
-          }
-          // Validate input
-          input = input - 0;
-          const inputIsValid = input == input && input >= 0;
-          if (inputIsValid) {
-            // Set
-            this.media.currentTime = Math.min(input, this.duration);
-            let location = (input / this.duration) * 100;
-            setTimeout(() => { 
-              try {
-              this.elements.inputs.seek.setAttribute('value', location);
-              this.elements.inputs.seek.setAttribute('aria-valuenow', location);              
-              this.elements.inputs.seek.style.setProperty(
-                '--value',
-                `${location}%`
-              );
-              } catch (e) {}
-            }, 0);
-          }
-          // Logging
-          //console.log(`Seeking to ${this.currentTime} seconds`);
+  // endOfShow = ((projectorDuration) && (parseInt(projectorTheatre.currentTime,10) >= parseInt(projectorDuration,10))) ? true : false;
+
+  const setStatus = (status) => {
+    (async () => {
+      const docRef = db.collection('rooms').doc('theatre');
+      await docRef.set(
+        {
+          status,
         },
-      }
-    );
-    playerProjector.on('ready', () => {
-      let media = playerProjector.media;
-      projectorDuration = media.duration;
-      if (!media) {
-        console.log('warn - no media?', media);
-        return;
-      }
-
-      if (true) {
-        // init theatre
-        if (theatre.status === 'paused') {
-          // we should seek to this part
-          const seekTs = parseInt(theatre.startTs, 10);
-          projectorCurrentTime = timecodes.fromSeconds(seekTs);
-          if (playerProjector) {
-            if (playerProjector.playing) {
-              playerProjector.pause();
-            }
-            playerProjector.currentTime = seekTs;
-          }
-        } else if (theatre.status === 'playing') {
-          // calculate the current position
-          const startTs = parseInt(get(theatre, 'eventTs.seconds'), 10);
-          if (!startTs) {
-            return;
-          }
-          let currentTs;
-          if (false && projectorDuration) {
-            currentTs =
-              (testingOffset +
-                Date.now() / 1000 -
-                startTs +
-                skew +
-                parseInt(theatre.startTs, 10)) %
-              projectorDuration;
-          } else {
-            currentTs =
-              testingOffset +
-              Date.now() / 1000 -
-              startTs +
-              skew +
-              parseInt(theatre.startTs, 10);
-          }
-          projectorCurrentTime = timecodes.fromSeconds(currentTs);
-          if (!playerProjector.playing) {
-            setTimeout(() => {
-              playerProjector.currentTime = currentTs;
-              setTimeout(() => {
-                if (!playerProjector.playing) {
-                  playerProjector.play();
-                }
-              }, 100);
-            }, 500);
-            //playerProjector.play();
-            // playerProjector.currentTime = currentTs;
-            //   setTimeout(() => {
-            //   playerProjector.currentTime = currentTs;
-            // }, 500);
-          } else {
-            playerProjector.currentTime = currentTs;
-          }
-        }
-      }
-
-      setPlay = () => {
-        // are we currently playing? is the data already set? if so nothing to do
-        projectorDuration = media.duration;
-        // alert(theatre.status);
-
-        if (theatre.status !== 'playing') {
-          // alert('now playing' + theatre.startTs +':'+ startTs+' ' + theatre.status);
-          let startTs;
-          if (initDone) {
-            startTs = media.currentTime;
-          } else {
-            startTs = theatre.startTs;
-            initDone = true;
-          }
-          (async () => {
-            projectorCurrentTime = timecodes.fromSeconds(media.currentTime);
-            const docRef = db.collection('rooms').doc('theatre');
-            await docRef.set(
-              {
-                startTs: parseInt(startTs, 10), // the cursor of playback when we started
-                eventTs: firebase.firestore.FieldValue.serverTimestamp(), // used by client to calculate offset
-                status: 'playing',
-              },
-              { merge: true }
-            );
-          })();
-        }
-      };
-      playerProjector.on('playing', debounce(setPlay, 500));
-
-      setPaused = () => {
-        projectorDuration = media.duration;
-
-        // get current timestamp
-        // update room to show playing at TS, status to playing, eventTs = now
-        (async () => {
-          if (!isActive) {
-            // alert('skipping, not active');
-            return;
-          }
-          const startTs = media.currentTime;
-          projectorCurrentTime = timecodes.fromSeconds(media.currentTime);
-
-          const docRef = db.collection('rooms').doc('theatre');
-          await docRef.set(
-            {
-              startTs: parseInt(startTs, 10), // the cursor of playback when we started
-              eventTs: firebase.firestore.FieldValue.serverTimestamp(), // used by client to calculate offset
-              status: 'paused',
-            },
-            { merge: true }
-          );
-        })();
-      };
-      playerProjector.on('pause', debounce(setPaused, 500));
-
-      playerProjector.on('timeupdate', () => {
-        projectorCurrentTime = timecodes.fromSeconds(media.currentTime);
-        projectorDuration = media.duration;
-      });
-    });
+        { merge: true }
+      );
+      debugTs = Date.now();
+    })();
+  };
+  
+  const setStatusPause = () => {
+    (async () => {
+      const docRef = db.collection('rooms').doc('theatre');
+      await docRef.set(
+        {
+          status: 'paused',
+        },
+        { merge: true }
+      );
+      debugTs = Date.now();
+    })();
+  };
+  const setWaiting = (waiting) => {
+    (async () => {
+      const docRef = db.collection('rooms').doc('theatre');
+      await docRef.set(
+        {
+          waiting,
+        },
+        { merge: true }
+      );
+      debugTs = Date.now();
+    })();
   };
 
-  $: playerProjector && theatre && updatePlayerPositions();
+  const setTime = (startTs) => {
+    (async () => {
+      const docRef = db.collection('rooms').doc('theatre');
+      await docRef.set(
+        {
+          eventTs: firebase.firestore.FieldValue.serverTimestamp(), // used by client to calculate offset
+          startTs,
+        },
+        { merge: true }
+      );
+      debugTs = Date.now();
+    })();
+  };
+
+  const setMux = () => {
+    if (!muxPlaybackId) {
+      alert('enter mux id');
+      return;
+    }
+    (async () => {
+      const docRef = db.collection('rooms').doc('theatre');
+      await docRef.set(
+        {
+          // eventTs: firebase.firestore.FieldValue.serverTimestamp(), // used by client to calculate offset
+          muxPlaybackId,
+        },
+        { merge: true }
+      );
+      debugTs = Date.now();
+    })();
+  };
+
+  let debugTs = Date.now();
+  const updateUi = async () => {
+    debugTs = Date.now();
+
+    const docRef = db.collection('rooms').doc('theatre');
+    try {
+      const doc = await docRef.get();
+      theatre = { ...doc.data() };
+    } catch (e) {
+      console.log('error updating theatre', e);
+    }
+
+    theatre = theatre;
+  }
+
+  $: debugTs && updateUi();
+
+  // <button type="button" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+  //     Play
+  //   </button>
+
   //           <span class="text-red-500 w-full text-right m-auto">Offline</span>
 </script>
 
 <!-- svelte-ignore non-top-level-reactive-declaration -->
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   <div class="">
-    <div class="bg-white shadow overflow-hidden max-w-full">
-      <section class="overflow-hidden sm:overflow-auto">
-        {#if theatre.muxPlaybackId && isActive}
-          <VideoPlayer
-            on:newvideoplayer={handleProjectorInit}
-            autoplay={false}
-            start={true}
-            poster={''}
-            controls={['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen']}
-            videoId={theatre.muxPlaybackId}
-            captionsSrc={theatre.captionsUrl}
-            videoPlayerId="video-player-projector-1"
-          />
-        {/if}
-        {#if !warnMessage && !warnMessageModal}
-          <div
-            on:click|stopPropagation|preventDefault={() => {
-              warnMessageModal = true;
-            }}
-            class="fixed inset-0 transition-opacity"
-            aria-hidden="true"
-          >
-            <div class="inset-0 opacity-95" />
-          </div>
-        {/if}
-      </section>
-      <div
-        class="mt-4 text-faithful-900 font-mono flex flex-row justify-between"
-      >
-        <div class="">
-          {projectorCurrentTime || '00:00:00'}
-        </div>
-      </div>
-      {#if false}
-        <div class="mt-24">
-          <h3
-            class="text-2xl font-serif text-gray-900 font-extrabold tracking-tight flex flex-row"
-          >
-            Presets
-          </h3>
-
-          <select bind:value={presetSelected} on:blur={handlePresetChange}>
-            <option value="video:the-faithful:trailer"
-              >The Faithful Trailer</option
+    <div class="bg-white shadow overflow-hidden max-w-full  m-auto">
+      <div class="flex flex-row p-2 bg-black">
+        <section class="overflow-hidden sm:overflow-auto m-2 sm:m-12">
+          <span class="relative z-0 inline-flex shadow-sm rounded-md  m-auto">
+            <button
+              type="button"
+              on:click={() => {
+                setStatus('playing');
+              }}
+              class="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
             >
-            <option value="video:the-faithful">The Faithful Movie</option>
-          </select>
+              Play
+            </button>
+            <button
+              type="button"
+              on:click={() => {
+                setStatusPause();
+              }}
+              class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 rounded-r-md focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              Pause
+            </button>
+            <button
+              type="button"
+              on:click={() => {
+                setWaiting(true);
+              }}
+              class="ml-3 relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              Wait On
+            </button>
+            <button
+              type="button"
+              on:click={() => {
+                setWaiting(false);
+              }}
+              class="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              Wait Off
+            </button>
+            <button
+              type="button"
+              on:click={() => {
+                setTime(10);
+              }}
+              class="ml-3 relative inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              Reset
+            </button>
+            <button
+              type="button"
+              on:click={() => {
+                setMux();
+              }}
+              class="ml-3 relative inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              Change Movie Id
+            </button>
+          </span>
+        </section>
+      </div>
+
+      <div class="p-4 bg-gray-100">
+        <label
+          for="muxPlaybackId"
+          class="block text-sm font-medium text-gray-700"
+          >Mux Playback Id (advanced)</label
+        >
+        <div class="mt-1">
+          <input
+            type="text"
+            bind:value={muxPlaybackId}
+            name="muxPlaybackId"
+            id="muxPlaybackId"
+            class="shadow-sm focus:ring-faithful-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            placeholder="9yeTuhhsGoW99g0101O2WyximgOyIBnTUwhi2MRHv9ick"
+          />
         </div>
-      {/if}
+<ul>
+        <li>
+          <p class="text-xs font-mono p-6">
+            9yeTuhhsGoW99g0101O2WyximgOyIBnTUwhi2MRHv9ick = Faithful Full Length
+          </p>
+        </li>
+        <li>
+          <p class="text-xs font-mono p-6">
+            taMah02Uj0286rdwiMyPoh8F6CFF4Uqo4HNQPmojRYGJM = Waiting
+          </p>
+        </li>
+      </ul>    
+      </div>
+
+      <div
+        class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12 mt-12"
+      >
+        <pre class="text-xs"><JSPretty obj={{theatre, debugTs}} />
+      </pre>
+      </div>
     </div>
-    <div
-      class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12 mt-12"
-    >
-      <pre class="text-xs"><JSPretty obj={theatre} /></pre>
+
+    <!-- This example requires Tailwind CSS v2.0+ -->
+<div class="bg-red-50 shadow sm:rounded-lg">
+  <div class="px-4 py-5 sm:p-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Experiemental, Advanced Projector
+    </h3>
+    <div class="mt-2 max-w-xl text-sm text-gray-500">
+      <p>
+        Still WIP, but more features.
+      </p>
+    </div>
+    <div class="mt-5">
+      <button on:click={() => {window.location.href = '/my/admin/projector/advanced'}} type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm">
+        Experimental Projector
+      </button>
     </div>
   </div>
-</FirebaseProvider>
+</div>
+
+  </div></FirebaseProvider
+>
 <ConfirmModal
   bind:open={warnMessageModal}
   handleConfirm={async () => {
@@ -424,18 +331,13 @@
   <span slot="buttonyes">Unlock</span>
   <span slot="buttoncancel">Cancel</span>
   <span slot="confirmation">
-    <h3
-    class="text-lg leading-6 font-medium text-gray-900"
-    id="modal-headline"
-  >
-    Modify the live presentation?
-  </h3>
-  <div class="mt-4">
-    <p class="text-sm text-gray-500">
-      Changes to the timeline and start/stop are seen by everyone.
-    </p>
-  </div>
-
-
+    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+      Modify the live presentation?
+    </h3>
+    <div class="mt-4">
+      <p class="text-sm text-gray-500">
+        Changes to the timeline and start/stop are seen by everyone.
+      </p>
+    </div>
   </span>
 </ConfirmModal>

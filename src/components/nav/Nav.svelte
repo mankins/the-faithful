@@ -22,7 +22,6 @@
  //   console.log({ section });
   });
 </script>
-
 <nav class="bg-white fixed w-screen">
   <div class="mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16">
@@ -123,7 +122,7 @@
           <slot />
         </div>
         <div class="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
-          {#if notifications}
+          {#if notifications && false}
             <button
               class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
             >

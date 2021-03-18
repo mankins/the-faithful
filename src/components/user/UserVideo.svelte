@@ -27,6 +27,7 @@
 
   const setupMedia = () => {
     // alert(videoId + ':' + get(stream, 'userdata.setupMediaRequested'));
+console.log('set media requested? TODO: is this running constantly because of $: below?')
     state = get(stream, 'pc.iceConnectionState');
     good = state === 'connected' || state === 'completed';
 
@@ -51,7 +52,7 @@
     video.srcObject = stream.stream;
   }
 
-  $: get(stream, 'userdata.setupMediaRequested') && setupMedia();
+//  $: get(stream, 'userdata.setupMediaRequested') && setupMedia(); 
 </script>
 
 <div class="relative" style="padding-top: 56.25%">

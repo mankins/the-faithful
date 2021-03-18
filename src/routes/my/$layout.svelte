@@ -32,6 +32,7 @@
   let query = {};
   let email = '';
   let chatInput;
+  let theatreMode = false;
 
   let userProducts = [...baseProducts]; // these are the products that the user has
 
@@ -107,7 +108,7 @@
     return ent;
   };
 
-  let smallNavMode = false;
+  let labsMode = false;
 
 
   onMount(() => {
@@ -129,10 +130,15 @@
       //   console.log('----page', page, newPage);
       page = newPage;
       if (page && page.path) {
-        if (page.path && page.path.indexOf('/theatre/theatre') !== -1) {
-          smallNavMode = true;
+        if (page.path && page.path.indexOf('/labs') !== -1) {
+          labsMode = true;
         } else {
-          smallNavMode = false;
+          labsMode = false;
+        }
+        if (page.path && page.path.indexOf('/theatre') !== -1) {
+          theatreMode = true;
+        } else {
+          theatreMode = false;
         }
         await checkPageEntitlement(page.path);
       }
@@ -170,7 +176,7 @@
 
           <div class="flex-1 overflow-auto focus:outline-none" tabindex="0">
             <div
-              class={smallNavMode
+              class={(labsMode | theatreMode)
                 ? 'relative bg-black z-0 flex-shrink-0 flex h-16 border-b border-transparent xl:border-none'
                 : 'relative bg-white z-0 flex-shrink-0 flex h-16 border-b border-gray-200 xl:border-none'}
               class:z-10={navOpen}
@@ -180,7 +186,7 @@
                   ui.sideMenuOpen = !ui.sideMenuOpen;
                   ui = { ...ui };
                 }}
-                class={smallNavMode
+                class={(labsMode | theatreMode)
                   ? 'px-4 border-r border-transparent text-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-faithful-500 xl:hidden'
                   : 'px-4 border-r border-gray-200 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-faithful-500 xl:hidden'}
               >
@@ -206,7 +212,7 @@
               <div
                 class="flex-1 px-4 flex justify-between sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8 bg-transparent"
               >
-                <div class="flex-1 flex" class:invisible={true || !smallNavMode}>
+                <div class="flex-1 flex" class:invisible={true || !labsMode}>
                   <form class="w-full flex md:ml-0" action="#" method="GET">
                     <label for="search_field" class="sr-only">Chat</label>
                     <div
@@ -234,7 +240,7 @@
                           </svg>
                         {/if}
                         <button
-                          class={smallNavMode
+                          class={labsMode
                             ? 'bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-transparent'
                             : 'bg-transparent p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-transparent'}
                         >
@@ -268,11 +274,12 @@
                   </form>
                 </div>
                 <div class="ml-4 flex items-center md:ml-6">
-                  {#if smallNavMode}
+                  {#if labsMode}
                     <NavRoomControls />
                   {:else}
-                    <button
-                      class={smallNavMode
+{#if false}
+                  <button
+                      class={(labsMode | theatreMode)
                         ? 'bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                         : 'bg-transparent p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
                     >
@@ -295,6 +302,7 @@
                         />
                       </svg>
                     </button>
+                    {/if}
                   {/if}
 
                   <!-- Profile dropdown -->
@@ -306,9 +314,9 @@
             </div>
             <main
               class="flex-1 relative pb-8 z-0 overflow-y-auto h-full"
-              class:bg-gray-700={smallNavMode}
-              class:border-b={smallNavMode}
-              class:border-red-100={smallNavMode}
+              class:bg-gray-700={(labsMode | theatreMode)}
+              class:border-b={(labsMode | theatreMode)}
+              class:border-red-100={(labsMode | theatreMode)}
             >
               <slot />
             </main>

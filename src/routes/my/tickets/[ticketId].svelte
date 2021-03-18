@@ -11,6 +11,7 @@
 
   import FirebaseProvider from '$components/FirebaseProvider.svelte';
   import Ticket from '$components/Ticket.svelte';
+import { update_slot_spread } from 'svelte/internal';
   // import { parseParams } from '$components/utils/query';
 
   let db;

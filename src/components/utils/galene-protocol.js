@@ -753,7 +753,7 @@ ServerConnection.prototype.gotClose = function(id) {
                throw new Error('unknown down stream');
         c.close();
     } catch (e) {
-        console.log('error closing', id);
+        console.log('error closing', id, e);
     }
 };
 
