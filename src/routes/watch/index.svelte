@@ -192,7 +192,7 @@
       </div>
     </div>
   </div>
-    {:else if !$webmon.monetized}
+    {:else if $webmon.monetized}
     <div>  
       <div class="bg-faithful-500">
         <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
