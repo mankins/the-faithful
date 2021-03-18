@@ -434,7 +434,7 @@
   {/if}
 
   {#await productsEntitle($userEntitlements, 'site:debug') then debugMode}
-    {#if !debugMode}
+    {#if debugMode}
       <pre class="text-xs bg-white">
         <JSPretty obj={theatre} />
         <JSPretty obj={{entitlements: $userEntitlements, theatreDuration, currentTs: (playerTheatre && playerTheatre.currentTime) ? parseInt(playerTheatre.currentTime,10):'-' }} />

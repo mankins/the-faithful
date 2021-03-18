@@ -6,11 +6,15 @@
   let min = 0;
   let sec = 0;
   let days = 0;
+  let now = Date.now();
+  let nextShow = new Date('2021-03-18T14:00:00.000Z');
 
   const tick = () => {
+    now = new Date();
+
     const duration = new Duration(
-      new Date(),
-      new Date('2021-03-18T14:00:00.000Z')
+      now,
+      nextShow,
     );
     days = duration.day;
     hours = duration.hour;
@@ -38,9 +42,14 @@
       Lobby
     </h3>
   </div>
+  {#if now < nextShow}
   <div class="mb-12">
-    <h3 class="text-lg leading-6 font-medium text-gray-900">
-      Countdown until the first show
+    <h3 class="text-lg leading-6 font-medium text-gray-900 mt-3">
+      Countdown until the next show
+      <span class="float-right inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
+        Coming soon
+      </span>
+
     </h3>
     <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
       <div class="bg-white overflow-hidden shadow rounded-lg">
@@ -80,6 +89,30 @@
       </div>
     </dl>
   </div>
+  {:else}
+<div class="bg-white shadow sm:rounded-lg mb-12">
+  <div class="px-4 py-5 sm:p-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Welcome to the Faithful screening
+      <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
+        Now Playing
+      </span>
+    </h3>
+    <div class="mt-2 max-w-xl text-sm text-gray-500">
+      <p>
+        Once you watch the show, be sure to stick around for our Q&A. 
+        More information is included in the theatre.
+      </p>
+    </div>
+    <div class="mt-3 text-sm">
+      <a href="/my/theatre" class="font-medium text-faithful-800 hover:text-faithful-500"> 
+        Watch the film in the theatre
+        <span aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</div>
+
+  {/if}
 
   <div class="bg-white overflow-hidden shadow sm:rounded-lg">
     <div class="px-4 py-5 sm:p-6">
