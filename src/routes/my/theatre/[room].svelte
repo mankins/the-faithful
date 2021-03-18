@@ -308,7 +308,7 @@
       </div>
     {/if}
   </div>
-  <div class="mt-6 sm:mt-6 md:mt-8 p-2 sm:p-6 md:p-12 mb-4">
+  <div class="mt-6 sm:mt-6 md:mt-8 p-2 sm:p-6 md:p-12 mb-4" class:hidden={theatre.noticeMode !== 'joinus'}>
     <div class="bg-gray-500 shadow sm:rounded-lg">
       <div class="px-4 py-5 sm:p-6">
         <h3 class="text-lg leading-6 font-medium text-gray-900">

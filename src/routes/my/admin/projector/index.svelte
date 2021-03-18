@@ -461,7 +461,33 @@
           </button>
         </div>
       </div>
-
+      <div class="p-4 bg-gray-100">
+        <label
+          for="noticeMode"
+          class="block text-sm font-medium text-gray-700"
+          >Notice mode</label
+        >
+        <div class="mt-1 flex flex-row">
+          <input
+            type="text"
+            bind:value={ins.noticeMode}
+            name="extraMessageCta"
+            id="extraMessageCta"
+            class="shadow-sm focus:ring-faithful-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            placeholder="'joinus' or some other mode"
+          />
+          <button
+            type="button"
+            on:click={() => {
+              setDoc({ noticeMode: ins.noticeMode });
+            }}
+            class="ml-3 relative bg-gray-200 inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 "
+          >
+            Set
+          </button>
+        </div>
+      </div>
+      
       <div class="p-4 bg-gray-100">
         <label
           for="muxPlaybackId"
