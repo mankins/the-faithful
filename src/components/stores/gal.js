@@ -184,62 +184,64 @@ function galStore() {
           // resetMedia(c);
           console.log('reset media todo');
         }
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContext();
-        const vadOptions = {
-          onVoiceStart: function () {
-            // console.log('voice start - down', c.username);
-            c.userdata.voiceStart = Date.now();
-            update((m) => {
-              m.talking[c.username] = m.talking[c.username] || {};
-              m.talking[c.username].voiceStart = Date.now();
-              return m;
-            });
-          },
-          onVoiceStop: function () {
-            // console.log('voice stop - down', c.username);
-            c.userdata.voiceEnd = Date.now();
-            update((m) => {
-              if (m) {
+        if (false) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          const audioCtx = new AudioContext();
+          const vadOptions = {
+            onVoiceStart: function () {
+              // console.log('voice start - down', c.username);
+              c.userdata.voiceStart = Date.now();
+              update((m) => {
                 m.talking[c.username] = m.talking[c.username] || {};
-                m.talking[c.username].voiceEnd = Date.now();
+                m.talking[c.username].voiceStart = Date.now();
                 return m;
-              }
-            });
-            // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
-          },
-          onUpdate: function (val) {
-            if (val) {
-              // console.log('curr val: - down', val);///999
-              c.userdata.voiceStrength = val;
+              });
+            },
+            onVoiceStop: function () {
+              // console.log('voice stop - down', c.username);
+              c.userdata.voiceEnd = Date.now();
               update((m) => {
                 if (m) {
                   m.talking[c.username] = m.talking[c.username] || {};
-                  m.talking[c.username].samples =
-                    m.talking[c.username].samples || [];
-                  let samples = m.talking[c.username].samples;
-                  samples.push(val);
-                  m.talking[c.username].samples = samples.slice(
-                    Math.max(samples.length - 10, 0)
-                  );
+                  m.talking[c.username].voiceEnd = Date.now();
                   return m;
                 }
               });
-            }
-            // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
-          },
-        };
-        try {
-          vad(audioCtx, c.stream, vadOptions);
-        } catch (e) {
-          console.log('vad err down', e, c);
+              // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
+            },
+            onUpdate: function (val) {
+              if (val) {
+                // console.log('curr val: - down', val);///999
+                c.userdata.voiceStrength = val;
+                update((m) => {
+                  if (m) {
+                    m.talking[c.username] = m.talking[c.username] || {};
+                    m.talking[c.username].samples =
+                      m.talking[c.username].samples || [];
+                    let samples = m.talking[c.username].samples;
+                    samples.push(val);
+                    m.talking[c.username].samples = samples.slice(
+                      Math.max(samples.length - 10, 0)
+                    );
+                    return m;
+                  }
+                });
+              }
+              // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
+            },
+          };
           try {
-            setTimeout(async () => {
-              await audioCtx.resume();
-              vad(audioCtx, c.stream, vadOptions);
-            }, 2000);
-          } catch (ee) {
-            console.log('vad err down 2', ee);
+            vad(audioCtx, c.stream, vadOptions);
+          } catch (e) {
+            console.log('vad err down', e, c);
+            try {
+              setTimeout(async () => {
+                await audioCtx.resume();
+                vad(audioCtx, c.stream, vadOptions);
+              }, 2000);
+            } catch (ee) {
+              console.log('vad err down 2', ee);
+            }
           }
         }
       };
@@ -374,51 +376,53 @@ function galStore() {
       // console.log('neg completed');
       setMaxVideoThroughput(c, getMaxVideoThroughput());
       c.username = c.username || galUser;
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      const audioCtx = new AudioContext();
-      const vadOptions = {
-        onVoiceStart: function () {
-          // console.log('voice start - up', galUser);//666
-          c.userdata.voiceStart = Date.now();
-          update((m) => {
-            m.talking[galUser] = m.talking[galUser] || {};
-            m.talking[galUser].voiceStart = c.userdata.voiceStart;
-            return m;
-          });
-          // stateContainer.innerHTML = 'Voice state: <strong>active</strong>';
-        },
-        onVoiceStop: function () {
-          c.userdata.voiceEnd = Date.now();
-          console.log('voice stop - up', galUser);
-          update((m) => {
-            m.talking[galUser] = m.talking[galUser] || {};
-            m.talking[galUser].voiceEnd = c.userdata.voiceEnd;
-            return m;
-          });
-          // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
-        },
-        onUpdate: function (val) {
-          c.userdata.voiceStrength = val;
-          if (val) {
+      if (false) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+        const vadOptions = {
+          onVoiceStart: function () {
+            // console.log('voice start - up', galUser);//666
+            c.userdata.voiceStart = Date.now();
             update((m) => {
-              if (m) {
-                m.talking[galUser] = m.talking[galUser] || {};
-                m.talking[galUser].samples = m.talking[galUser].samples || [];
-                let samples = m.talking[galUser].samples;
-                samples.push(val);
-                m.talking[galUser].samples = samples.slice(
-                  Math.max(samples.length - 10, 0)
-                );
-                return m;
-              }
+              m.talking[galUser] = m.talking[galUser] || {};
+              m.talking[galUser].voiceStart = c.userdata.voiceStart;
+              return m;
             });
-          }
+            // stateContainer.innerHTML = 'Voice state: <strong>active</strong>';
+          },
+          onVoiceStop: function () {
+            c.userdata.voiceEnd = Date.now();
+            console.log('voice stop - up', galUser);
+            update((m) => {
+              m.talking[galUser] = m.talking[galUser] || {};
+              m.talking[galUser].voiceEnd = c.userdata.voiceEnd;
+              return m;
+            });
+            // stateContainer.innerHTML = 'Voice state: <strong>inactive</strong>';
+          },
+          onUpdate: function (val) {
+            c.userdata.voiceStrength = val;
+            if (val) {
+              update((m) => {
+                if (m) {
+                  m.talking[galUser] = m.talking[galUser] || {};
+                  m.talking[galUser].samples = m.talking[galUser].samples || [];
+                  let samples = m.talking[galUser].samples;
+                  samples.push(val);
+                  m.talking[galUser].samples = samples.slice(
+                    Math.max(samples.length - 10, 0)
+                  );
+                  return m;
+                }
+              });
+            }
 
-          // console.log('curr val - up:', val);
-          // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
-        },
-      };
-      vad(audioCtx, c.stream, vadOptions);
+            // console.log('curr val - up:', val);
+            // valueContainer.innerHTML = 'Current voice activity value: <strong>' + val + '</strong>';
+          },
+        };
+        vad(audioCtx, c.stream, vadOptions);
+      }
       update((m) => {
         try {
           c.userdata.peersUpdated = Date.now();

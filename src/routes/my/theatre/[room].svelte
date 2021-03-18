@@ -19,6 +19,8 @@
 
   import Seating from '$components/room/Seating.svelte';
   import UserVideo from '$components/user/UserVideo.svelte';
+import Footer from '../../../components/nav/Footer.svelte';
+import Index from '../index.svelte';
 
   export let room = 'waiting';
   let theatre = {};
@@ -316,7 +318,7 @@
                 title={`${$talker} ${mediaEnabled}`} class="text-white items-center m-auto font-serif font-extrabold tracking-tight text-2xl sm:text-5xl"
               >
               {#if audienceMode}
-                - 
+                -
                 {:else}
                 Join audience for video
                 {/if}

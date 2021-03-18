@@ -460,15 +460,11 @@ ServerConnection.prototype.newUpStream = function(localId) {
     sc.up[id] = c;
 
     pc.onnegotiationneeded = async e => {
-        console.log({ c, e }, 'NEG');
-        setTimeout(() => {
-         c.negotiate();
-
-        }, 6000);
+        await c.negotiate();
     };
 
     pc.onicecandidate = e => {
-        console.log('ice cand', e.candidate);
+        // console.log('ice cand', e.candidate);
         if(!e.candidate)
             return;
         c.gotLocalIce(e.candidate);
@@ -754,7 +750,7 @@ ServerConnection.prototype.gotClose = function(id) {
             console.log(this.down, id);
             console.log('unknown down stream close');
         }
-        //        throw new Error('unknown down stream');
+               throw new Error('unknown down stream');
         c.close();
     } catch (e) {
         console.log('error closing', id);
@@ -1026,7 +1022,6 @@ Stream.prototype.close = function(replace) {
         else
             console.warn('Closing unknown stream');
     }
-    console.log('nulling sc');
     c.sc = null;
 
     if(c.onclose)
