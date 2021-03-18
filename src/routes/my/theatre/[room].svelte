@@ -12,6 +12,7 @@
   import { fade, fly } from 'svelte/transition';
   import JSPretty from '$components/JSPretty.svelte';
   import WebMonCounter from '$components/WebMonCounter.svelte';
+  import { webmon } from '$components/stores/webmon.js';
   import { productsEntitle } from '$components/utils/entitles.js';
   import { userEntitlements } from '$components/stores/entitlements.js';
 
@@ -31,7 +32,6 @@
   let skew = 0;
   let testingOffset = 0;
   let isActive = true;
-  let webMon = false;
   let endOfShow = false;
   let closeWebMon = false;
 
@@ -73,7 +73,11 @@
       window.location.href = `${theatre.redirect}`;
     }
 
-    endOfShow = ((theatreDuration) && (parseInt(playerTheatre.currentTime,10) >= parseInt(theatreDuration,10))) ? true : false;
+    endOfShow =
+      theatreDuration &&
+      parseInt(playerTheatre.currentTime, 10) >= parseInt(theatreDuration, 10)
+        ? true
+        : false;
 
     if (theatre.status === 'paused') {
       // we should seek to this part
@@ -177,10 +181,6 @@
 
   onMount(() => {
     isActive = true;
-
-    try {
-      webMon = window.document.monetization ? true : false;
-    } catch (e) {}
   });
 
   let theatreCurrentTime;
@@ -258,7 +258,7 @@
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   <div class="">
     {#if !endOfShow && theatre && theatre.status === 'playing'}
-      <section class="overflow-hidden sm:overflow-auto">      
+      <section class="overflow-hidden sm:overflow-auto">
         {#if theatre && theatre.muxPlaybackId && isActive}
           <VideoPlayer
             on:newvideoplayer={handleTheatreInit}
@@ -269,9 +269,9 @@
             captionsSrc={theatre.captionsUrl}
             videoPlayerId={`video-player-${room}`}
           />
-          {/if}          
+        {/if}
       </section>
-      {:else if endOfShow}
+    {:else if endOfShow}
       <div class="aspect-w-16 aspect-h-9" transition:fade>
         <div class="flex max-h-screen bg-gray-900 text-white">
           <div class="m-auto">
@@ -284,7 +284,6 @@
           </div>
         </div>
       </div>
-
     {:else}
       <div class="aspect-w-16 aspect-h-9" transition:fade>
         <div class="flex max-h-screen bg-gray-900 text-white">
@@ -331,7 +330,7 @@
       </div>
     </div>
   </div>
-  {#if webMon && !closeWebMon}
+  {#if $webmon.monetized && !closeWebMon}
     <div class="relative bg-faithful-500 opacity-50">
       <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
         <img src="/svg/congrats-twemoji.svg" alt="congrats emoji" />
@@ -435,11 +434,11 @@
 
   {#await productsEntitle($userEntitlements, 'site:debug') then debugMode}
     {#if debugMode}
-      <pre class="text-xs bg-white">
+      <pre
+        class="text-xs bg-white">
         <JSPretty obj={theatre} />
-        <JSPretty obj={{entitlements: $userEntitlements, theatreDuration, currentTs: (playerTheatre && playerTheatre.currentTime) ? parseInt(playerTheatre.currentTime,10):'-' }} />
+        <JSPretty obj={{webMon: $webmon, entitlements: $userEntitlements, theatreDuration, currentTs: (playerTheatre && playerTheatre.currentTime) ? parseInt(playerTheatre.currentTime,10):'-' }} />
       </pre>
-        
-        {/if}
+    {/if}
   {/await}
 </FirebaseProvider>

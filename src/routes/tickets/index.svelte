@@ -163,7 +163,9 @@
         Virtual screenings are available opening weekend Friday, March 19 -
         Sunday, March 21st, 2021, with a special sneak preview for <a
           class="underline"
-          href="https://www.coil.com/">Coil</a
+          rel="ext"
+          target="_blank"
+          href="https://coil.com/signup?ref=mankins1701">Coil</a
         > subscribers Thursday, March 18th. All screenings are live events with the
         filmmakers present. Your ticket grants you access to any or all of the showtimes
         listed.
