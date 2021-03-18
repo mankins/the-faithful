@@ -27,6 +27,8 @@
   let lastWarningTimer;
   let endOfShow = false;
 
+  let ins = {}; // input bindings
+
   const handlePresetChange = () => {};
 
   // let thing = $token.val.keyName;
@@ -85,6 +87,7 @@
 
   let isActive = true;
   let muxPlaybackId;
+  let extraMessage = '';
 
   onDestroy(() => {
     isActive = false;
@@ -100,6 +103,14 @@
 
   // endOfShow = ((projectorDuration) && (parseInt(projectorTheatre.currentTime,10) >= parseInt(projectorDuration,10))) ? true : false;
 
+  const setDoc = (upDoc) => {
+    (async () => {
+      const docRef = db.collection('rooms').doc('theatre');
+      await docRef.set(upDoc, { merge: true });
+      debugTs = Date.now();
+    })();
+  };
+
   const setStatus = (status) => {
     (async () => {
       const docRef = db.collection('rooms').doc('theatre');
@@ -112,7 +123,7 @@
       debugTs = Date.now();
     })();
   };
-  
+
   const setStatusPause = () => {
     (async () => {
       const docRef = db.collection('rooms').doc('theatre');
@@ -170,6 +181,24 @@
     })();
   };
 
+  const setExtraMessage = () => {
+    if (!extraMessage) {
+      alert('enter extra message text');
+      return;
+    }
+    (async () => {
+      const docRef = db.collection('rooms').doc('theatre');
+      await docRef.set(
+        {
+          // eventTs: firebase.firestore.FieldValue.serverTimestamp(), // used by client to calculate offset
+          extraMessage,
+        },
+        { merge: true }
+      );
+      debugTs = Date.now();
+    })();
+  };
+
   let debugTs = Date.now();
   const updateUi = async () => {
     debugTs = Date.now();
@@ -183,7 +212,7 @@
     }
 
     theatre = theatre;
-  }
+  };
 
   $: debugTs && updateUi();
 
@@ -249,6 +278,15 @@
             <button
               type="button"
               on:click={() => {
+                setTime(99999);
+              }}
+              class="ml-3 relative inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              End
+            </button>
+            <button
+              type="button"
+              on:click={() => {
                 setMux();
               }}
               class="ml-3 relative inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
@@ -257,6 +295,171 @@
             </button>
           </span>
         </section>
+      </div>
+
+<div class="">
+
+      <div class="p-4 bg-gray-100">
+        <label
+          for="extraMessageHeadline"
+          class="block text-sm font-medium text-gray-700"
+          >Extra Message Headline</label
+        >
+        <div class="mt-1 flex flex-row">
+          <input
+            type="text"
+            bind:value={ins.extraMessageHeadline}
+            name="extraMessageHeadline"
+            id="extraMessageHeadline"
+            class="shadow-sm focus:ring-faithful-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            placeholder="News"
+          />
+          <button
+            type="button"
+            on:click={() => {
+              setDoc({ extraMessageHeadline: ins.extraMessageHeadline });
+            }}
+            class="ml-3 relative bg-gray-200 inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 "
+          >
+            Set 
+          </button>
+        </div>
+      </div>
+
+      <div class="p-4 bg-gray-100">
+        <div />
+        <label
+          for="extraMessage"
+          class="block text-sm font-medium text-gray-700">Extra Message</label
+        >
+        <div class="mt-1 flex flex-row">
+          <input
+            type="text"
+            bind:value={extraMessage}
+            name="extraMessage"
+            id="extraMessage"
+            class="shadow-sm focus:ring-faithful-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            placeholder="Leave blank to disable"
+          />
+          <button
+            type="button"
+            on:click={() => {
+              setDoc({ extraMessage: extraMessage });
+            }}
+            class="ml-3 relative bg-gray-200 inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 "
+          >
+            Set 
+          </button>
+        </div>
+      </div>      
+      
+
+      <div class="p-4 bg-gray-100">
+        <label
+          for="extraMessageLink"
+          class="block text-sm font-medium text-gray-700"
+          >Extra Message Click Url</label
+        >
+        <div class="mt-1 flex flex-row">
+          <input
+            type="text"
+            bind:value={ins.extraMessageLink}
+            name="extraMessageLink"
+            id="extraMessageLink"
+            class="shadow-sm focus:ring-faithful-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            placeholder="Leave blank for none"
+          />
+          <button
+            type="button"
+            on:click={() => {
+              setDoc({ extraMessageLink: ins.extraMessageLink });
+            }}
+            class="ml-3 relative bg-gray-200 inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 "
+          >
+            Set 
+          </button>
+        </div>
+      </div>
+
+
+      <div class="p-4 bg-gray-100">
+        <label
+          for="extraMessage"
+          class="block text-sm font-medium text-gray-700"
+          >Extra Message CTA ("More")</label
+        >
+        <div class="mt-1 flex flex-row">
+          <input
+            type="text"
+            bind:value={ins.extraMessageCta}
+            name="extraMessageCta"
+            id="extraMessageCta"
+            class="shadow-sm focus:ring-faithful-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            placeholder="Leave blank for none"
+          />
+          <button
+            type="button"
+            on:click={() => {
+              setDoc({ extraMessageCta: ins.extraMessageCta });
+            }}
+            class="ml-3 relative bg-gray-200 inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 "
+          >
+            Set
+          </button>
+        </div>
+      </div>
+      
+      <div class="p-4 bg-gray-100">
+        <label
+          for="endMessage"
+          class="block text-sm font-medium text-gray-700"
+          >End Message</label
+        >
+        <div class="mt-1 flex flex-row">
+          <input
+            type="text"
+            bind:value={ins.endMessage}
+            name="extraMessageCta"
+            id="extraMessageCta"
+            class="shadow-sm focus:ring-faithful-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            placeholder=""
+          />
+          <button
+            type="button"
+            on:click={() => {
+              setDoc({ endMessage: ins.endMessage });
+            }}
+            class="ml-3 relative bg-gray-200 inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 "
+          >
+            Set
+          </button>
+        </div>
+      </div>
+      <div class="p-4 bg-gray-100">
+        <label
+          for="pauseMessage"
+          class="block text-sm font-medium text-gray-700"
+          >Pause Message</label
+        >
+        <div class="mt-1 flex flex-row">
+          <input
+            type="text"
+            bind:value={ins.pauseMessage}
+            name="extraMessageCta"
+            id="extraMessageCta"
+            class="shadow-sm focus:ring-faithful-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            placeholder=""
+          />
+          <button
+            type="button"
+            on:click={() => {
+              setDoc({ pauseMessage: ins.pauseMessage });
+            }}
+            class="ml-3 relative bg-gray-200 inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 "
+          >
+            Set
+          </button>
+        </div>
       </div>
 
       <div class="p-4 bg-gray-100">
@@ -275,19 +478,21 @@
             placeholder="9yeTuhhsGoW99g0101O2WyximgOyIBnTUwhi2MRHv9ick"
           />
         </div>
-<ul>
-        <li>
-          <p class="text-xs font-mono p-6">
-            9yeTuhhsGoW99g0101O2WyximgOyIBnTUwhi2MRHv9ick = Faithful Full Length
-          </p>
-        </li>
-        <li>
-          <p class="text-xs font-mono p-6">
-            taMah02Uj0286rdwiMyPoh8F6CFF4Uqo4HNQPmojRYGJM = Waiting
-          </p>
-        </li>
-      </ul>    
+        <ul>
+          <li>
+            <p class="text-xs font-mono p-6">
+              9yeTuhhsGoW99g0101O2WyximgOyIBnTUwhi2MRHv9ick = Faithful Full
+              Length
+            </p>
+          </li>
+          <li>
+            <p class="text-xs font-mono p-6">
+              taMah02Uj0286rdwiMyPoh8F6CFF4Uqo4HNQPmojRYGJM = Waiting
+            </p>
+          </li>
+        </ul>
       </div>
+    </div>
 
       <div
         class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12 mt-12"
@@ -297,25 +502,27 @@
       </div>
     </div>
 
-    <!-- This example requires Tailwind CSS v2.0+ -->
-<div class="bg-red-50 shadow sm:rounded-lg">
-  <div class="px-4 py-5 sm:p-6">
-    <h3 class="text-lg leading-6 font-medium text-gray-900">
-      Experiemental, Advanced Projector
-    </h3>
-    <div class="mt-2 max-w-xl text-sm text-gray-500">
-      <p>
-        Still WIP, but more features.
-      </p>
+    <div class="bg-red-50 shadow sm:rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Experiemental, Advanced Projector
+        </h3>
+        <div class="mt-2 max-w-xl text-sm text-gray-500">
+          <p>Still WIP, but more features.</p>
+        </div>
+        <div class="mt-5">
+          <button
+            on:click={() => {
+              window.location.href = '/my/admin/projector/advanced';
+            }}
+            type="button"
+            class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+          >
+            Experimental Projector
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="mt-5">
-      <button on:click={() => {window.location.href = '/my/admin/projector/advanced'}} type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm">
-        Experimental Projector
-      </button>
-    </div>
-  </div>
-</div>
-
   </div></FirebaseProvider
 >
 <ConfirmModal

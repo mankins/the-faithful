@@ -279,7 +279,11 @@
             <h3
               class="text-white items-center m-auto font-serif font-extrabold tracking-tight text-2xl sm:text-5xl"
             >
+            {#if theatre.endMessage}
+            {theatre.endMessage}
+            {:else}
               Movie ended. Q&A time!
+              {/if}
             </h3>
           </div>
         </div>
@@ -292,7 +296,12 @@
             <h3
               class="text-white items-center m-auto font-serif font-extrabold tracking-tight text-2xl sm:text-5xl"
             >
+              {#if theatre.pauseMessage}
+              {theatre.pauseMessage}
+              {:else}
               The show will start soon
+                {/if}
+  
             </h3>
           </div>
         </div>
@@ -321,7 +330,7 @@
           <a
             rel="external"
             target="_blank"
-            href="https://en.wikipedia.org/wiki/Zoom"
+            href={theatre.qaLink}
             class="font-medium text-white hover:text-faithful-500 hover:underline"
           >
             Live Q&A <span aria-hidden="true">&rarr;</span></a
@@ -330,6 +339,34 @@
       </div>
     </div>
   </div>
+  {#if theatre.extraMessage}
+  <div class="mt-6 sm:mt-6 md:mt-8 p-2 sm:p-6 md:p-12 mb-4">
+    <div class="bg-red-50 shadow sm:rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          {theatre.extraMessageHeadline || 'News'}
+        </h3>
+        <div class="mt-2 max-w-xl text-sm text-gray-800">
+          <p>
+            {theatre.extraMessage}
+          </p>
+        </div>
+        {#if theatre.extraMessageLink}
+        <div class="mt-3 text-sm">
+          <a
+            rel="external"
+            target="_blank"
+            href={theatre.extraMessageLink}
+            class="font-medium text-black hover:text-faithful-500 hover:underline"
+          >
+            {theatre.extraMessageCta || 'More'} <span aria-hidden="true">&rarr;</span></a
+          >
+        </div>
+        {/if}
+      </div>
+    </div>
+  </div>
+  {/if}
   {#if $webmon.monetized && !closeWebMon}
     <div class="relative bg-faithful-500 opacity-50">
       <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
