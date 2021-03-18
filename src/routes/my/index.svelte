@@ -7,7 +7,7 @@
   let sec = 0;
   let days = 0;
   let now = Date.now();
-  let nextShow = new Date('2021-03-18T14:00:00.000Z');
+  let nextShow = new Date('2021-03-18T18:00:00.000Z');
 
   const tick = () => {
     now = new Date();

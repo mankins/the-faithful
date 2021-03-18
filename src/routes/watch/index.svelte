@@ -32,7 +32,7 @@
     let query = {};
   
     let now = Date.now();
-    let nextShow = new Date('2021-03-18T13:50:00.000Z');
+    let nextShow = new Date('2021-03-18T18:00:00.000Z');
 
     const handleAddCart = (item) => {
       cartOpened = true;
