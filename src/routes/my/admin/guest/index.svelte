@@ -46,6 +46,21 @@
     };
   };
 </script>
+<svelte:head>
+  <title
+    >Guest List : The Faithful</title
+  >
+  <meta
+    property="og:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+
+  <meta
+    property="twitter:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+  <meta property="twitter:card" content="summary_large_image" />
+</svelte:head>
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   <div class="m-6">

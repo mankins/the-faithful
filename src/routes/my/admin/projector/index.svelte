@@ -223,6 +223,23 @@
   //           <span class="text-red-500 w-full text-right m-auto">Offline</span>
 </script>
 
+<svelte:head>
+  <title
+    >Projector : The Faithful</title
+  >
+  <meta
+    property="og:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+
+  <meta
+    property="twitter:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+  <meta property="twitter:card" content="summary_large_image" />
+</svelte:head>
+
+
 <!-- svelte-ignore non-top-level-reactive-declaration -->
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   <div class="">

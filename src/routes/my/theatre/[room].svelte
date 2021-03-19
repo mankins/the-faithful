@@ -254,6 +254,21 @@
   // $: $downs && console.log($downs, 'downs');
   // $: $downs && console.log('zzaa', get($downs[$talker], 'c.stream.active'));
 </script>
+<svelte:head>
+  <title
+    >Theatre : The Faithful</title
+  >
+  <meta
+    property="og:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+
+  <meta
+    property="twitter:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+  <meta property="twitter:card" content="summary_large_image" />
+</svelte:head>
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   <div class="">
@@ -413,7 +428,7 @@
         </div>
       </div>
     </div>
-  {:else if !closeWebMon}
+  {:else if false && !closeWebMon}
     <div class="relative bg-faithful-500 opacity-50 mt-6">
       <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
         <img class="p-20" src="/svg/coil-logo-black.svg" alt="coil" />

@@ -289,6 +289,21 @@ import Index from '../index.svelte';
   // $: $downs && console.log($downs, 'downs');
   // $: $downs && console.log('zzaa', get($downs[$talker], 'c.stream.active'));
 </script>
+<svelte:head>
+  <title
+    >Labs : The Faithful</title
+  >
+  <meta
+    property="og:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+
+  <meta
+    property="twitter:image"
+    content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
+  />
+  <meta property="twitter:card" content="summary_large_image" />
+</svelte:head>
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   <div class="">
@@ -318,7 +333,7 @@ import Index from '../index.svelte';
                 title={`${$talker} ${mediaEnabled}`} class="text-white items-center m-auto font-serif font-extrabold tracking-tight text-2xl sm:text-5xl"
               >
               {#if audienceMode}
-                -
+                --
                 {:else}
                 Join audience for video
                 {/if}

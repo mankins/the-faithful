@@ -52,9 +52,16 @@ function _addImages() {
   addImage(imgFile('the-faithful-600px.png'));
   addImage(imgFile('quote-peeps-600px.png'));
   addImage(imgFile('yr-invited-header-600px.png'));  
-  addImage(imgFile('drip-3.1-header.png'));  
-  addImage(imgFile('drip-3.2-header.png'));  
-  addImage(imgFile('drip-4-header.png'));  
+  // addImage(imgFile('drip-3.1-header.png'));  
+  // addImage(imgFile('drip-3.2-header.png'));  
+  // addImage(imgFile('drip-4-header.png'));  
+  addImage(imgFile('opening-1-top.png'));  
+  addImage(imgFile('opening-1-middle.png'));  
+  addImage(imgFile('opening-1-bottom.png'));  
+  // addImage(imgFile('opening-2-top.png'));  
+  // addImage(imgFile('opening-2-middle.png'));  
+  // addImage(imgFile('opening-2-bottom.png'));  
+
 }
 
 exports.custom = function custom(width, height) {

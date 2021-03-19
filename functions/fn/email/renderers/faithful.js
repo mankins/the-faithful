@@ -1,6 +1,33 @@
 // output sample text
 
+const path = require('path');
+const fs = require('fs');
+
+const { Image } = require('canvas');
+
+let imgCache = {};
+
 var context = require('../context'); // drawing context, not lambda
+
+function imgFile(name) {
+  return path.join(__dirname, '../../../assets/', name);
+}
+
+const addImage = (imagePath) => {
+
+  let fileKey = path.basename(imagePath);
+
+  if (imgCache[fileKey]) {
+    return;
+  }
+
+  let data = fs.readFileSync(imagePath);
+  const Img = new Image();
+  Img.src = data;
+
+  imgCache[fileKey] = Img;
+  return Img;
+};
 
 exports.process = async (params, isInline) => {
   /*
@@ -66,8 +93,15 @@ exports.process = async (params, isInline) => {
     }
 
     // easier this way. drop in assets, reference here, set h - TODO:cleanup above
-    if (params.logofile && params.h && surface.assets[params.logofile]) {
-      ctx.drawImage(surface.assets[params.logofile], 0, 0, 600, parseInt(params.h,10)); 
+    if (params.logofile && params.h) {
+      if (surface.assets[params.logofile]) {
+        ctx.drawImage(surface.assets[params.logofile], 0, 0, 600, parseInt(params.h, 10));
+      } else if (imgCache[params.logofile]) {
+        ctx.drawImage(imgCache[params.logofile], 0, 0, 600, parseInt(params.h, 10));
+      } else if (params.logofile) {
+        addImage(imgFile(params.logofile));
+        ctx.drawImage(imgCache[params.logofile], 0, 0, 600, parseInt(params.h, 10));
+      }
     }
 
     if (isInline) {

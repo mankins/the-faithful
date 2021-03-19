@@ -101,7 +101,7 @@ import { update_slot_spread } from 'svelte/internal';
 
 <svelte:head>
   <meta name="twitter:site" content="@TheFaithful" />
-  <title>The Faithful - Tickets</title>
+  <title>My Ticket : The Faithful</title>
   <meta
     property="og:image"
     content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
