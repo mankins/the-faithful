@@ -24,7 +24,7 @@
   let user = {};
   let loggedIn = false; // only appears on home page
 
-  export let focusType = 'sneak,opening';
+  export let focusType = 'opening';
 
   let cartOpened = false;
   let items = [];
@@ -161,12 +161,12 @@
     <div class="w-5/6 md:w-4/6">
       <p class="text-justify text-gray-600">
         Virtual screenings are available opening weekend Friday, March 19 -
-        Sunday, March 21st, 2021, with a special sneak preview for <a
+        Sunday, March 21st, 2021. <a
           class="underline"
           rel="ext"
           target="_blank"
           href="https://coil.com/signup?ref=mankins1701">Coil</a
-        > subscribers Thursday, March 18th. All screenings are live events with the
+        > subscribers do not require a ticket. All screenings are live events with the
         filmmakers present. Your ticket grants you access to any or all of the showtimes
         listed.
       </p>
