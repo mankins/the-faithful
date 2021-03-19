@@ -103,7 +103,10 @@
         return;
       } else {
         snapshot.forEach((doc) => {
-          showTimes.push(doc.data());
+          let data = doc.data();
+          if (!data.disabled) {
+            showTimes.push(data);
+          }
         });
         showTimes = [...showTimes]; // update $
         showingTimesFound = true;
