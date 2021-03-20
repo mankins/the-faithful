@@ -15,6 +15,7 @@
   // let nextShow = new Date('2021-03-19T18:00:00.000Z');
   let doorsOpen; // = new Date('2021-03-19T17:00:00.000Z');
   let nextShowDate;
+  let lobbyUi = {};
 
   let signupLink = 'https://coil.com/signup?ref=mankins1701';
 
@@ -117,6 +118,22 @@
     } catch (e) {
       console.log('ticket err', e);
     }
+
+    try {
+      const docRef = db.collection('rooms').doc('lobby');
+      const doc = await docRef.get();
+      if (doc.empty) {
+        console.log('missing lobby');
+      } else {
+        lobbyUi = { ...doc.data() };
+      }
+      docRef.onSnapshot((docSnapshot) => {
+        lobbyUi = { ...docSnapshot.data() };
+        // console.log({ lobbyUi });
+      });
+    } catch (ee) {
+      console.log({ ee });
+    }
     loaded = true;
   };
 
@@ -180,6 +197,7 @@
   });
 
   $: showTimes && updateNextShow();
+  $: lobbyUi && updateNextShow();
 </script>
 
 <svelte:head>
@@ -206,12 +224,12 @@
           Lobby
         </h3>
       </div>
-      {#if doors === 'closed'}
+      {#if lobbyUi.doors === 'closed'}
         <div class="mb-12">
           <h3 class="text-lg leading-6 font-medium text-gray-900 mt-3">
             Countdown until the next show
             <span
-              class="float-right inline-flex items-center px-3 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+              class="float-right inline-flex items-center hidden sm:block px-3 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
             >
               Starting soon
             </span>
@@ -292,7 +310,8 @@
                   {#if nextShow && nextShow.features && nextShow.features.includes('qa')}
                     <button
                       on:click={() => {
-                        window.location.href = nextShow.qaUrl;
+                        window.location.href =
+                          lobbyUi.qaButtonUrl || nextShow.qaUrl;
                       }}
                       type="button"
                       class="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
@@ -310,7 +329,7 @@
                           d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
                         />
                       </svg>
-                      <span>Q & A - Zoom</span>
+                      <span>{lobbyUi.qaCta || `Q & A - Zoom`}</span>
                     </button>
                   {/if}
                   <button
@@ -343,7 +362,11 @@
         <div class="bg-white shadow sm:rounded-md mb-12">
           <div class="px-4 py-5 sm:p-6">
             <h3 class="text-lg leading-6 font-medium text-gray-900">
-              Welcome to today's screening of The Faithful.
+              {#if lobbyUi.headline}
+                {lobbyUi.headline}
+              {:else}
+                Welcome to today's screening of The Faithful.
+              {/if}
               {#if now < nextShowDate}
                 <span
                   class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
@@ -361,39 +384,17 @@
             <div class="mt-2 max-w-xl text-xs text-gray-500">
               <p />
             </div>
-            {#if nextShow && nextShow.features && nextShow.features.includes('qa')}
-              <div class="mt-3 text-sm">
-                <a
-                  href={getCtaUrl()}
-                  rel="ext"
-                  target="_blank"
-                  class="font-medium text-faithful-800 hover:text-faithful-500"
-                >
-                  {#if showPart === 'intro'}
-                    Join the filmmaker for a live introduction on Zoom
-                  {:else if showPart === 'before'}
-                    Join the Zoom introduction, starting 10 minutes before showtime
-                  {:else if showPart === 'watch'}
-                    Watch live now
-                  {:else}
-                    Join the Q&A with the filmmakers on Zoom
-                  {/if}
-                  <span aria-hidden="true">&rarr;</span></a
-                >
-              </div>
-            {:else}
-              <div class="mt-3 text-sm">
-                <a
-                  href={nextShow.watchLink || '/my/theatre'}
-                  rel="ext"
-                  target="_blank"
-                  class="font-medium text-faithful-800 hover:text-faithful-500"
-                >
-                  Watch
-                  <span aria-hidden="true">&rarr;</span></a
-                >
-              </div>
-            {/if}
+            <div class="mt-3 text-sm">
+              <a
+                href={lobbyUi.ctaUrl || '/my/theatre'}
+                rel="ext"
+                target="_blank"
+                class="font-medium text-faithful-800 hover:text-faithful-500"
+              >
+                {lobbyUi.cta || 'Watch'}
+                <span aria-hidden="true">&rarr;</span></a
+              >
+            </div>
           </div>
         </div>
       {/if}
