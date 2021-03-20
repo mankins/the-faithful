@@ -36,6 +36,12 @@ steps:
     waitFor: ["cloud functions install"]
     dir: 'functions'
 
+  - id: "cloud functions deploy - accessCode"
+    name: 'gcr.io/cloud-builders/gcloud'
+    args: ['functions', 'deploy', 'accessCode', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=accessCode', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=512', "--set-env-vars", "GCLOUD_PROJECT=${PROJECT_ID},COMMIT_SHA=${SHORT_SHA},COMMIT_SHA=${SHORT_SHA}"]
+    waitFor: ["cloud functions install"]
+    dir: 'functions'
+
   - id: "cloud functions deploy - stripeCheckoutSession"
     name: 'gcr.io/cloud-builders/gcloud'
     args: ['functions', 'deploy', 'stripeCheckoutSession', '--source=.', '--trigger-http', '--runtime', 'nodejs14', '--entry-point=stripeCheckoutSession', '--allow-unauthenticated', '--region', "${_REGION}", '--memory=512', "--set-env-vars", "GCLOUD_PROJECT=${PROJECT_ID},COMMIT_SHA=${SHORT_SHA},COMMIT_SHA=${SHORT_SHA}"]
