@@ -14,6 +14,7 @@
     let password = '';
     let processing = false;
     export let nextUrl = '/my';
+    let trouble = false;
   </script>
   
   <FirebaseProvider
@@ -127,8 +128,20 @@
                   > Sign in with Coil
                 </button>
               </div>
+          </div>
+
+          <div on:click={() => { trouble = !trouble} } class="flex-1 flex flex-col justify-center py-6 ">
+            <button class="text-sm text-faithful-800 focus:outline-none border border-transparent cursor-pointer underline">Having trouble?</button>
 
           </div>
+          {#if trouble}
+          <ul class="text-black font-mono">
+            <li>Try entering your email address above</li>
+            <li class="pt-4 pb-4">Then press <b class="bg-faithful-500 p-2 text-black">access code</b></li>
+            <li>Enter access code: <span class="text-mono font-bold">977705</span></li>
+          </ul>
+          <p class="mt-6">Still doesn't work? <a class="underline text-faithful-800" href="mailto:max@the-faithful.com">Email max@the-faithful.com</a></p>
+          {/if}
 
 
         </div>
