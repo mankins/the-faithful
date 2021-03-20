@@ -17,7 +17,7 @@ exports.getSegmentEmails = async (segmentId, returnRef) => {
   }
 
   snapshot.forEach((doc) => {
-    const data = doc.data();
+    const data = doc.data(); // TODO: await?
     let emDoc = { email: doc.id, ...data };
 
     if (returnRef) {

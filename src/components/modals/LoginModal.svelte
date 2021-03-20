@@ -3,6 +3,7 @@
     import { page as pageStore } from '$components/stores';
     import { handleLoginAction } from '$components/utils/auth';
     import Toast from '$components/Toast.svelte';
+    import Processing from '$components/Processing.svelte';
 
     let authActions;
     let page = {};
@@ -11,6 +12,7 @@
     });
     export let email = '';
     let password = '';
+    let processing = false;
     export let nextUrl = '/my';
   </script>
   
@@ -25,7 +27,7 @@
       >
         <div class="mx-auto w-full max-w-sm lg:w-96">
           <div>
-            <a href="/" target="_parent">
+            <a href="/" target="_parent" rel="external">
               <img class="h-12 w-auto" src="/svg/logo.svg" alt="Faithful Logo" />
             </a>
             <Toast duration={60000} />
@@ -34,10 +36,9 @@
             </h2>
           </div>
   
-          <div class="mt-8">
+          <div class="mt-24">
             <div>
-  
-  
+    
             <div class="mt-6 space-y-6">
               <div>
                 <label
@@ -71,8 +72,17 @@
                   Send email with magic link
                 </button>
               </div>
+              <div>
+                <button
+                  on:click={() => authActions.clickAccessSignin(email,nextUrl, (p)=> { processing = p; })}
+                  class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-faithful-500 text-sm font-medium text-black hover:bg-faithful-500 hover:opacity-75 focus:outline-none"
+                >
+                  I have an access code
+                </button>
+              </div>
+
             </div>
-            <div class="mt-6 mb-6 relative">
+            <div class="mt-12 mb-6 relative">
                 <div
                   class="absolute inset-0 flex items-center"
                   aria-hidden="true"
@@ -119,7 +129,10 @@
               </div>
 
           </div>
+
+
         </div>
+
       </div>
       <div class="hidden lg:block relative w-0 flex-1">
         <picture>
@@ -136,4 +149,4 @@
       </div>
     </div>
   </FirebaseProvider>
-  
+  <Processing processing={processing} />

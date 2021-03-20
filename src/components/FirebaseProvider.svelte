@@ -271,6 +271,45 @@
       await actions.doLogin(provider, 'facebook');
     };
 
+    actions.clickAccessSignin = async (email, nextUrl = '/my', waitFn) => {
+      if (!email) {
+        window.pushToast('Please enter an email first.', 'alert');
+        return;
+      }
+
+      sendEvent({ topic: 'user.login.started', email, type: 'code' });
+      let accessCode = prompt('Enter access code digits', '');
+
+      if (accessCode) {
+        waitFn(true);
+        const accessCodeFn = firebase.functions().httpsCallable('accessCode');
+        try {
+          const reply = await accessCodeFn({ email, accessCode });
+          const authResponse = reply.data;
+          // console.log(JSON.stringify({ authResponse }));
+          if (authResponse && authResponse.firebaseToken) {
+            const userCredential = await firebase
+              .auth()
+              .signInWithCustomToken(authResponse.firebaseToken);
+            // console.log(JSON.stringify({ userCredential: JSON.stringify(userCredential) }));
+            sendEvent({ topic: 'user.login.success', email, type: 'code' });
+          }
+
+          waitFn(false);
+          window.location.href = nextUrl || '/';
+        } catch (error) {
+          console.log('err access code', error);
+          window.pushToast(`Error with access code: ${error.message}`, 'alert');
+          waitFn(false);
+          dispatch('auth-failure', { error });
+          return;
+        }
+      } else {
+        window.pushToast(`Access code login requires code.`, 'info');
+      }
+      waitFn(false);
+    };
+
     actions.clickCoilSignin = async (nextUrl) => {
       console.log('coil signin!');
       sendEvent({ topic: 'user.login.started', type: 'coil' });

@@ -47,7 +47,7 @@ exports.process = async (params, isInline) => {
 
   try {
     var bgStyle = params.bg || '#FEDFD7';
-    var fgStyle = params.fg || '#ffffff';
+    // var fgStyle = params.fg || '#ffffff';
 
     let defaultH = 240;
     if (params.logo === 'sm') {

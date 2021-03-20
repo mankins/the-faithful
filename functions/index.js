@@ -3,7 +3,7 @@
 const { updateEmailSegmentIndex } = require('./fn/db');
 const { guestList, userEntitlements } = require('./fn/entitlements');
 const { eventsIn, eventsFirehosePubSub } = require('./fn/events');
-const { oauthAuthorize } = require('./fn/oauth');
+const { oauthAuthorize, accessCode } = require('./fn/oauth');
 const { slackRelay } = require('./fn/slack');
 const { transcoderIn } = require('./fn/transcode');
 const { receiptDetails, stripeCheckoutSession, stripeCheckoutSuccess, stripeWebhook } = require('./fn/stripe');
@@ -27,6 +27,7 @@ const release = process.env.COMMIT_SHA
 console.log({ release, environment, startTime });
 
 // http functions
+exports.accessCode = accessCode;
 exports.eventsIn = eventsIn;
 exports.slackRelay = slackRelay;
 exports.receiptDetails = receiptDetails;

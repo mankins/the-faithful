@@ -1,4 +1,4 @@
-const get = require('lodash.get');
+// const get = require('lodash.get');
 
 const Ably = require('ably/promises');
 const functions = require('firebase-functions');
