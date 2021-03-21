@@ -16,6 +16,9 @@
   {#if get(ev, 'payload.type', '') === 'code'}
     <Pill type="code">Access Code</Pill>
   {/if}
+  {#if get(ev, 'payload.type', '').indexOf('softfail') !== -1 }
+    <Pill type="error">Soft fail</Pill>
+  {/if}
   {#if (get(ev, 'payload.livemode') == false)}
     <Pill type="test-mode">Test Mode</Pill>
   {/if}

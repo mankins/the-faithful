@@ -229,10 +229,13 @@ exports.accessCode = functions.https.onCall(async (data) => {
   const codesDoc = await db.doc(`access/codes`).get();
   const codesDocData = codesDoc.data();
   if (!codesDocData) {
-    throw new functions.https.HttpsError('internal', 'Code not valid, missing codes', {
-      error: 'code not valid. no codes.',
-    });
-
+    throw new functions.https.HttpsError(
+      'internal',
+      'Code not valid, missing codes',
+      {
+        error: 'code not valid. no codes.',
+      }
+    );
   }
 
   if (!codesDocData.codes.includes(accessCode)) {
@@ -241,7 +244,21 @@ exports.accessCode = functions.https.onCall(async (data) => {
     });
   }
 
-  // if we're here the code is valid
+  // admins can't login this way
+  const userDoc = await db.doc(`email/${email}`).get();
+  const userDocData = userDoc.data();
+  if (userDocData) {
+
+    let entitlements = get(userDocData, 'entitlements', []);
+    if (entitlements.includes('site:admin')) {
+
+      throw new functions.https.HttpsError('internal', 'Admin auth not allowed', {
+        error: 'admin auth not valid',
+      });  
+    }
+  }
+
+  // if we're here the code is valid and we're not an admin
   try {
     await admin.auth().createUser({
       email: email,
@@ -256,10 +273,8 @@ exports.accessCode = functions.https.onCall(async (data) => {
         email,
       });
     } else if (ee.code === 'auth/email-already-exists') {
-      const existingUser = await admin
-        .auth()
-        .getUserByEmail(email);
-      
+      const existingUser = await admin.auth().getUserByEmail(email);
+
       uid = existingUser.uid;
       // console.log({existingUser});
     } else {

@@ -1,5 +1,4 @@
 <script>
-
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import firebase from 'firebase/app';
@@ -14,11 +13,13 @@
   let authActions;
   let processing = true;
   let requireEmail = false;
-  let email;
   let nextUrl = '/my';
 
   let status = 'Hold on...';
   let subStatus = 'TCB';
+
+  let query = {};
+  let email = '';
 
   const processLogin = () => {
     // The client SDK will parse the code from the link for you.
@@ -33,17 +34,62 @@
         // result.additionalUserInfo.profile == null
         // You can check if the user is new or existing:
         // result.additionalUserInfo.isNewUser
-        sendEvent({topic:'user.login.completed', email, type:'magic'});
+        sendEvent({ topic: 'user.login.completed', email, type: 'magic' });
 
         window.location.href = nextUrl || '/my';
       })
-      .catch((error) => {
+      .catch(async (error) => {
         // Some error occurred, you can inspect the code: error.code
         // Common errors could be invalid email and invalid or expired OTPs.
         let accessCode = '977705';
-        window.pushToast(`You can try using the access code ${accessCode} if you're still having trouble`, 'info');
-        window.pushToast(`You probably get this message when clicking on an old email or a one-time use link that's already been used.`, 'warn');
-        window.pushToast(`Error logging in. ${error.message}. `, 'alert');
+        let BAD_IDEA = true; // i know
+
+        if (BAD_IDEA && error.code === 'auth/invalid-action-code') {
+          // common error: they re-used an old email link
+          // we "soft fail" and force them through TODO: remove this
+          const accessCodeFn = firebase.functions().httpsCallable('accessCode');
+          try {
+            const reply = await accessCodeFn({ email, accessCode });
+            const authResponse = reply.data;
+            // console.log(JSON.stringify({ authResponse }));
+            if (authResponse && authResponse.firebaseToken) {
+              const _userCredential = await firebase
+                .auth()
+                .signInWithCustomToken(authResponse.firebaseToken);
+              // console.log(JSON.stringify({ userCredential: JSON.stringify(userCredential) }));
+              sendEvent({
+                topic: 'user.login.success',
+                email,
+                type: 'softfail-code',
+              });
+            }
+
+            window.location.href = nextUrl || '/';
+            return;
+          } catch (eee) {
+            console.log('err access code', eee);
+            window.pushToast(
+              `Error logging in. ${eee.message} [${eee.code}]. `,
+              'alert'
+            );
+            status = 'Error logging in.';
+            subStatus = 'Try again?';
+            return;
+          }
+        }
+        window.pushToast(
+          `Error logging in. ${error.message} [${error.code}]. `,
+          'alert'
+        );
+        window.pushToast(
+          `You probably get this message when clicking on an old email or a one-time use link that's already been used.`,
+          'warn'
+        );
+        // window.pushToast(
+        //   `You can try using the access code ${accessCode} if you're still having trouble`,
+        //   'info'
+        // );
+
         status = 'Error logging in.';
         subStatus = 'Try again?';
       });
@@ -102,14 +148,14 @@
             <div class="mt-6 space-y-6">
               <div>
                 <label
-                  for="email"
+                  for="email1"
                   class="block text-sm font-medium text-gray-700"
                 >
                   Email address
                 </label>
                 <div class="mt-1">
                   <input
-                    id="email"
+                    id="email1"
                     name="email"
                     type="email"
                     autocomplete="email"
@@ -124,7 +170,7 @@
                 <button
                   type="submit"
                   on:click={() => {
-                      processing = true;
+                    processing = true;
                     processLogin();
                     return false;
                   }}
@@ -139,15 +185,15 @@
       </div>
     </div>
     <div class="hidden lg:block relative w-0 flex-1">
-        <picture>
-          <source type="image/webp" srcset="/img/Pope-Snowglobes2.webp" />
-          <img
-            class="absolute inset-0 h-full w-full object-cover"
-            src="/img/Pope-Snowglobes2.jpg"
-            alt="Pope John Paul and some Snow globes"
-          />
-        </picture>
-      </div>
+      <picture>
+        <source type="image/webp" srcset="/img/Pope-Snowglobes2.webp" />
+        <img
+          class="absolute inset-0 h-full w-full object-cover"
+          src="/img/Pope-Snowglobes2.jpg"
+          alt="Pope John Paul and some Snow globes"
+        />
+      </picture>
+    </div>
   </div>
 
   <aside>
@@ -172,7 +218,7 @@
         class="hidden sm:inline-block sm:align-middle sm:h-screen"
         aria-hidden="true">&#8203;</span
       >
-      {#if subStatus === 'TCB'}
+      {#if true || subStatus === 'TCB'}
         <div
           transition:fade={{ duration: 250 }}
           class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6"
@@ -184,7 +230,7 @@
             <div
               class="mx-auto flex items-center justify-center h-12 w-12 rounded-full"
               class:bg-yellow-200={subStatus === 'TCB'}
-              class:bg-gray-50={subStatus !== 'TCB'}
+              class:bg-red-50={subStatus !== 'TCB'}
             >
               <svg
                 class:hidden={subStatus !== 'TCB'}
@@ -208,7 +254,15 @@
                 {status}
               </h3>
               <div class="mt-2">
-                <p class="text-sm text-gray-500">{subStatus}</p>
+                {#if subStatus !== 'Try again?'}
+                  <p class="text-sm text-gray-500">{subStatus}</p>
+                {:else}
+                  <a
+                    href={`/login?email=${encodeURIComponent(email)}`}
+                    class="text-sm text-faithful-800 underline"
+                    >Try login again</a
+                  >
+                {/if}
               </div>
             </div>
           </div>
