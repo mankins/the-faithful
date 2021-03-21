@@ -40,7 +40,10 @@
       .catch((error) => {
         // Some error occurred, you can inspect the code: error.code
         // Common errors could be invalid email and invalid or expired OTPs.
-        window.pushToast(`Error logging in. ${error.message}`, 'alert');
+        let accessCode = '977705';
+        window.pushToast(`You can try using the access code ${accessCode} if you're still having trouble`, 'info');
+        window.pushToast(`You probably get this message when clicking on an old email or a one-time use link that's already been used.`, 'warn');
+        window.pushToast(`Error logging in. ${error.message}. `, 'alert');
         status = 'Error logging in.';
         subStatus = 'Try again?';
       });

@@ -115,7 +115,7 @@
           // if they open the link on the same device.
           window.localStorage.setItem('emailForSignIn', email);
           window.pushToast(
-            `Email sent. Click on the link in your email to login.`,
+            `Single-use sign in email sent. Click on the link in your email to login.`,
             'success'
           );
         })
