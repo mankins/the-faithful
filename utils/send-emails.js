@@ -198,10 +198,56 @@ let config;
     }
 
     let emails = [];
-    
-    if (segment !== 'gift') {    
-    emails = await getSegmentEmails(segment);
-    } else {    
+
+    if (segment === 'all-entitled') {
+      // gifts and paid
+      const toDo = {};
+      const querySnapshot = await admin
+        .firestore()
+        .collectionGroup('receipts')
+        .where('receipt.type', '!=', 'disabled')
+        .get();
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const email = data.email;
+        toDo[email] = data;
+      });
+
+      if (debug) {
+        console.log({ toDo });
+      }
+
+      await Promise.all(
+        Object.keys(toDo).map(async (email) => {
+          const docsRef = admin.firestore().collection('email').doc(email);
+          const doc = await docsRef.get();
+          const data = doc.data();
+          let emDoc = { email: doc.id, ...data };
+
+          emails.push(emDoc);
+        })
+      );
+    } else if (segment === 'not-purchased') {
+      // on the email list, but not purchased
+
+      console.log('nyet')
+        process.exit();
+  
+      // try {
+          //   if (!emDoc && emDoc.segments && !emDoc.segments.includes('receipts')) {
+          //     emails.push(emDoc);
+          //   } else {
+          //     console.log({ emDoc }, 'doing');
+          //   }
+          // } catch (em) {
+          //   console.log({ em }, 'err');
+          //   process.exit(1);
+          // }
+      // } else {
+      //   console.log('snap empty');
+      //   process.exit();
+      // }
+    } else if (segment === 'gift') {
       const toDo = {};
       const querySnapshot = await admin
         .firestore()
@@ -213,23 +259,25 @@ let config;
         const email = data.email;
         toDo[email] = data;
       });
-  
+
       if (debug) {
         console.log({ toDo });
       }
 
       await Promise.all(
         Object.keys(toDo).map(async (email) => {
-
           const docsRef = admin.firestore().collection('email').doc(email);
           const doc = await docsRef.get();
           const data = doc.data();
           let emDoc = { email: doc.id, ...data };
-        
+
           emails.push(emDoc);
-        }));
-    
-  }
+        })
+      );
+    } else {
+      emails = await getSegmentEmails(segment);
+    }
+
     if (debug) {
       console.log({ emails });
     }
@@ -289,7 +337,7 @@ let config;
             console.log('skipping (already paid)', doc.email);
             return;
           }
-          
+
           done++;
           if (debug) {
             console.log(doc);
@@ -322,7 +370,7 @@ let config;
           }
         })
       );
-      process.exit();
+      return; 
     } else {
       console.log('send aborted');
     }
