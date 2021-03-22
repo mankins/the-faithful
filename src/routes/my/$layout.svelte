@@ -71,10 +71,17 @@
       const reply = await userProductsFn({});
       const products = reply.data;
       // console.log({ products });
+      let faithfulFound = false; // hack to add streaming
       products.userProducts.forEach((product) => {
         // console.log(`adding to user products: ${product}`);
         userProducts.push(`${product}`);
+        if (product.indexOf('video:thefaithful') === 0) {
+          faithfulFound = true;
+        }
       });
+      if (faithfulFound) {
+        userProducts.push('video:thefaithful:streaming');
+      }
 
       userEntitlements.set(userProducts);
     } catch (e) {

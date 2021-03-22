@@ -254,8 +254,8 @@
                 <div
                   class="rounded-full bg-faithful-800 px-2.5 py-1 text-xs font-semibold text-gray-50 tracking-wide uppercase"
                 >
-                  <span class="hidden sm:block">Coming March 18 2021</span>
-                  <span class="block sm:hidden normal-case">March 2021</span>
+                  <span class="hidden sm:block">Now Showing</span>
+                  <span class="block sm:hidden normal-case">Now Showing</span>
                 </div>
               </div>
             </div>
@@ -650,14 +650,15 @@
 
 <div class="bg-white absolute top-0 mb h-full z-10">
   <Nav {loggedIn} {user}>
+    {#if true}
     <button
       on:click={() => {
         if (items.length) {
           cartOpened = true;
           return;
         }
-        handleAddCart(getProduct('cinema-premiere'));
-      }}
+        handleAddCart(getProduct('cinema-stream', 'video:thefaithful:streaming'));        
+}}
       type="button"
       class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-faithful-600 shadow-sm hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
     >
@@ -676,8 +677,9 @@
           d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
         />
       </svg>
-      <span>Buy Tickets</span>
+      <span>Watch Now</span>
     </button>
+    {/if}
   </Nav>
   {#if (btpToken || webMon) && !cartOpened}
     <div class="z-40 fixed bottom-4 right-4">

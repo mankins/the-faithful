@@ -165,7 +165,7 @@
           showtimes listed. <a
           class="underline"
           href="https://www.coil.com/?ref=mankins1701">Coil</a> subscribers do not require a ticket.
-        {:else}
+        {:else if false}
           Virtual screenings are available opening weekend Friday, March 19 -
           Sunday, March 21st, 2021, with a special sneak preview for <a
             class="underline"
@@ -173,6 +173,8 @@
           > subscribers Thursday, March 18th. All screenings are live events with
           the filmmakers present. Your ticket grants you access to any or all of
           the showtimes listed.
+          {:else}
+          You can stream The Faithful from our site, or via our partner site, <a class="underline" href="https://cinnamon.video/?utm_source=thefaithful">Cinnamon.video</a>. Either choice allows instant access to the film.
         {/if}
       </p>
     </div>

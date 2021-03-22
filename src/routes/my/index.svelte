@@ -224,7 +224,7 @@
           Lobby
         </h3>
       </div>
-      {#if lobbyUi.doors === 'closed'}
+      {#if lobbyUi.doors === 'closed' && (showingTimesFound && showTimes && showTimes.length)}
         <div class="mb-12">
           <h3 class="text-lg leading-6 font-medium text-gray-900 mt-3">
             Countdown until the next show
@@ -307,7 +307,7 @@
                 <div
                   class="-mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4"
                 >
-                  {#if nextShow && nextShow.features && nextShow.features.includes('qa')}
+                  {#if nextShow && nextShow.features && nextShow.features.includes('qa') && lobbyUi.qaCta}
                     <button
                       on:click={() => {
                         window.location.href =
@@ -335,7 +335,7 @@
                   <button
                     type="button"
                     on:click={() => {
-                      window.location.href = '/my/theatre/theatre';
+                      window.location.href = '/my/theatre/streaming';
                     }}
                     class="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
                   >
@@ -351,7 +351,7 @@
                         stroke-width="2"
                         d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
                       />
-                    </svg> <span>Watch - Theatre</span>
+                    </svg> <span>Watch</span>
                   </button>
                 </div>
               </div>
@@ -359,6 +359,7 @@
           </div>
         </div>
 
+        {#if (showingTimesFound && showTimes && showTimes.length)}
         <div class="bg-white shadow sm:rounded-md mb-12">
           <div class="px-4 py-5 sm:p-6">
             <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -397,6 +398,7 @@
             </div>
           </div>
         </div>
+        {/if}
       {/if}
       {#if showingTimesFound && showTimes && showTimes.length}
         <div class="flex flex-col pb-8 mb-8">

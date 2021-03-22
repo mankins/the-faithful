@@ -130,6 +130,7 @@
               </div>
           </div>
 
+          {#if false}
           <div on:click={() => { trouble = !trouble} } class="flex-1 flex flex-col justify-center py-6 ">
             <button class="text-sm text-faithful-800 focus:outline-none border border-transparent cursor-pointer underline">Having trouble?</button>
 
@@ -142,7 +143,7 @@
           </ul>
           <p class="mt-6">Still doesn't work? <a class="underline text-faithful-800" href="mailto:max@the-faithful.com">Email max@the-faithful.com</a></p>
           {/if}
-
+{/if}
 
         </div>
 

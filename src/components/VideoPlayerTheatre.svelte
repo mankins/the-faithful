@@ -2,13 +2,14 @@
   import { onMount, createEventDispatcher } from 'svelte';
   import '$styles/plyr.css';
   import Hls from 'hls.js';
+  import get from 'lodash.get';
 
   let player;
   export let title = 'The Faithful: The King, The Pope, The Princess';
   export let poster = '/img/trailer-cover-1b.jpg';
 
   export let videoId = ''; // pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ 'f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE';
-  export let captionsSrc = ''; // /subtitles/faithful-trailer.mp4.vtt
+  export let captions = {}; // lang:en, default: true, label: English, src:/subtitles/faithful-trailer.mp4.vtt
 
   export let autoplay = false;
   export let loop = false;
@@ -89,15 +90,15 @@
 <div class="flex flex-col max-h-screen bg-black">
   <!-- svelte-ignore a11y-media-has-caption -->
   <video controls id={videoPlayerId} {poster} {loop}>
-    {#if captionsSrc}
-      <track
-        kind="captions"
-        label="English"
-        src={captionsSrc}
-        srclang="en"
-        default
-      />
-    {/if}
+    {#each Object.keys(captions) as lang}
+    <track
+    kind="captions"
+    label={get(captions, `${lang}.label`, "English")}
+    src={get(captions, `${lang}.src`, "en")}
+    srclang={lang || 'en'}
+    default={get(captions, `${lang}.default`, false) ? true : false}
+  />
+    {/each}
   </video>
 </div>
 

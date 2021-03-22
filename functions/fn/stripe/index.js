@@ -62,7 +62,7 @@ const stripe = async () => {
   if (_stripeConfig.pubTest) {
     _stripe_test = new Stripe(_stripeConfig.secretTest, {
       apiVersion: '2020-08-27',
-    });  
+    });
   }
 
   return { _stripe, _stripe_test, config: _stripeConfig };
@@ -95,14 +95,14 @@ const processChargeEvent = async (ev) => {
       template: 'receipt',
       to: minEv.email,
       name: minEv.name,
-      receiptUrl: minEv.paperUrl
+      receiptUrl: minEv.paperUrl,
     };
-    
+
     try {
       minEv.receiptEmail = await publishMessage(payload);
     } catch (e) {
       console.log('receipt email error', e);
-    }  
+    }
   }
 
   return minEv;
@@ -352,76 +352,77 @@ exports.stripeCheckoutSession = functions.https.onCall(async (data) => {
   return { id: session.id, stripePubKey };
 });
 
-exports.receiptDetails = functions.https.onCall(
-  async (data, context) => {
-    const ticket = get(data, 'ticket', {});
-    const testMode = get(data, 'testMode', false);
-    const liveMode = get(data, 'ticket.livemode', false);
+exports.receiptDetails = functions.https.onCall(async (data, context) => {
+  const ticket = get(data, 'ticket', {});
+  const testMode = get(data, 'testMode', false);
+  const liveMode = get(data, 'ticket.livemode', false);
 
-    const stripeProps = await stripe();
-    let _stripe;
-    if (testMode || !liveMode) {
-      _stripe = stripeProps._stripe_test;
-    } else {
-      // production
-      _stripe = stripeProps._stripe;
-    }
-  
-    const uid = get(context, 'auth.uid');
-    console.log(`----UID-----${uid}-------`);
-    // verify Firebase Auth ID token and presence of UID
-    if (!context.auth || !uid) {
-      // throw new functions.https.HttpsError(
-      //   'unauthenticated',
-      //   'Request had invalid credentials',
-      //   {
-      //     error: 'invalid credentials',
-      //   }
-      // );
-      console.log('--invalid credentials would have thrown here--', { auth: context.auth, uid });
-    }
-
-    // see if this is a type we know about
-    let ticketType = get(ticket, 'receipt.src', 'unknown');
-    if (ticketType !== 'stripe') {
-      return { ticket, status: 'no-additional-info' };     
-    }
-
-    let raw = JSON.parse(get(ticket, 'receipt.raw', '{}'));
-    let pi = get(raw, 'payment_intent');
-    let customerId = get(raw, 'customer');
-    if (!customerId) {
-      console.log('no customer');
-      return { ticket, status: 'no-additional-info' };     
-    }
-
-    // let customer;
-    let payment;
-
-    try {
-      // customer = await _stripe.customers.retrieve(customerId);
-      payment = await _stripe.paymentIntents.retrieve(pi);
-    } catch (error) {
-      console.log('retrieve cus/pi error.', error);
-      return { ticket, status: 'no-additional-info', error: error.code };     
-    }
-
-    let receiptUrl = get(payment, 'charges.data[0].receipt_url');
-    let paid = get(payment, 'charges.data[0].paid');
-    let refunded = get(payment, 'charges.data[0].refunded', false);
-
-    const output = {
-      refunded,
-      paid,
-      receiptUrl,
-      // customer,
-      // payment
-    };
-    // console.log({ output });
-
-    return output;
+  const stripeProps = await stripe();
+  let _stripe;
+  if (testMode || !liveMode) {
+    _stripe = stripeProps._stripe_test;
+  } else {
+    // production
+    _stripe = stripeProps._stripe;
   }
-);
+
+  const uid = get(context, 'auth.uid');
+  console.log(`----UID-----${uid}-------`);
+  // verify Firebase Auth ID token and presence of UID
+  if (!context.auth || !uid) {
+    // throw new functions.https.HttpsError(
+    //   'unauthenticated',
+    //   'Request had invalid credentials',
+    //   {
+    //     error: 'invalid credentials',
+    //   }
+    // );
+    console.log('--invalid credentials would have thrown here--', {
+      auth: context.auth,
+      uid,
+    });
+  }
+
+  // see if this is a type we know about
+  let ticketType = get(ticket, 'receipt.src', 'unknown');
+  if (ticketType !== 'stripe') {
+    return { ticket, status: 'no-additional-info' };
+  }
+
+  let raw = JSON.parse(get(ticket, 'receipt.raw', '{}'));
+  let pi = get(raw, 'payment_intent');
+  let customerId = get(raw, 'customer');
+  if (!customerId) {
+    console.log('no customer');
+    return { ticket, status: 'no-additional-info' };
+  }
+
+  // let customer;
+  let payment;
+
+  try {
+    // customer = await _stripe.customers.retrieve(customerId);
+    payment = await _stripe.paymentIntents.retrieve(pi);
+  } catch (error) {
+    console.log('retrieve cus/pi error.', error);
+    return { ticket, status: 'no-additional-info', error: error.code };
+  }
+
+  let receiptUrl = get(payment, 'charges.data[0].receipt_url');
+  let paid = get(payment, 'charges.data[0].paid');
+  let refunded = get(payment, 'charges.data[0].refunded', false);
+
+  const output = {
+    refunded,
+    paid,
+    receiptUrl,
+    // customer,
+    // payment
+  };
+  // console.log({ output });
+
+  return output;
+});
 
 exports.stripeCheckoutSuccess = functions.https.onCall(
   async (data, context) => {
@@ -436,7 +437,7 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
       // production
       _stripe = stripeProps._stripe;
     }
-  
+
     const uid = get(context, 'auth.uid');
     console.log(`----UID-----${uid}-------SESSION--${sessionId}----`);
     // verify Firebase Auth ID token and presence of UID
@@ -448,7 +449,10 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
       //     error: 'invalid credentials',
       //   }
       // );
-      console.log('--invalid credentials would have thrown here--', { auth: context.auth, uid });
+      console.log('--invalid credentials would have thrown here--', {
+        auth: context.auth,
+        uid,
+      });
     }
 
     let session;
@@ -506,6 +510,37 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
       });
     }
 
+    // if we're not logged in, create a token to login
+    let firebaseToken = '';
+    try {
+      await admin.auth().createUser({
+        email: email,
+        uid: uid, // anon?
+      });
+      // console.log({ cred });
+      //   await admin.auth.currentUser.linkWithCredential(credential)
+    } catch (ee) {
+      console.log({ ee, code: ee.code });
+      if (ee.code === 'auth/uid-already-exists') {
+        await admin.auth().updateUser(uid, {
+          email,
+        });
+      } else if (ee.code === 'auth/email-already-exists') {
+        const existingUser = await admin.auth().getUserByEmail(email);
+
+        uid = existingUser.uid;
+        // console.log({existingUser});
+      } else {
+        console.log(`code: ${ee.code}`);
+        throw ee;
+      }
+    }
+    try {
+      firebaseToken = await admin.auth().createCustomToken(uid);
+    } catch (fbe) {
+      console.log({ fbe });
+    }
+
     const output = {
       amount: session.amount_total,
       amount_decimal,
@@ -514,6 +549,7 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
       products,
       customer: { id: session.customer, ...session.customer_details },
       livemode: session.livemode,
+      firebaseToken,
     };
     // console.log({ output });
 

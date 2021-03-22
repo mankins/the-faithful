@@ -15,8 +15,9 @@ class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-w
   </p>
   <button
     on:click={action}
-    class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
-    >Add Ticket</button
+    disabled={true}
+    class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900 disabled:opacity-50"
+    >Sold Out</button
   >
 </div>
 <div class="pt-6 pb-8 px-6">

@@ -9,7 +9,9 @@
   import { fireGoal } from '$components/utils/analytics';
   import { sendEvent } from '$components/utils/events';
   import { getCookies } from '$components/utils/cookies';
+  import { productsEntitle } from '$components/utils/entitles.js';
 
+  import get from 'lodash.get';
   import firebase from 'firebase/app';
   import 'firebase/auth';
   import 'firebase/firestore';
@@ -18,6 +20,7 @@
   let sessionId = '';
   let processing = true;
   let testMode = false;
+  let immediate = false;
 
   let waiter = 'Almost there...';
   const waits = [
@@ -46,8 +49,8 @@
 
     let cookies = getCookies(document.cookie);
     if (cookies._test_mode) {
-        // entitled = true; // default to speed up
-        testMode = true;
+      // entitled = true; // default to speed up
+      testMode = true;
     }
 
     try {
@@ -66,10 +69,32 @@
         const session = reply.data;
         console.log({ session });
 
-        setTimeout(() => {
-            sendEvent({topic:'cart.checkout.completed', livemode: session.livemode, amount: session.amount, currency: session.currency});
+        if (session && session.firebaseToken) {
+          const userCredential = await firebase
+            .auth()
+            .signInWithCustomToken(session.firebaseToken);
+          // console.log(JSON.stringify({ userCredential: JSON.stringify(userCredential) }));
+          let email = get(session,'customer.email');
+          if (email) {
+            sendEvent({ topic: 'user.login.success', email, type: 'purchase' });
+          }
+        }
 
-            if (
+        // see if this is a streaming purchase. If so, redirect them immediately
+        let products = get(session, 'products', []);
+        if (productsEntitle(products, '*:streaming')) {
+          immediate = true;
+        }
+
+        setTimeout(() => {
+          sendEvent({
+            topic: 'cart.checkout.completed',
+            livemode: session.livemode,
+            amount: session.amount,
+            currency: session.currency,
+          });
+
+          if (
             session.livemode &&
             session.amount &&
             session.currency === 'usd'
@@ -90,14 +115,14 @@
         window.pushToast(`Error completing transaction. ${e.message}`, 'alert');
         waiter = `Bummer: error completing your request. [${e.message}] Email support?`;
 
-        sendEvent({topic:'cart.checkout.error', message: e.message});
+        sendEvent({ topic: 'cart.checkout.error', message: e.message });
 
         Sentry.captureException(e);
       }
 
       clearInterval(waitTimer);
     } else {
-       window.location.href= '/';        
+      window.location.href = '/';
     }
   });
 </script>
@@ -114,23 +139,50 @@
       Thank you very much
     </h1>
 
-    <div class="w-5/6 md:w-4/6 ml-0 mt-8 mb-8">
-      <p class="text-justify text-gray-600">
-        On the day of the event you'll need your email address to login to see
-        the event.
-      </p>
-    </div>
+    {#if immediate}
+      <div>
+        <button
+          type="button"
+          on:click={() => {
+            window.location.href = '/my/theatre/streaming';
+          }}
+          class="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 mt-4"
+        >
+          <svg
+            class="-ml-1 mr-2 h-5 w-5 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+            />
+          </svg> <span>Watch Now</span>
+        </button>
+      </div>
+    {:else}
+      <div class="w-5/6 md:w-4/6 ml-0 mt-8 mb-8">
+        <p class="text-justify text-gray-600">
+          On the day of the event you'll need your email address to login to see
+          the event.
+        </p>
+      </div>
+    {/if}
   </div>
 
-  <div class="relative overflow-hidden m-6">
-    <picture>
-      <source type="image/webp" srcset="/img/trailer-cover-1b.webp" />
-      <img
-        class="h-full shadow-xl mb-8 object-cover"
-        src="/img/trailer-cover-1b.jpg"
-        alt="The Faithful: A film on fans and followings by Annie Berman"
-      />
-    </picture>
+  <div class="bg-white overflow-hidden shadow sm:rounded-md max-w-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <a href="/img/the-faithful-poster-2.jpg" target="_blank"
+        ><img
+          src="/img/the-faithful-poster-2.jpg"
+          alt="The Faithful Poster"
+          class="w-full"
+        /></a
+      >
+    </div>
   </div>
 </div>
 <aside>

@@ -2,6 +2,7 @@
   import { fade } from "svelte/transition";
 
   import md5 from 'md5';
+import { webmon } from "../stores/webmon";
 
 const gravatar = (em) => {
   return `https://www.gravatar.com/avatar/${md5(em.toLowerCase())}?d=mp`;
@@ -68,6 +69,11 @@ export let navOpen = false;
       <div class="bg-gray-50 text-xs p-2 font-serif font-thin m-auto text-center">
         {user.email}
       </div>
+      {#if true || $webmon.monetized || $webmon.state === 'pending'}
+      <div class="bg-green-50 text-xs p-2 font-serif font-thin m-auto text-center">
+        Web monetized
+      </div>
+      {/if}
       <div
         class="py-1 cursor-pointer"
         role="menu"

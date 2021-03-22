@@ -8,7 +8,7 @@ class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-w
   <h2 class="text-lg leading-6 font-medium text-gray-900">
     Streaming
   </h2>
-  <p class="mt-4 text-sm text-gray-500">April 2021</p>
+  <p class="mt-4 text-sm text-gray-500">The-Faithful.com</p>
   <p class="mt-8">
     <span class="text-4xl font-extrabold text-gray-900">$5.00</span>
     <span class="text-base font-medium text-gray-500">/ stream</span
@@ -18,7 +18,7 @@ class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 bg-w
   on:click={() => { action()}}
 
     class="mt-8 block w-full bg-gray-800 border border-gray-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-gray-900"
-    >Add Ticket</button
+    >Watch Now</button
   >
 </div>
 <div class="pt-6 pb-8 px-6">

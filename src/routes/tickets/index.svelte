@@ -15,6 +15,7 @@
   import Sneak from '$components/schedule/Sneak.svelte';
   import Opening from '$components/schedule/Opening.svelte';
   import Virtual from '$components/schedule/Virtual.svelte';
+  import Cinnamon from '$components/schedule/Cinnamon.svelte';
 
   import { getProduct } from '$components/data.js';
   import { parseParams } from '$components/utils/query';
@@ -24,7 +25,7 @@
   let user = {};
   let loggedIn = false; // only appears on home page
 
-  export let focusType = 'opening';
+  export let focusType = 'stream,cinnamon';
 
   let cartOpened = false;
   let items = [];
@@ -116,6 +117,7 @@
 <div class="min-h-screen bg-faithful-500 overscroll-x-contain overflow-hidden">
   <div class="absolute top-0 mb h-full z-10">
     <Nav {loggedIn} {user}>
+{#if true}
       <button
         on:click={() => {
           if (items.length) {
@@ -123,8 +125,8 @@
             return;
           }
           handleAddCart(
-            getProduct('cinema-premiere', 'video:thefaithful:20210319:1900')
-          );
+            getProduct('cinema-stream', 'video:thefaithful:streaming')
+         );
         }}
         type="button"
         class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-faithful-600 shadow-sm hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
@@ -144,8 +146,9 @@
             d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
           />
         </svg>
-        <span>Buy Tickets</span>
+        <span>Watch Now</span>
       </button>
+      {/if}
     </Nav>
 
     <Cart bind:opened={cartOpened} bind:items />
@@ -160,15 +163,7 @@
 
     <div class="w-5/6 md:w-4/6">
       <p class="text-justify text-gray-600">
-        Virtual screenings are available opening weekend Friday, March 19 -
-        Sunday, March 21st, 2021. <a
-          class="underline"
-          rel="ext"
-          target="_blank"
-          href="https://coil.com/signup?ref=mankins1701">Coil</a
-        > subscribers do not require a ticket. All screenings are live events with the
-        filmmakers present. Your ticket grants you access to any or all of the showtimes
-        listed.
+        You can stream The Faithful from our site, or via our partner site, <a class="underline" href="https://cinnamon.video/?utm_source=thefaithful">Cinnamon.video</a>. Either choice allows instant access to the film.
       </p>
     </div>
   </div>
@@ -200,6 +195,10 @@
                 getProduct('cinema-virtual', 'video:thefaithful:20210320:1900')
               )}
           />
+        {/if}
+
+        {#if focusType.includes('cinnamon')}
+          <Cinnamon />
         {/if}
 
         {#if focusType.includes('stream')}
