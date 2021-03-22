@@ -309,9 +309,7 @@
   />
   <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
-{#if false}
-  <pre><JSPretty obj={$userEntitlements}/></pre>
-{/if}
+
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   {#await productsEntitle($userEntitlements, requiredPermissions) then entitled}
     {#if entitled || $webmon.monetized || $webmon.state === 'pending'}
