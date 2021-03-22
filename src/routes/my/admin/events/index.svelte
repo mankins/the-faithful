@@ -91,7 +91,6 @@
   };
 
   const loadMore = async () => {
-    console.log('load more');
     const docsRef = db.collection(`events`);
     try {
       let snapshot;
@@ -124,9 +123,8 @@
 
       if (snapshot.empty) {
         // no thumbs
-        console.log('no events');
-        const empty = [];
-        events = [...empty];
+        // const empty = [];
+        // events = [...empty];
         return;
       } else {
         let batch = [];

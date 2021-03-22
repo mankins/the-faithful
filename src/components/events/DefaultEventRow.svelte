@@ -33,7 +33,7 @@
 >
   <div>
     <span
-      class="h-8 w-8 rounded-full bg-gray-400z flex items-center justify-center ring-8 ring-white"
+      class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white"
       style={`background-color:${colorizer(ev._topic)}`}
     >
       {#if gravatar(get(ev, '_email'))}

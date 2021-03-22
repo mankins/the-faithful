@@ -3,6 +3,7 @@
   import UserRow from '$components/UserRow.svelte';
   import { parseParams } from '$components/utils/query';
   import Visibility from '$components/Visibility.svelte';
+  // import { stringify } from 'querystring';
 
   import { onMount } from 'svelte';
 
@@ -18,7 +19,7 @@
   let pageSize = 10;
   let noMore = false;
 
-  let segment = "";
+  let segment = '';
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
@@ -54,14 +55,13 @@
             .limitToLast(pageSize)
             .get();
         } else {
-        if (cursor) {
-          // snapshot = await docsRef.endBefore(cursor).limitToLast(pageSize).get();
-          snapshot = await docsRef.startAfter(cursor).limit(pageSize).get();
-
-        } else {
-          snapshot = await docsRef.limit(pageSize).get();
+          if (cursor) {
+            // snapshot = await docsRef.endBefore(cursor).limitToLast(pageSize).get();
+            snapshot = await docsRef.startAfter(cursor).limit(pageSize).get();
+          } else {
+            snapshot = await docsRef.limit(pageSize).get();
+          }
         }
-      }
       }
 
       if (snapshot.empty) {
@@ -87,7 +87,7 @@
   };
 
   const loadMore = async () => {
-    console.log('load more', {email});
+    console.log('load more', { email });
 
     try {
       let snapshot;
@@ -104,15 +104,17 @@
             .limitToLast(pageSize)
             .get();
         } else {
-
-        if (cursor) {
-          // snapshot = await docsRef.endBefore(cursor).limitToLast(pageSize).get();
-          snapshot = await docsRef.orderBy(firebase.firestore.FieldPath.documentId()).startAfter(cursor).limit(pageSize).get();
-
-        } else {
-          snapshot = await docsRef.limit(pageSize).get();
+          if (cursor) {
+            // snapshot = await docsRef.endBefore(cursor).limitToLast(pageSize).get();
+            snapshot = await docsRef
+              .orderBy(firebase.firestore.FieldPath.documentId())
+              .startAfter(cursor)
+              .limit(pageSize)
+              .get();
+          } else {
+            snapshot = await docsRef.limit(pageSize).get();
+          }
         }
-      }
       }
 
       if (snapshot.empty) {
@@ -122,20 +124,20 @@
         return;
       } else {
         if (email) {
-let u = snapshot.data();
-u.email = email;
+          let u = snapshot.data();
+          u.email = email;
           users.push(u);
           cursor = email;
           users = [...users];
-noMore = true;
+          noMore = true;
         } else {
           snapshot.forEach((doc) => {
-          const ev = doc.data();
-          ev.email = doc.id;
-          users.push(ev);
-          cursor = doc.id;
-          users = [...users];
-        });
+            const ev = doc.data();
+            ev.email = doc.id;
+            users.push(ev);
+            cursor = doc.id;
+            users = [...users];
+          });
         }
       }
     } catch (e) {
@@ -171,7 +173,7 @@ noMore = true;
     <div class="m-6">
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700"
-          >Filter</label
+          >Find</label
         >
         <div class="mt-1 flex rounded-md shadow-sm">
           <div class="relative flex items-stretch flex-grow focus-within:z-10">
@@ -207,7 +209,7 @@ noMore = true;
             }}
             class="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-faithful-500 focus:border-faithful-500"
           >
-            <span>Filter</span>
+            <span>Find</span>
           </button>
         </div>
       </div>
@@ -219,14 +221,25 @@ noMore = true;
           Users
         </h3>
       </div>
-      <!-- <div>
-        <ul class="divide-y divide-gray-200"> -->
 
       <div class="flow-root">
         <ul class="-mb-8">
           {#each users as user, i}
             <li class="py-4">
-              <UserRow {user} isLast={i == (users.length -1)}/>
+              <UserRow
+                {user}
+                isLast={i == users.length - 1}
+                saveUser={(mods) => {
+                  (async () => {
+                    let em = user.email.toLowerCase();
+                    if (em && mods) {
+//  alert(JSON.stringify({mods}));
+                    const docRef = db.collection('email').doc(em);
+                    await docRef.set({...mods}, { merge: true });
+                    }
+                  })();
+                }}
+              />
             </li>
           {/each}
         </ul>
@@ -250,29 +263,31 @@ noMore = true;
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <h3 class="p-2">No matches</h3>
+          <div clas="flex flex-row  items-end justify-end">
+            <h3 class="p-2">No matches</h3>
+          </div>
+          <button on:click={() => {alert('not yet')}} class="underline text-faithful-800">Add User</button>  
         </div>
-      {:else}
-      {#if !noMore}
+      {:else if !noMore}
         <div class="mt-8 mb-8">
-          
           <Visibility
-          threshold={10}
-          steps={100}
-          inView={() => {loadMore()}}
-        >
-          <button
-            on:click={() => {
+            threshold={10}
+            steps={100}
+            inView={() => {
               loadMore();
             }}
-            type="button"
-            class="pl-4 pr-4 inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-faithful-600 hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
           >
-            More
-          </button>
+            <button
+              on:click={() => {
+                loadMore();
+              }}
+              type="button"
+              class="pl-4 pr-4 inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-faithful-600 hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+            >
+              More
+            </button>
           </Visibility>
         </div>
-        {/if}
       {/if}
     </div>
   {/if}

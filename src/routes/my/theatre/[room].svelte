@@ -38,6 +38,7 @@
   let endOfShow = false;
   let closeWebMon = false;
   let controls = [];
+  let isAdmin = false;
   let defaultControls = {
     'play-large': true,
     play: true,
@@ -71,6 +72,10 @@
     // }
   };
 
+  const updateEntitlements = () => {
+    isAdmin = productsEntitle($userEntitlements, 'site:admin');
+  };
+
   const updatePlayerCursor = () => {
     // theatreDuration = media.duration || 1;
     // theatreCurrentTime = timecodes.fromSeconds(media.currentTime);
@@ -80,7 +85,7 @@
     }
     if (theatre.waiting === true) {
       // special waiting room
-      if (!productsEntitle($userEntitlements, 'site:admin')) {
+      if (!isAdmin) {
         // redirect
         window.location.href = '/my/theatre/waiting';
       }
@@ -294,6 +299,7 @@
   //             {#if get($gal, 'myStream.c.up', false)}
   // $: $downs && console.log($downs, 'downs');
   // $: $downs && console.log('zzaa', get($downs[$talker], 'c.stream.active'));
+  $: $userEntitlements && updateEntitlements();
 </script>
 
 <svelte:head>
@@ -312,7 +318,7 @@
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   {#await productsEntitle($userEntitlements, requiredPermissions) then entitled}
-    {#if entitled || $webmon.monetized || $webmon.state === 'pending'}
+    {#if entitled || isAdmin || $webmon.monetized || $webmon.state === 'pending'}
       <div class="">
         {#if !endOfShow && theatre && theatre.status === 'playing'}
           <section class="overflow-hidden sm:overflow-auto">
