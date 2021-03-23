@@ -23,21 +23,20 @@
   let opened = false;
   let menuOpen = false;
   let entitlementsOpened = false;
+  let selectedTab = '';
+  let savedEntitlements = false;
 
   onMount(() => {});
 </script>
 
-<div class="relative pb-2">
-  {#if !isLast}
+<div class="relative pb-2 ml-2 mr-2 sm:ml-4 sm:mr-4">
+  {#if false && !isLast}
     <span
       class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"
       aria-hidden="true"
     />
   {/if}
-  <div on:click|stopPropagation={() => {
-    menuOpen = !menuOpen;
-    }} class="relative flex space-x-3 cursor-pointer">
-    <div>
+    <div class="">
       <span
         class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white"
         style={`background-color:${colorizer(user.email)}`}
@@ -67,122 +66,148 @@
       </span>
     </div>
     <div
+    class="relative flex space-x-3 cursor-pointer overflow-scroll"
+    on:click={() => {
+      menuOpen = !menuOpen;
+    }}
+  >
+    <div
       class="min-w-0 w-full flex-2 pt-1.5 flex justify-between align-end space-x-4"
     >
-      <div class="flex-1 flex flex-col justify-start align-start">
-        <p class="text-sm text-gray-500">
-          {get(user, 'email', '')}
-        </p>
-        <div class="flex flex-row items-start justify-start">
-          {#each get(user, 'segments', []) as segment, i}
-            <Pill type={segment}>{segment}</Pill>
-          {/each}
+      <div
+        class="flex-1 flex flex-col justify-start align-start"
+        on:click={() => {
+          opened = !opened;
+        }}
+      >
+        <div class="flex flex-row items-start justify-between">
+          <p class="text-sm text-gray-900 mt-2">
+            {get(user, 'email', '')}
+          </p>
+          <div class="flex flex-row items-start justify-end">
+            {#each get(user, 'segments', []) as segment, i}
+              <Pill type={segment}>{segment}</Pill>
+            {/each}
+          </div>
         </div>
 
         {#if opened}
-          <div>
-            <pre
-              class="tracking-tighter leading-tighter font-thin text-xs"><JSPretty obj={user} /></pre>
-          </div>
-        {/if}
-      </div>
-
-      <div class="flex-shrink-0 self-center flex">
-        <div class="inline-block text-left items-start justify-start">
-          <div>
-            <button
-              on:click|stopPropagation={() => {
-                menuOpen = !menuOpen;
-                if (menuOpen) {
-                  setTimeout(() => {
-                    menuOpen = false;
-                  }, 5000);
-                }
-              }}
-              type="button"
-              class="-m-2 p-2 rounded-full flex items-start text-gray-400 hover:text-gray-600 focus:outline-none focus:border-opacity-0"
-              id="menu-1"
-              aria-expanded="false"
-              aria-haspopup="true"
-            >
-              <span class="sr-only">Open options</span>
-              <!-- Heroicon name: solid/dots-vertical -->
-              <svg
-                class="h-5 w-5"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
+          <div class="mt-6 mb-6">
+            <div class="sm:hidden">
+              <label for="tabs" class="sr-only">Select a tab</label>
+              <select
+                id="tabs"
+                name="tabs"
+                bind:value={selectedTab}
+                on:click|stopPropagation
+                class="block w-full focus:ring-faithful-500 focus:border-faithful-500 border-gray-300 rounded-md"
               >
-                <path
-                  d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
-                />
-              </svg>
-            </button>
+                <option selected value="details">Details</option>
+                <option value="entitlements">Entitlements</option>
+              </select>
+            </div>
+            <div class="hidden sm:block">
+              <nav
+                class="relative z-0 rounded-lg shadow flex divide-x divide-gray-200"
+                aria-label="Tabs"
+              >
+                <a
+                  href="#"
+                  on:click|stopPropagation={() => {
+                    selectedTab = 'details';
+                  }}
+                  aria-current="page"
+                  class="text-gray-900 rounded-l-lg group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
+                >
+                  <span>Details</span>
+                  {#if selectedTab === 'details'}
+                    <span
+                      aria-hidden="true"
+                      class="bg-faithful-500 absolute inset-x-0 bottom-0 h-0.5"
+                    />
+                  {/if}
+                </a>
+
+                <a
+                  href="#"
+                  on:click|stopPropagation={() => {
+                    selectedTab = 'entitlements';
+                  }}
+                  aria-current="false"
+                  class="hover:text-gray-700 rounded-r-lg group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
+                  class:text-gray-500={selectedTab === 'entitlements'}
+                >
+                  <span>Entitlements</span>
+                  {#if selectedTab === 'entitlements'}
+                    <span
+                      aria-hidden="true"
+                      class="bg-faithful-500 absolute inset-x-0 bottom-0 h-0.5"
+                    />
+                  {/if}
+                </a>
+              </nav>
+            </div>
           </div>
 
-          {#if menuOpen}
-            <div
-              class="origin-top-right absolute right-8 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-              role="menu"
-              aria-orientation="vertical"
-              aria-labelledby="menu-1"
-            >
-              <div class="py-1" role="none">
-                <a
-                  href="#"
-                  on:click={() => {
-                    if (allowDetails) {
-                      entitlementsOpened = !entitlementsOpened;
-                    }
-                  }}
-                  class="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                  role="menuitem"
-                >
-                  <!-- Heroicon name: solid/star -->
-                  <svg
-                    class="mr-3 h-5 w-5 text-gray-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+          {#if selectedTab === 'details'}
+            <div>
+              <pre
+                class="tracking-tighter leading-tighter font-thin text-xs"><JSPretty obj={user} /></pre>
+            </div>
+          {:else if selectedTab === 'entitlements'}
+            <div class="mt-4" on:click|stopPropagation={() => {}}>
+              {#each user.entitlements || [] as entitlement, i}
+                <p class="text-sm text-gray-500 flex flex-row items-start">
+                  {#if entitlement.indexOf('site') !== 0}
+                    <input
+                      bind:value={entitlement}
+                      class="bg-white font-mono p-4 mb-2 w-full border border-gray-50 focus:ring-transparent focus:border-transparent block sm:text-sm border-gray-300 rounded-md flex-grow"
                     />
-                  </svg>
-                  <span>Entitlements</span>
-                </a>
-                <a
-                  href="#"
-                  on:click={() => {
-                    if (allowDetails) {
-                      opened = !opened;
-                    }
-                  }}
-                  class="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                  role="menuitem"
+                    <button
+                      on:click|stopPropagation={() => {
+                        user.entitlements.splice(i, 1);
+                        user.entitlements = user.entitlements;
+                      }}
+                      class="text-xs bg-gray-800 text-gray-50 p-4 shadow-sm mt-1 ml-2 mr-2 rounded-md w-20"
+                    >
+                      Remove
+                    </button>
+                  {:else}
+                    <pre>{entitlement}</pre>
+                  {/if}
+                </p>
+              {/each}
+              <p class="text-sm text-gray-500 mt-4">
+                <button
+                  class="text-xs bg-gray-800 text-gray-50 p-4 mb-2 rounded-md shadow-sm w-20"
+                  on:click|stopPropagation={() => {
+                    user.entitlements = user.entitlements || [];
+                    user.entitlements.push('');
+                    user.entitlements = user.entitlements;
+                  }}>Add</button
                 >
-                  <!-- Heroicon name: information-circle -->
-                  <svg
-                    class="mr-3 h-5 w-5 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span>Details</span>
-                </a>
+              </p>
+              <div class="mt-12 mb-12">
+                <button
+                  class="w-full text-xs bg-faithful-500 text-black hover:bg-gray-800 hover:text-gray-50 focus:outline-none focus:border-transparent p-4 mb-2 rounded-md shadow-sm"
+                  on:click|stopPropagation={async () => {
+                    await saveUser({ entitlements: user.entitlements || [] });
+                    savedEntitlements = true;
+                    setTimeout(() => {
+                      savedEntitlements = false;
+                    },2000);
+                  }}
+                >
+                  {#if savedEntitlements}
+                    Saved
+                  {:else}
+                    Save
+                  {/if}
+                </button>
               </div>
             </div>
           {/if}
-        </div>
+        {/if}
       </div>
     </div>
   </div>
@@ -193,6 +218,6 @@
   toTicket={' '}
   entitlements={user.entitlements || []}
   handleConfirm={async () => {
-    await saveUser({entitlements: user.entitlements || []});
+    await saveUser({ entitlements: user.entitlements || [] });
   }}
 />

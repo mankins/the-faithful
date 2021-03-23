@@ -4,7 +4,8 @@
 	"scripts": {
 		"dev": "COMMIT_SHA=$(git rev-parse HEAD) dotenv -- svelte-kit dev -p 5000",
 		"build": "svelte-kit build",
-		"start": "svelte-kit start -p ${PORT:=3000}"
+		"start": "svelte-kit start -p ${PORT:=3000}",
+		"static": "firebase deploy --only hosting"
 	},
 	"devDependencies": {
 		"@mux/mux-node": "^3.1.3",

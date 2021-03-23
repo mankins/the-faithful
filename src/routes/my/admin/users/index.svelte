@@ -170,11 +170,8 @@
 
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   {#if loaded}
-    <div class="m-6">
-      <div>
-        <label for="email" class="block text-sm font-medium text-gray-700"
-          >Find</label
-        >
+    <div class="m-0">
+      <div class="m-6">
         <div class="mt-1 flex rounded-md shadow-sm">
           <div class="relative flex items-stretch flex-grow focus-within:z-10">
             <div
@@ -214,7 +211,7 @@
         </div>
       </div>
 
-      <div class="pb-5 border-b border-gray-200">
+      <div class="pb-5 ml-4 border-b border-gray-200">
         <h3
           class="pt-12 text-3xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-5xl"
         >
@@ -225,7 +222,7 @@
       <div class="flow-root">
         <ul class="-mb-8">
           {#each users as user, i}
-            <li class="py-4">
+            <li class="py-4" class:bg-gray-50={i % 2}>
               <UserRow
                 {user}
                 isLast={i == users.length - 1}
