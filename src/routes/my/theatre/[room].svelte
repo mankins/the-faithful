@@ -17,12 +17,13 @@
   import { userEntitlements } from '$components/stores/entitlements.js';
   import { fireGoal } from '$components/utils/analytics';
   import AccessDenied from '$components/AccessDenied.svelte';
+  import { sendEvent } from '$components/utils/events';
 
   let userProducts = [];
 
   import get from 'lodash.get';
   import timecodes from 'node-timecodes';
-// import Advanced from '../admin/projector/advanced.svelte';
+  // import Advanced from '../admin/projector/advanced.svelte';
 
   // import Footer from '../../../components/nav/Footer.svelte';
   // import Index from '../index.svelte';
@@ -72,8 +73,8 @@
     // }
   };
 
-  const updateEntitlements = () => {
-    isAdmin = productsEntitle($userEntitlements, 'site:admin');
+  const updateEntitlements = async () => {
+    isAdmin = await productsEntitle($userEntitlements, 'site:admin');
   };
 
   const updatePlayerCursor = () => {
@@ -233,6 +234,7 @@
   let theatreDuration;
   let playerTheatre;
   let playerTheatreStatus;
+  let nextGoal = 0;
 
   const handleTheatreInit = (ev) => {
     playerTheatre = ev.detail.player;
@@ -287,6 +289,22 @@
         if (media.currentTime >= media.duration) {
           media.currentTime = 1; // looper
           playerTheatre.play();
+        }
+      }
+
+      if (theatre.stats && parseInt(theatre.stats, 10)) {
+        const duration = media.duration || 1;
+        const current = media.currentTime;
+        const percent = current / duration;
+
+        if (percent >= nextGoal / parseInt(theatre.stats, 10)) {
+          nextGoal = nextGoal + 1;
+          sendEvent({
+            topic: 'room.progress',
+            room,
+            email: user.email,
+            percent: parseInt(percent * 100, 10),
+          });
         }
       }
     });
@@ -536,9 +554,11 @@
       {/if}
     {:else if user && user.email}
       <AccessDenied
-      ctaClick={() => {window.location.href = "/my"}}
-      ctaMessage="Return to Lobby"
-      messageOnly={false}
+        ctaClick={() => {
+          window.location.href = '/my';
+        }}
+        ctaMessage="Return to Lobby"
+        messageOnly={false}
         message={`Sorry you don't have access to this video as ${user.email}`}
       />
     {/if}

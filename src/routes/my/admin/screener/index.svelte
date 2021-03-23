@@ -30,6 +30,15 @@
     firebase = firebase || profile.detail.firebase;
     db = db || firebase.firestore();
 
+// tmp copy doc
+// const docRef = db.collection('rooms').doc('streaming');
+//       const doc = await docRef.get();
+//       const tmpRef = db.collection('rooms').doc('screener');
+//     await tmpRef.set(
+//       doc.data(),
+//       { merge: true }
+//     );
+
     handleAddGuest = async (guestEmail) => {
       try {
         const guestList = firebase.functions().httpsCallable('guestList');

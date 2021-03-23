@@ -21,6 +21,14 @@
 
   let segment = '';
 
+  let handleAddUser = async => {
+alert(email);
+    // TODO: do a function call out
+    // add the user if doesn't exist
+    // error toast otherwise
+    // on success redo the query?
+  };
+
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
     db = firebase.firestore();
@@ -263,7 +271,7 @@
           <div clas="flex flex-row  items-end justify-end">
             <h3 class="p-2">No matches</h3>
           </div>
-          <button on:click={() => {alert('not yet')}} class="underline text-faithful-800">Add User</button>  
+          <button on:click={() => {handleAddUser()}} class="underline text-faithful-800 focus:outline-none focus:border-transparent cursor-pointer">Add User</button>  
         </div>
       {:else if !noMore}
         <div class="mt-8 mb-8">

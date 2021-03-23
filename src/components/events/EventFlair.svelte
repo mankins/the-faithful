@@ -28,6 +28,16 @@
   {#if (get(ev, 'payload.payload.livemode') == "false")}
     <Pill type="test-mode">Test Mode</Pill>
   {/if}
+  {#if (get(ev, 'payload.room'))}
+  <Pill type="room">
+    {get(ev, 'payload.room')}
+  </Pill>
+  {/if}
+  {#if (get(ev, 'payload.percent'))}
+  <Pill type="room">
+    {get(ev, 'payload.percent')} %
+  </Pill>
+  {/if}
   {#if (get(ev, '_geo.country'))}
   <Pill type="geo">
     {get(ev, '_geo.country')}
