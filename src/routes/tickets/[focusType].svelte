@@ -32,8 +32,8 @@
     let found = false;
     items.forEach((currentItem) => {
       if (item.productId === currentItem.productId) {
-        console.log(JSON.stringify({ item, currentItem }, null, 2));
-        currentItem.quantity = currentItem.quantity + 1;
+        // console.log(JSON.stringify({ item, currentItem }, null, 2));
+        // currentItem.quantity = currentItem.quantity + 1;
         found = true;
       }
     });
@@ -121,7 +121,7 @@
             return;
           }
           handleAddCart(
-            getProduct('cinema-premiere', 'video:thefaithful:20210319:1900')
+            getProduct('cinema-premiere', 'video:thefaithful:streaming')
           );
         }}
         type="button"

@@ -36,8 +36,8 @@
     let found = false;
     items.forEach((currentItem) => {
       if (item.productId === currentItem.productId) {
-        console.log(JSON.stringify({ item, currentItem }, null, 2));
-        currentItem.quantity = currentItem.quantity + 1;
+        // console.log(JSON.stringify({ item, currentItem }, null, 2));
+        // currentItem.quantity = currentItem.quantity + 1;
         found = true;
       }
     });
@@ -117,7 +117,7 @@
 <div class="min-h-screen bg-faithful-500 overscroll-x-contain overflow-hidden">
   <div class="absolute top-0 mb h-full z-10">
     <Nav {loggedIn} {user}>
-{#if true}
+{#if false}
       <button
         on:click={() => {
           if (items.length) {

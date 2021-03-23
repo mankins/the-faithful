@@ -650,7 +650,7 @@
 
 <div class="bg-white absolute top-0 mb h-full z-10">
   <Nav {loggedIn} {user}>
-    {#if true}
+    {#if !loggedIn}
     <button
       on:click={() => {
         if (items.length) {

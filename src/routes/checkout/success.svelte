@@ -70,11 +70,16 @@
         console.log({ session });
 
         if (session && session.firebaseToken) {
-          const userCredential = await firebase
-            .auth()
-            .signInWithCustomToken(session.firebaseToken);
+          // try {
+          //   await firebase.auth().signOut();
+          //   // signed out
+          // } catch (e) {
+          //   // an error
+          //   console.log({ e });
+          // }
+          await firebase.auth().signInWithCustomToken(session.firebaseToken);
           // console.log(JSON.stringify({ userCredential: JSON.stringify(userCredential) }));
-          let email = get(session,'customer.email');
+          let email = get(session, 'customer.email');
           if (email) {
             sendEvent({ topic: 'user.login.success', email, type: 'purchase' });
           }
@@ -129,7 +134,7 @@
 
 <div class="min-h-screen bg-white overscroll-x-contain overflow-hidden">
   <div class="absolute top-0 mb h-full z-10">
-    <Nav />
+    <Nav hideLogin={true} />
   </div>
 
   <div class="container ml-6">

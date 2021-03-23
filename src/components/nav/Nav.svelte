@@ -5,6 +5,7 @@
   export let notifications = false;
   export let user = {};
   export let loggedIn = false;
+  export let hideLogin = false;
 
   let section = 'other';
   let menuOpen = false;
@@ -148,7 +149,8 @@
           {/if}
           {#if true}
           <div class="ml-3 relative">
-              {#if loggedIn}
+            {#if !hideLogin}
+            {#if loggedIn}
                 <NavUserMenu {user} />
               {:else}
               <a
@@ -157,6 +159,7 @@
                 >
                   Sign in
                 </a>
+              {/if}
               {/if}
             </div>
           {/if}

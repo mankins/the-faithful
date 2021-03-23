@@ -438,7 +438,7 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
       _stripe = stripeProps._stripe;
     }
 
-    const uid = get(context, 'auth.uid');
+    let uid = get(context, 'auth.uid');
     console.log(`----UID-----${uid}-------SESSION--${sessionId}----`);
     // verify Firebase Auth ID token and presence of UID
     if (!context.auth || !uid) {
@@ -465,7 +465,9 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
     }
 
     console.log({ session });
-    const email = get(session, 'customer_details.email');
+    let email = get(session, 'customer_details.email', '');
+    email = email.toLowerCase();
+
     if (!email) {
       console.log('missing email');
 
@@ -510,31 +512,49 @@ exports.stripeCheckoutSuccess = functions.https.onCall(
       });
     }
 
-    // if we're not logged in, create a token to login
+    // get the user's id or create a new one
     let firebaseToken = '';
+    let existingUser;
     try {
-      await admin.auth().createUser({
-        email: email,
-        uid: uid, // anon?
-      });
-      // console.log({ cred });
-      //   await admin.auth.currentUser.linkWithCredential(credential)
-    } catch (ee) {
-      console.log({ ee, code: ee.code });
-      if (ee.code === 'auth/uid-already-exists') {
-        await admin.auth().updateUser(uid, {
-          email,
-        });
-      } else if (ee.code === 'auth/email-already-exists') {
-        const existingUser = await admin.auth().getUserByEmail(email);
-
-        uid = existingUser.uid;
-        // console.log({existingUser});
+      existingUser = await admin.auth().getUserByEmail(email);
+      console.log({ existingUser });
+      uid = existingUser.uid;
+    } catch (e1) {
+      if (e1.code === 'auth/user-not-found') {
+        try {
+          uid = shortId(); // new uid - no collision, but lose anon uid
+          await admin.auth().createUser({
+            email,
+            uid, 
+          });
+        } catch (e2) {
+          console.log({ e2 });
+          throw e2;
+        }  
       } else {
-        console.log(`code: ${ee.code}`);
-        throw ee;
+        console.log({ e1 });
+        throw e1;
       }
     }
+
+    // console.log({ cred });
+    //   await admin.auth.currentUser.linkWithCredential(credential)
+    // } catch (ee) {
+    //   console.log({ ee, code: ee.code });
+    //   if (ee.code === 'auth/uid-already-exists') {
+    //     await admin.auth().updateUser(uid, {
+    //       email,
+    //     });
+    //   } else if (ee.code === 'auth/email-already-exists') {
+    //     // const existingUser = await admin.auth().getUserByEmail(email);
+
+    //     // uid = existingUser.uid;
+    //     // console.log({existingUser});
+    //   } else {
+    //     console.log(`code: ${ee.code}`);
+    //     throw ee;
+    //   }
+    // }
     try {
       firebaseToken = await admin.auth().createCustomToken(uid);
     } catch (fbe) {

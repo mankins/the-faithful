@@ -52,7 +52,7 @@
               {#if true}
                 <p class="text-sm text-gray-500">
                   {#if item && item.price && item.price.amount}
-                    {formatCurrency(item.price.amount, item.price.currency)}
+                    {formatCurrency(item.price.amount, item.price.currency)} each
                   {/if}
                 </p>
               {/if}
