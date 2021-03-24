@@ -62,6 +62,97 @@ const productsFromReceipts = async (receipts) => {
   return Object.keys(productIds).sort();
 };
 
+exports.screenerAdd = functions.https.onCall(async (data, context) => {
+  let email = get(data, 'email', ''); // email to add
+  email = email.toLowerCase();
+
+  let entitlementsToAdd = get(data, 'entitlements', []);
+  if (!entitlementsToAdd || !entitlementsToAdd.length) {
+    throw new Error('missing entitlements');
+  }
+
+  const uid = get(context, 'auth.uid');
+  console.log(`----UID-----${uid}-------UID------`);
+  // verify Firebase Auth ID token and presence of UID
+  if (!context.auth || !uid) {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'Request had invalid credentials',
+      {
+        error: 'invalid credentials',
+      }
+    );
+  }
+
+  // check to see if the email is set, if not, assume this is an anonymous user
+  let requestEmail = get(context, 'auth.token.email', 'anonymous');
+  requestEmail = requestEmail.toLowerCase();
+  if (requestEmail === 'anonymous') {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'Request had invalid credentials',
+      {
+        error: 'invalid credentials',
+      }
+    );
+  }
+
+  // console.log(`email/${requestEmail}/receipts/${ticketId}`, { data });
+  const db = admin.firestore();
+
+  let adminFound = false;
+
+  const requestUserDoc = await db.doc(`email/${requestEmail}`).get();
+  const requestUserDocData = requestUserDoc.data();
+  if (
+    requestUserDocData &&
+    requestUserDocData.entitlements &&
+    requestUserDocData.entitlements.length
+  ) {
+    requestUserDocData.entitlements.forEach((entitlement) => {
+      if (entitlement === 'site:admin') {
+        adminFound = true;
+      }
+    });
+  }
+  if (!adminFound) {
+    throw new Error('Must be admin');
+  }
+
+  // if we're here, we're authorized
+  // let's add the entitlements to the user, creating if needed.
+  let currentEntitlements = {};
+  const userDoc = await db.doc(`email/${email}`).get();
+  if (userDoc.exists) {
+    const userDocData = userDoc.data();
+    if (
+      userDocData &&
+      userDocData.entitlements &&
+      userDocData.entitlements.length
+    ) {
+      userDocData.entitlements.forEach((entitlement) => {
+        currentEntitlements[entitlement] = true;
+      });
+    }
+  }
+
+  const docRef = db.collection(`email`).doc(`${email}`);
+  entitlementsToAdd.forEach((newEntitlement) => {
+    currentEntitlements[newEntitlement] = true;
+  });
+  entitlements = Object.keys(currentEntitlements).sort();
+
+  await docRef.set(
+    {
+      entitlements,
+      _ts: admin.firestore.FieldValue.serverTimestamp(),
+    },
+    { merge: true }
+  );
+
+  return { status: 'ok' };
+});
+
 exports.guestList = functions.https.onCall(async (data, context) => {
   const ticketId = get(data, 'ticketId', '');
   let isAdmin = get(data, 'admin', false);

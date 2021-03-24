@@ -41,11 +41,11 @@
 
     handleAddGuest = async (guestEmail) => {
       try {
-        const guestList = firebase.functions().httpsCallable('guestList');
-        await guestList({
+        const screenerAdd = firebase.functions().httpsCallable('screenerAdd');
+        await screenerAdd({
           admin: true,
           email: guestEmail,
-          products: ['video:thefaithful'] // TODO: ui?
+          entitlements: ['video:thefaithful:screener'] 
         });
         window.pushToast(`Ok, added ${guestEmail}`, 'info');
       } catch (error) {
@@ -77,8 +77,16 @@
       <h3
         class="pt-12 md:pt-24 text-3xl font-serif text-gray-900 font-extrabold tracking-tight sm:text-5xl"
       >
-        Screener: <span class="text-red-500">WIP, DO NOT USE YET</span>
+        Screener
       </h3>
+    </div>
+    <div>
+      <blockquote class="bg-gray-50 rounded-md mb-12">
+        This adds an entitlement to a user to enable them to see the screener room: 
+        <p><span class="font-mono">
+          <a target="_blank" class="underline" href="https://www.the-faithful.com/my/theatre/screener">
+          https://www.the-faithful.com/my/theatre/screener</a></span></p>
+      </blockquote>
     </div>
     <div class="bg-white shadow overflow-hidden sm:rounded-lg m-auto p-12">
       <GuestRow

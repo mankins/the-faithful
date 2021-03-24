@@ -1,7 +1,7 @@
 'use strict';
 
 const { updateEmailSegmentIndex } = require('./fn/db');
-const { guestList, userEntitlements } = require('./fn/entitlements');
+const { guestList, screenerAdd, userEntitlements } = require('./fn/entitlements');
 const { eventsIn, eventsFirehosePubSub } = require('./fn/events');
 const { oauthAuthorize, accessCode } = require('./fn/oauth');
 const { slackRelay } = require('./fn/slack');
@@ -41,6 +41,7 @@ exports.apiEmail = apiEmail;
 exports.webhookMailgun = webhookMailgun;
 exports.guestList = guestList;
 exports.channelToken = channelToken;
+exports.screenerAdd = screenerAdd;
 
 // pubsub event functions
 exports.sendEmailPubSub = sendEmailPubSub;

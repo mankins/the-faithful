@@ -137,7 +137,9 @@
           playerTheatre.currentTime = currentTs;
           setTimeout(() => {
             if (!playerTheatre.playing) {
+              try {
               playerTheatre.play();
+              } catch (e) {}
             }
           }, 100);
         }, 1500);
@@ -248,7 +250,9 @@
 
       setTimeout(() => {
         if (!playerTheatre.playing) {
+          try {
           playerTheatre.play();
+          } catch (e) {}
         }
       }, 1500);
 
