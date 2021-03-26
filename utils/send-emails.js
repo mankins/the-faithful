@@ -199,7 +199,49 @@ let config;
 
     let emails = [];
 
-    if (segment === 'all-entitled') {
+    if (segment === 'logged-in') {
+      let emailEvents = {};
+      let FieldPath = admin.firestore.FieldPath;
+      const docsRef = admin.firestore().collection(`events`);
+      const querySnapshot = await docsRef
+        .where(new FieldPath('payload.topic'), '==', 'user.login.success')
+        // .where(new FieldPath('payload.type'), '==', 'coil')
+        .get();
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        // console.log({ data });
+        const email = get(data, 'payload.email', '').toLowerCase();
+        if (email) {
+          emailEvents[email] = true;
+        }
+      });
+      const querySnapshot2 = await docsRef
+        .where(new FieldPath('payload.topic'), '==', 'user.login.completed')
+        .get();
+      querySnapshot2.forEach((doc) => {
+        const data = doc.data();
+        // console.log({ data });
+        const email = get(data, 'payload.email', '').toLowerCase();
+        if (email) {
+          emailEvents[email] = true;
+        }
+      });
+
+      const querySnapshot3 = await docsRef
+        .where(new FieldPath('payload.topic'), '==', 'user.login.started')
+        .get();
+      querySnapshot3.forEach((doc) => {
+        const data = doc.data();
+        // console.log({ data });
+        const email = get(data, 'payload.email', '').toLowerCase();
+        if (email) {
+          emailEvents[email] = true;
+        }
+      });
+
+      emails = Object.keys(emailEvents).sort();
+      console.log({ emails });
+    } else if (segment === 'all-entitled') {
       // gifts and paid
       const toDo = {};
       const querySnapshot = await admin
@@ -230,19 +272,19 @@ let config;
     } else if (segment === 'not-purchased') {
       // on the email list, but not purchased
 
-      console.log('nyet')
-        process.exit();
-  
+      console.log('nyet');
+      process.exit();
+
       // try {
-          //   if (!emDoc && emDoc.segments && !emDoc.segments.includes('receipts')) {
-          //     emails.push(emDoc);
-          //   } else {
-          //     console.log({ emDoc }, 'doing');
-          //   }
-          // } catch (em) {
-          //   console.log({ em }, 'err');
-          //   process.exit(1);
-          // }
+      //   if (!emDoc && emDoc.segments && !emDoc.segments.includes('receipts')) {
+      //     emails.push(emDoc);
+      //   } else {
+      //     console.log({ emDoc }, 'doing');
+      //   }
+      // } catch (em) {
+      //   console.log({ em }, 'err');
+      //   process.exit(1);
+      // }
       // } else {
       //   console.log('snap empty');
       //   process.exit();
@@ -370,7 +412,7 @@ let config;
           }
         })
       );
-      return; 
+      return;
     } else {
       console.log('send aborted');
     }
