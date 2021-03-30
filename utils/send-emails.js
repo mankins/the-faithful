@@ -199,7 +199,16 @@ let config;
 
     let emails = [];
 
-    if (segment === 'logged-in') {
+    if (segment === 'all') {
+      const docsRef = admin.firestore().collection('email');
+      const querySnapshot = await docsRef.get();
+      querySnapshot.forEach(async (doc) => {
+        const data = await doc.data();
+        let emDoc = { email: doc.id, ...data };
+        console.log({ emDoc, data });
+        emails.push(emDoc);
+      });
+    } else if (segment === 'logged-in') {
       let emailEvents = {};
       let FieldPath = admin.firestore.FieldPath;
       const docsRef = admin.firestore().collection(`events`);
@@ -239,8 +248,20 @@ let config;
         }
       });
 
-      emails = Object.keys(emailEvents).sort();
-      console.log({ emails });
+      // emails = Object.keys(emailEvents).sort();
+      // console.log({ emails });
+
+      await Promise.all(
+        Object.keys(emailEvents).map(async (email) => {
+          const docsRef = admin.firestore().collection('email').doc(email);
+          const doc = await docsRef.get();
+          const data = doc.data();
+          let emDoc = { email: doc.id, ...data };
+
+          emails.push(emDoc);
+        })
+      );
+
     } else if (segment === 'all-entitled') {
       // gifts and paid
       const toDo = {};
@@ -382,13 +403,14 @@ let config;
 
           done++;
           if (debug) {
-            console.log(doc);
+            console.log('doc', doc);
           }
 
           const email = doc.email;
           if (!email) {
-            console.log('missing email');
-            process.exit(1);
+            console.log('missing email?'), { doc, email };
+            //process.exit(1);
+            return;
           }
 
           if (true) {
