@@ -140,7 +140,7 @@ exports.screenerAdd = functions.https.onCall(async (data, context) => {
   entitlementsToAdd.forEach((newEntitlement) => {
     currentEntitlements[newEntitlement] = true;
   });
-  entitlements = Object.keys(currentEntitlements).sort();
+  let entitlements = Object.keys(currentEntitlements).sort();
 
   await docRef.set(
     {

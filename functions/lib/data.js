@@ -91,6 +91,20 @@ const PRODUCTS = {
     ],
     price: { currency: 'usd', amount: 500 },
   },
+  'cinema-live': {
+    product: 'cinema-live',
+    productId: 'video:thefaithful:live',
+    productTitle: 'Live Event - The Faithful',
+    quantity: 1,
+    variations: [
+      {
+        id: 'video:thefaithful:live',
+        name: 'Live Event - The Faithful',
+        description: 'Live Event Pass',
+      },
+    ],
+    price: { currency: 'usd', amount: 1250 },
+  },
 };
 
 const getProduct = (type, variationId) => {
