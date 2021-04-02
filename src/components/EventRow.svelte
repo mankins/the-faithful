@@ -14,7 +14,7 @@
   onMount(() => {});
 </script>
 
-<div class="relative pb-2">
+<div class="relative pb-2 ml-4">
   {#if !isLast}
   <span
     class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"

@@ -142,7 +142,7 @@
         } else {
           labsMode = false;
         }
-        if (page.path && page.path.indexOf('/theatre') !== -1) {
+        if (page.path && page.path.indexOf('/theatre') !== -1 && page.path.indexOf('/admin/rooms/theatre') === -1)  {
           theatreMode = true;
         } else {
           theatreMode = false;

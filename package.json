@@ -29,6 +29,7 @@
 		"firebase-admin": "^9.5.0",
 		"formdata-node": "^2.4.0",
 		"hls.js": "^0.14.17",
+		"json-stable-stringify": "^1.0.1",
 		"lodash.get": "^4.4.2",
 		"md5": "^2.3.0",
 		"oidc-client": "^1.11.5",

@@ -279,6 +279,22 @@
               </svg>Guest List
             </a>
             <a
+              href="/my/admin/rooms"
+              on:click={() => {
+                open = !open;
+                change(open);
+              }}
+              class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
+            >
+              <!-- Heroicon name: view-grid-add -->
+              <svg
+                class="mr-4 h-4 w-4"
+    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"/>
+                </svg>
+    Rooms
+            </a>
+            <a
               href="/my/admin/screener"
               on:click={() => {
                 open = !open;
