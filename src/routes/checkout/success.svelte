@@ -90,6 +90,10 @@
         if (productsEntitle(products, 'video:thefaithful:streaming')) {
           immediate = true;
         }
+        if (productsEntitle(products, 'video:thefaithful:live')) {
+          // TODO: some sort of entitlements override forcing streaming, this undoes it. :|
+          immediate = false;
+        }
 
         setTimeout(() => {
           sendEvent({
@@ -170,10 +174,32 @@
       </div>
     {:else}
       <div class="w-5/6 md:w-4/6 ml-0 mt-8 mb-8">
-        <p class="text-justify text-gray-600">
-          On the day of the event you'll need your email address to login to see
-          the event.
-        </p>
+
+        <button
+        type="button"
+        on:click={() => {
+          window.location.href = '/my';
+        }}
+        class="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 mt-4"
+      >
+        <svg
+          class="-ml-1 mr-2 h-5 w-5 text-gray-50"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+          />
+        </svg>
+   <span class="pt-1 pb-1 text-gray-50">Join us in the Lobby</span>
+      </button>
+
       </div>
     {/if}
   </div>
