@@ -21,7 +21,7 @@ console.log({ticket});
   let raw = JSON.parse(get(ticket, 'receipt.raw', '{}'));
 
   const getProductFromId = (productId) => {
-    return 'Virtual Premiere Weekend - The Faithful'; // TODO
+    return 'The Faithful'; // TODO
   };
 </script>
 

@@ -87,7 +87,7 @@
 
         // see if this is a streaming purchase. If so, redirect them immediately
         let products = get(session, 'products', []);
-        if (productsEntitle(products, '*:streaming')) {
+        if (productsEntitle(products, 'video:thefaithful:streaming')) {
           immediate = true;
         }
 

@@ -15,6 +15,7 @@
   import Sneak from '$components/schedule/Sneak.svelte';
   import Opening from '$components/schedule/Opening.svelte';
   import Virtual from '$components/schedule/Virtual.svelte';
+  import Live from '$components/schedule/Live.svelte';
 
   import { getProduct } from '$components/data.js';
   import { parseParams } from '$components/utils/query';
@@ -206,6 +207,16 @@
             action={() => {
               handleAddCart(
                 getProduct('cinema-stream', 'video:thefaithful:streaming')
+              );
+            }}
+          />
+        {/if}
+
+        {#if focusType.includes('live')}
+          <Live
+            action={() => {
+              handleAddCart(
+                getProduct('cinema-live', 'video:thefaithful:live')
               );
             }}
           />

@@ -4,6 +4,7 @@
   import { userEntitlements } from '$components/stores/entitlements.js';
   import { productsEntitle } from '$components/utils/entitles.js';
   import { getCookies } from '$components/utils/cookies';
+  import JSPretty from '$components/JSPretty.svelte';
 
   let userProducts = [];
   let testMode = false;
@@ -112,38 +113,49 @@
           </a>
         {/if}
       {/await}
-      <a
-        href="/my/theatre/streaming"
-        rel="external"
-        on:click={() => {
-          open = !open;
-          change(open);
-        }}
-        class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
-      >
-        <!-- Heroicon name: shield-check -->
-        <svg
-          class="mr-4 h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-          />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-        Watch Streaming
-      </a>
-
+      {#await productsEntitle(userProducts, 'video:thefaithful:streaming') then entitled}
+      {#await productsEntitle(userProducts, 'site:admin') then isAdmin}
+        {#if entitled || isAdmin}
+          <a
+            href="/my/theatre/streaming"
+            rel="external"
+            on:click={() => {
+              open = !open;
+              change(open);
+            }}
+            class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-black hover:text-white hover:bg-faithful-600"
+          >
+            <!-- Heroicon name: shield-check -->
+            <svg
+              class="mr-4 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            Watch Streaming
+          </a>
+        {/if}
+      {/await}
+      {/await}
+      {#if false}
+      <JSPretty obj={{userProducts}} />
+      {/if}
+      {#await productsEntitle(userProducts, 'video:thefaithful:live') then entitled}
+      {#await productsEntitle(userProducts, 'site:admin') then isAdmin}
+        {#if entitled || isAdmin}
       <a
         href="/my/theatre/theatre"
         rel="external"
@@ -168,6 +180,10 @@
           />
         </svg> Live Theatre
       </a>
+      {/if}
+      {/await}
+      {/await}
+
       {#if false}
         <a
           href="/my/chat"
@@ -289,10 +305,18 @@
               <!-- Heroicon name: view-grid-add -->
               <svg
                 class="mr-4 h-4 w-4"
-    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"/>
-                </svg>
-    Rooms
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"
+                />
+              </svg>
+              Rooms
             </a>
             <a
               href="/my/admin/screener"

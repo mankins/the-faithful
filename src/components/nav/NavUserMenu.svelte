@@ -69,7 +69,7 @@ export let navOpen = false;
       <div class="bg-gray-50 text-xs p-2 font-serif font-thin m-auto text-center">
         {user.email}
       </div>
-      {#if true || $webmon.monetized || $webmon.state === 'pending'}
+      {#if $webmon.monetized || $webmon.state === 'pending'}
       <div class="bg-green-50 text-xs p-2 font-serif font-thin m-auto text-center">
         Web monetized
       </div>
