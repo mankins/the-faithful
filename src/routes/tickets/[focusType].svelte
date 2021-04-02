@@ -22,7 +22,7 @@
 
   import { onMount } from 'svelte';
 
-  export let focusType = ['sneak','opening','virtual','streaming'];
+  export let focusType = ['sneak', 'opening', 'virtual', 'streaming'];
 
   let cartOpened = false;
   let items = [];
@@ -32,7 +32,7 @@
     cartOpened = true;
     let found = false;
     items.forEach((currentItem) => {
-      if (item.productId === currentItem.productId) {
+      if (item && currentItem && item.productId === currentItem.productId) {
         // console.log(JSON.stringify({ item, currentItem }, null, 2));
         // currentItem.quantity = currentItem.quantity + 1;
         found = true;
@@ -115,36 +115,45 @@
 <div class="min-h-screen bg-faithful-500 overscroll-x-contain overflow-hidden">
   <div class="absolute top-0 mb h-full z-10">
     <Nav>
+      {#if false}
       <button
         on:click={() => {
           if (items.length) {
             cartOpened = true;
             return;
           }
-          handleAddCart(
-            getProduct('cinema-premiere', 'video:thefaithful:streaming')
-          );
+
+          if (focusType.includes('streaming')) {
+            handleAddCart(
+              getProduct('cinema-premiere', 'video:thefaithful:streaming')
+            );
+          } else if (focusType.includes('live')) {
+            handleAddCart(
+              getProduct('cinema-live', 'video:thefaithful:live')
+            );
+          } 
         }}
         type="button"
-        class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-faithful-600 shadow-sm hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
+        class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-900 shadow-sm hover:bg-faithful-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-faithful-500"
       >
-        <!-- Heroicon name: ticket -->
-        <svg
-          class="-ml-1 mr-2 h-5 w-5"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
-          />
-        </svg>
-        <span>Buy Tickets</span>
+          <!-- Heroicon name: ticket -->
+          <svg
+            class="-ml-1 mr-2 h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+            />
+          </svg>
+          <span>Buy Tickets</span>
       </button>
+{/if}
     </Nav>
 
     <Cart bind:opened={cartOpened} bind:items />
@@ -164,10 +173,15 @@
           Sunday, March 21st, 2021. All screenings are live events with the
           filmmakers present. Your ticket grants you access to any or all of the
           showtimes listed. <a
-          class="underline"
-          href="https://www.coil.com/?ref=mankins1701">Coil</a> subscribers do not require a ticket.
-          {:else}
-          You can stream The Faithful from our site, or via our partner site, <a class="underline" href="https://cinnamon.video/?utm_source=thefaithful">Cinnamon.video</a>. Either choice allows instant access to the film.
+            class="underline"
+            href="https://www.coil.com/?ref=mankins1701">Coil</a
+          > subscribers do not require a ticket.
+        {:else}
+          You can stream The Faithful from our site, or via our partner site, <a
+            class="underline"
+            href="https://cinnamon.video/?utm_source=thefaithful"
+            >Cinnamon.video</a
+          >. Either choice allows instant access to the film.
         {/if}
       </p>
     </div>

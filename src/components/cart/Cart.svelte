@@ -176,9 +176,11 @@
                   </div>
                 </div>
               </div>
+{#if false}
               <div class="text-gray-700 text-xs mt-2 sm:mt-6 text-center">
                 All times Eastern Time (US) EST UTC-5
               </div>
+              {/if}
               <div class="">
                 <div
                   class="inset-x-0 bottom-0 mr-2 sm:mr-6 ml-10 sm:ml-16 mb-0 space-x-3 flex justify-end bg-faithful-500 p-10"
