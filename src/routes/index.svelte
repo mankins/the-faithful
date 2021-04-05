@@ -1,21 +1,21 @@
 <script>
-  import Toast from '$components/Toast.svelte';
-  import firebase from 'firebase/app';
+  import Toast from '$lib/Toast.svelte';
+  import * as firebase from 'firebase/app';
   import 'firebase/auth';
   import 'firebase/firestore';
 
-  import WebMonCounter from '$components/WebMonCounter.svelte';
-  import Visibility from '$components/Visibility.svelte';
-  import Footer from '$components/nav/Footer.svelte';
-  import Nav from '$components/nav/Nav.svelte';
-  import VideoPlayer from '$components/VideoPlayer.svelte';
-  import { getCookies } from '$components/utils/cookies';
-  import { parseParams } from '$components/utils/query';
-  import { fireGoal } from '$components/utils/analytics';
+  import WebMonCounter from '$lib/WebMonCounter.svelte';
+  import Visibility from '$lib/Visibility.svelte';
+  import Footer from '$lib/nav/Footer.svelte';
+  import Nav from '$lib/nav/Nav.svelte';
+  import VideoPlayer from '$lib/VideoPlayer.svelte';
+  import { getCookies } from '$lib/utils/cookies';
+  import { parseParams } from '$lib/utils/query';
+  import { fireGoal } from '$lib/utils/analytics';
 
-  import Cart from '$components/cart/Cart.svelte';
-  import { getProduct } from '$components/data.js';
-  import { firebaseConfig } from '$components/config/index.js';
+  import Cart from '$lib/cart/Cart.svelte';
+  import { getProduct } from '$lib/data.js';
+  import { firebaseConfig } from '$lib/config/index.js';
 
   import { onMount, createEventDispatcher } from 'svelte';
   import { fade, crossfade } from 'svelte/transition';
@@ -95,7 +95,7 @@
 
     let cookies = getCookies(document.cookie);
     btpToken = cookies._coil_btp;
-    if (btpToken) {
+    if (btpToken && window.document.coilMonetizationPolyfill) {
       try {
         const btpRes = window.document.coilMonetizationPolyfill.init({
           btpToken,

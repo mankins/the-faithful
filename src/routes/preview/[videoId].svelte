@@ -6,23 +6,23 @@
 </script>
 
 <script>
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
 
-  // import Toast from '$components/Toast.svelte';
-  import Footer from '$components/nav/Footer.svelte';
-  import LoginModal from '$components/modals/LoginModal.svelte';
+  // import Toast from '$lib/Toast.svelte';
+  import Footer from '$lib/nav/Footer.svelte';
+  import LoginModal from '$lib/modals/LoginModal.svelte';
 
-  import AccessDenied from '$components/AccessDenied.svelte';
-  import Processing from '$components/Processing.svelte';
-  import VideoPlayer from '$components/VideoPlayer.svelte';
+  import AccessDenied from '$lib/AccessDenied.svelte';
+  import Processing from '$lib/Processing.svelte';
+  import VideoPlayer from '$lib/VideoPlayer.svelte';
 
   import { onMount } from 'svelte';
-  import { productsEntitle } from '$components/utils/entitles.js';
-  import { baseProducts } from '$components/utils/auth.js';
+  import { productsEntitle } from '$lib/utils/entitles.js';
+  import { baseProducts } from '$lib/utils/auth.js';
 
-  import Cart from '$components/cart/Cart.svelte';
-  import { getProduct } from '$components/data.js';
-  import { parseParams } from '$components/utils/query';
+  import Cart from '$lib/cart/Cart.svelte';
+  import { getProduct } from '$lib/data.js';
+  import { parseParams } from '$lib/utils/query';
 
   let db;
   let firebase;

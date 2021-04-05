@@ -1,11 +1,11 @@
 <script>
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
 
-  import AccessDenied from '$components/AccessDenied.svelte';
-  import Processing from '$components/Processing.svelte';
-  import { getCookies } from '$components/utils/cookies';
-  import { parseParams } from '$components/utils/query';
-  import { sendEvent } from '$components/utils/events';
+  import AccessDenied from '$lib/AccessDenied.svelte';
+  import Processing from '$lib/Processing.svelte';
+  import { getCookies } from '$lib/utils/cookies';
+  import { parseParams } from '$lib/utils/query';
+  import { sendEvent } from '$lib/utils/events';
 
   import { onMount } from 'svelte';
 

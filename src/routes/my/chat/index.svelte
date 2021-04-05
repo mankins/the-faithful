@@ -1,13 +1,13 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import { realtime } from '$components/stores/channel.js';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import { realtime } from '$lib/stores/channel.js';
   import get from 'lodash.get';
-  import JSPretty from '$components/JSPretty.svelte';
-  import { page as pageStore } from '$components/stores';
-  import ConfirmModal from '$components/modals/ConfirmModal.svelte';
-  import { chats, gal, peers } from '$components/stores/gal';
-  import Seating from '$components/room/Seating.svelte';
+  import JSPretty from '$lib/JSPretty.svelte';
+  import { page as pageStore } from '$lib/stores';
+  import ConfirmModal from '$lib/modals/ConfirmModal.svelte';
+  import { chats, gal, peers } from '$lib/stores/gal';
+  import Seating from '$lib/room/Seating.svelte';
 
   let db;
   let firebase;

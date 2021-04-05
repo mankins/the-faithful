@@ -9,12 +9,12 @@
   import { fade } from 'svelte/transition';
   import { onMount } from 'svelte';
 
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import EventRow from '$components/EventRow.svelte';
-  import Visibility from '$components/Visibility.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import EventRow from '$lib/EventRow.svelte';
+  import Visibility from '$lib/Visibility.svelte';
 
-  import JSPretty from '$components/JSPretty.svelte';
-  import { sendEvent } from '$components/utils/events';
+  import JSPretty from '$lib/JSPretty.svelte';
+  import { sendEvent } from '$lib/utils/events';
 
   let db;
   let firebase;

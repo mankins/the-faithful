@@ -1,5 +1,5 @@
 <script>
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
 
   let loggingOut = true;
   let handleLogout = (done) => {

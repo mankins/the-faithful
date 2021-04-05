@@ -1,14 +1,14 @@
 <script>
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
-  import firebase from 'firebase/app';
+  import * as firebase from 'firebase/app';
   import 'firebase/auth';
   import 'firebase/firestore';
-  import { firebaseConfig } from '$components/config/index.js';
+  import { firebaseConfig } from '$lib/config/index.js';
 
-  import { sendEvent } from '$components/utils/events';
-  import Footer from '$components/nav/Footer.svelte';
-  import Toast from '$components/Toast.svelte';
+  import { sendEvent } from '$lib/utils/events';
+  import Footer from '$lib/nav/Footer.svelte';
+  import Toast from '$lib/Toast.svelte';
 
   let authActions;
   let processing = true;

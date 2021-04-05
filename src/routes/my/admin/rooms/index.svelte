@@ -1,6 +1,6 @@
 <script>
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import RoomRow from '$components/RoomRow.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import RoomRow from '$lib/RoomRow.svelte';
 
   import { onMount } from 'svelte';
 

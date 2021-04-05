@@ -1,9 +1,9 @@
 <script>
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import { page as pageStore } from '$components/stores';
-  import { handleLoginAction } from '$components/utils/auth';
-  import Toast from '$components/Toast.svelte';
-  import TermsLinks from '$components/TermsLinks.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import { page as pageStore } from '$lib/stores';
+  import { handleLoginAction } from '$lib/utils/auth';
+  import Toast from '$lib/Toast.svelte';
+  import TermsLinks from '$lib/TermsLinks.svelte';
 
   let authActions;
   let page = {};

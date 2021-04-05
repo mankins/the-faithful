@@ -1,8 +1,8 @@
 <script>
-  import Duration from 'duration';
+  import * as Duration from '$lib/patched/duration';
   import { onMount } from 'svelte';
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import { parseParams } from '$components/utils/query';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import { parseParams } from '$lib/utils/query';
 
   let hours = 0;
   let min = 0;

@@ -5,7 +5,14 @@ Built with SvelteKit. Hosted on Google Cloud.
 ## Dev
 
 ```
+npm i
 npm run dev
+```
+
+May need to install dotenv if you don't have it already installed.
+
+```
+npm install -g dotenv-cli
 ```
 
 ## Deployment 

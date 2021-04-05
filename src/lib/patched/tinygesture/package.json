@@ -1,0 +1,60 @@
+{
+  "_from": "tinygesture",
+  "_id": "tinygesture@1.1.4",
+  "_inBundle": false,
+  "_integrity": "sha512-icmCMJ5t6TjGFmTXCIWjBOH15GBPsMiXx3rtvEenP+tPZYsqvuUyV6uM7F5Svj4RV96mch3fCQ6UMg7qo+CZQA==",
+  "_location": "/tinygesture",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "tinygesture",
+    "name": "tinygesture",
+    "escapedName": "tinygesture",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/tinygesture/-/tinygesture-1.1.4.tgz",
+  "_shasum": "7dafe46a017abbab9e943b68c46570a0569ebeee",
+  "_spec": "tinygesture",
+  "_where": "/Users/mattmankins/code/the-faithful",
+  "author": {
+    "name": "Hunter Perrin",
+    "email": "hperrin@gmail.com"
+  },
+  "browser": "TinyGesture.js",
+  "bugs": {
+    "url": "https://github.com/sciactive/tinygesture/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Very small gesture recognizer for JavaScript. Swipe, pan, tap, doubletap, and longpress.",
+  "homepage": "https://sciactive.github.io/tinygesture/",
+  "keywords": [
+    "gesture",
+    "gestures",
+    "recognizer",
+    "touch",
+    "swipe",
+    "pan",
+    "tap",
+    "longpress",
+    "event"
+  ],
+  "license": "ISC",
+  "main": "TinyGesture.js",
+  "name": "tinygesture",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sciactive/tinygesture.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.1.4"
+}

@@ -1,12 +1,12 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
   import get from 'lodash.get';
   import timecodes from 'node-timecodes';
-  import JSPretty from '$components/JSPretty.svelte';
-  import { debounce } from '$components/utils/debounce';
-  import { page as pageStore } from '$components/stores';
-  import ConfirmModal from '$components/modals/ConfirmModal.svelte';
+  import JSPretty from '$lib/JSPretty.svelte';
+  import { debounce } from '$lib/utils/debounce';
+  import { page as pageStore } from '$lib/stores';
+  import ConfirmModal from '$lib/modals/ConfirmModal.svelte';
 
   let db;
   let firebase;

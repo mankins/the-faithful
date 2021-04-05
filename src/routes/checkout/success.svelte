@@ -3,19 +3,19 @@
   import { fade } from 'svelte/transition';
   import * as Sentry from '@sentry/browser';
 
-  import Footer from '$components/nav/Footer.svelte';
-  import Nav from '$components/nav/Nav.svelte';
-  import Toast from '$components/Toast.svelte';
-  import { fireGoal } from '$components/utils/analytics';
-  import { sendEvent } from '$components/utils/events';
-  import { getCookies } from '$components/utils/cookies';
-  import { productsEntitle } from '$components/utils/entitles.js';
+  import Footer from '$lib/nav/Footer.svelte';
+  import Nav from '$lib/nav/Nav.svelte';
+  import Toast from '$lib/Toast.svelte';
+  import { fireGoal } from '$lib/utils/analytics';
+  import { sendEvent } from '$lib/utils/events';
+  import { getCookies } from '$lib/utils/cookies';
+  import { productsEntitle } from '$lib/utils/entitles.js';
 
   import get from 'lodash.get';
-  import firebase from 'firebase/app';
+  import * as firebase from 'firebase/app';
   import 'firebase/auth';
   import 'firebase/firestore';
-  import { firebaseConfig } from '$components/config/index.js';
+  import { firebaseConfig } from '$lib/config/index.js';
 
   let sessionId = '';
   let processing = true;

@@ -1,13 +1,13 @@
 <script>
-  import Toast from '$components/Toast.svelte';
-  import Cart from '$components/cart/Cart.svelte';
-  import Nav from '$components/nav/Nav.svelte';
-  import Footer from '$components/nav/Footer.svelte';
-  import Sneak from '$components/schedule/Sneak.svelte';
-  import { webmon } from '$components/stores/webmon.js';
+  import Toast from '$lib/Toast.svelte';
+  import Cart from '$lib/cart/Cart.svelte';
+  import Nav from '$lib/nav/Nav.svelte';
+  import Footer from '$lib/nav/Footer.svelte';
+  import Sneak from '$lib/schedule/Sneak.svelte';
+  import { webmon } from '$lib/stores/webmon.js';
 
-  import { getProduct } from '$components/data.js';
-  import { parseParams } from '$components/utils/query';
+  import { getProduct } from '$lib/data.js';
+  import { parseParams } from '$lib/utils/query';
 
   import { onMount } from 'svelte';
 

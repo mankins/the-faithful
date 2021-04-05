@@ -1,7 +1,7 @@
 <script>
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import Ticket from '$components/Ticket.svelte';
-  import TicketRow from '$components/TicketRow.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import Ticket from '$lib/Ticket.svelte';
+  import TicketRow from '$lib/TicketRow.svelte';
 
   import { onMount } from 'svelte';
 

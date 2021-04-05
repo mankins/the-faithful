@@ -9,10 +9,10 @@
   import { fade } from 'svelte/transition';
   import { onMount } from 'svelte';
 
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import Ticket from '$components/Ticket.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import Ticket from '$lib/Ticket.svelte';
 import { update_slot_spread } from 'svelte/internal';
-  // import { parseParams } from '$components/utils/query';
+  // import { parseParams } from '$lib/utils/query';
 
   let db;
   let firebase;

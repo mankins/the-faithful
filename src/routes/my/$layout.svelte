@@ -1,23 +1,23 @@
 <script>
   import { onMount } from 'svelte';
 
-  import AccessDenied from '$components/AccessDenied.svelte';
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import LoginModal from '$components/modals/LoginModal.svelte';
-  import NavDesktopSidebar from '$components/nav/NavDesktopSidebar.svelte';
-  import NavSideMenu from '$components/nav/NavSideMenu.svelte';
-  import NavUserMenu from '$components/nav/NavUserMenu.svelte';
-  import Processing from '$components/Processing.svelte';
-  import Toast from '$components/Toast.svelte';
+  import AccessDenied from '$lib/AccessDenied.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import LoginModal from '$lib/modals/LoginModal.svelte';
+  import NavDesktopSidebar from '$lib/nav/NavDesktopSidebar.svelte';
+  import NavSideMenu from '$lib/nav/NavSideMenu.svelte';
+  import NavUserMenu from '$lib/nav/NavUserMenu.svelte';
+  import Processing from '$lib/Processing.svelte';
+  import Toast from '$lib/Toast.svelte';
 
-  import { parseParams } from '$components/utils/query';
-  import { getCookies } from '$components/utils/cookies';
-  import { productsEntitle } from '$components/utils/entitles.js';
-  import { baseProducts } from '$components/utils/auth.js';
+  import { parseParams } from '$lib/utils/query';
+  import { getCookies } from '$lib/utils/cookies';
+  import { productsEntitle } from '$lib/utils/entitles.js';
+  import { baseProducts } from '$lib/utils/auth.js';
 
-  import { userEntitlements } from '$components/stores/entitlements.js';
-  import { page as pageStore } from '$components/stores';
-  import NavRoomControls from '../../components/nav/NavRoomControls.svelte';
+  import { userEntitlements } from '$lib/stores/entitlements.js';
+  import { page as pageStore } from '$lib/stores';
+  import NavRoomControls from '$lib/nav/NavRoomControls.svelte';
 
   let ui = {
     sideMenuOpen: false,

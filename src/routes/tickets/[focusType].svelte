@@ -6,19 +6,19 @@
 </script>
 
 <script>
-  import Toast from '$components/Toast.svelte';
+  import Toast from '$lib/Toast.svelte';
 
-  import Cart from '$components/cart/Cart.svelte';
-  import Nav from '$components/nav/Nav.svelte';
-  import Footer from '$components/nav/Footer.svelte';
-  import Streaming from '$components/schedule/Streaming.svelte';
-  import Sneak from '$components/schedule/Sneak.svelte';
-  import Opening from '$components/schedule/Opening.svelte';
-  import Virtual from '$components/schedule/Virtual.svelte';
-  import Live from '$components/schedule/Live.svelte';
+  import Cart from '$lib/cart/Cart.svelte';
+  import Nav from '$lib/nav/Nav.svelte';
+  import Footer from '$lib/nav/Footer.svelte';
+  import Streaming from '$lib/schedule/Streaming.svelte';
+  import Sneak from '$lib/schedule/Sneak.svelte';
+  import Opening from '$lib/schedule/Opening.svelte';
+  import Virtual from '$lib/schedule/Virtual.svelte';
+  import Live from '$lib/schedule/Live.svelte';
 
-  import { getProduct } from '$components/data.js';
-  import { parseParams } from '$components/utils/query';
+  import { getProduct } from '$lib/data.js';
+  import { parseParams } from '$lib/utils/query';
 
   import { onMount } from 'svelte';
 

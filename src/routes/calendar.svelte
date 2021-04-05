@@ -1,7 +1,7 @@
 <script>
   import calendarize from 'calendarize';
-  import Arrow from '$components/nav/Arrow.svelte';
-  import Nav from '$components/nav/Nav.svelte';
+  import Arrow from '$lib/nav/Arrow.svelte';
+  import Nav from '$lib/nav/Nav.svelte';
 
   export let year = 2021;
   export let offset = 0; // Sun
