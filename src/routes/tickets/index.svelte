@@ -26,7 +26,7 @@
   let user = {};
   let loggedIn = false; // only appears on home page
 
-  export let focusType = 'stream,cinnamon,live';
+  export let focusType = 'stream,cinnamon';
 
   let cartOpened = false;
   let items = [];
