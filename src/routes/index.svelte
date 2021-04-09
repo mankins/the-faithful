@@ -207,7 +207,7 @@
     {#if true}
       <section class="overflow-hidden sm:overflow-auto">
         <VideoPlayer
-          poster="/img/trailer-cover-3b.jpg"
+          poster="/img/trailer-cover-4.jpg"
           videoId="pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ"
           captionsSrc="/subtitles/faithful-trailer.mp4.vtt"
           goals={['W6DQW4K3', 'KSRPXNHI', 'FUAW823F', 'B0OYRVAC']}
