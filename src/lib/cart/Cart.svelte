@@ -1,16 +1,13 @@
 <script>
-
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import Item from '$lib/cart/Item.svelte';
   import { fireGoal } from '$lib/utils/analytics';
   import { sendEvent } from '$lib/utils/events';
   import { getCookies } from '$lib/utils/cookies';
+  import { browser } from '$app/env';
 
-  import * as firebase from 'firebase/app';
-  import 'firebase/auth';
-  import 'firebase/firestore';
-  import { firebaseConfig } from '$lib/config/index.js';
+  import firebasePromise from '$lib/utils/firebase';
 
   export let opened = false;
   export let items = [];
@@ -19,6 +16,7 @@
   let checkingOut = false;
   let testMode = false;
   let TinyGesture;
+  let firebase;
 
   let saveItems = () => {
     console.log('default');
@@ -53,7 +51,7 @@
     checkingOut = true;
     const base = window.location.origin || 'https://www.the-faithful.com';
 
-    sendEvent({topic:'cart.checkout.started', items});
+    sendEvent({ topic: 'cart.checkout.started', items });
 
     const stripeCheckoutSession = firebase
       .functions()
@@ -71,21 +69,17 @@
   };
 
   onMount(async () => {
-    if (firebase.apps.length === 0) {
-      await firebase.initializeApp(firebaseConfig);
+    if (!browser) {
+      return;
     }
+    firebase = await firebasePromise;
 
-    await import('firebase/functions');
-    if (window && window.location.href.indexOf('localhost') !== -1) {
-      // dev mode
-      firebase.functions().useEmulator('localhost', 15001);
-    }
     const tg = await import('$lib/patched/tinygesture/TinyGesture.js');
     TinyGesture = tg.default;
     let cookies = getCookies(document.cookie);
     if (cookies._test_mode) {
-        // entitled = true; // default to speed up
-        testMode = true;
+      // entitled = true; // default to speed up
+      testMode = true;
     }
 
     saveItems = (i) => {
@@ -177,10 +171,10 @@
                   </div>
                 </div>
               </div>
-{#if false}
-              <div class="text-gray-700 text-xs mt-2 sm:mt-6 text-center">
-                All times Eastern Time (US) EST UTC-5
-              </div>
+              {#if false}
+                <div class="text-gray-700 text-xs mt-2 sm:mt-6 text-center">
+                  All times Eastern Time (US) EST UTC-5
+                </div>
               {/if}
               <div class="">
                 <div

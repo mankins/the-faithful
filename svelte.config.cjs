@@ -2,6 +2,7 @@ const sveltePreprocess = require('svelte-preprocess');
 const node = require('@sveltejs/adapter-node');
 const pkg = require('./package.json');
 const firebase = require('firebase/package.json');
+const deps = Object.keys(pkg.dependencies || {}).sort();
 
 module.exports = {
   // Consult https://github.com/sveltejs/svelte-preprocess
@@ -48,16 +49,16 @@ module.exports = {
     ssr: true,
     vite: () => ({
         alias: {
-          'firebase/app': Promise.resolve('firebase/app/dist/index.cjs.js'),
-          'firebase/auth': Promise.resolve('firebase/auth/dist/index.cjs.js'),
-          'firebase/firestore': Promise.resolve('firebase/firestore/dist/index.cjs.js'),
+          // 'firebase/app': Promise.resolve('firebase/app/dist/index.cjs.js'),
+          // 'firebase/auth': Promise.resolve('firebase/auth/dist/index.cjs.js'),
+          // 'firebase/firestore': Promise.resolve('firebase/firestore/dist/index.cjs.js'),
         },  
       optimizeDeps: {
-        include: [],
+        include: [], // 'duration','es5-ext'
         exclude: [],
       },
       ssr: {
-        noExternal: Object.keys(pkg.dependencies || {}),
+        noExternal: [...deps],
       },
       define: {
 				FIREBASE_SDK_VERSION: JSON.stringify(firebase.version),

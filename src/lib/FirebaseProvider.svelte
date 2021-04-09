@@ -1,12 +1,9 @@
 <script>
   import { createEventDispatcher, onMount } from 'svelte';
+  import { browser } from '$app/env';
 
-  import * as firebase from 'firebase/app';
-  import 'firebase/auth';
-  import 'firebase/firestore';
-
+  import firebasePromise from '$lib/utils/firebase';
   import { shortId } from '$lib/utils/short-uuid';
-
   import { sendEvent } from '$lib/utils/events';
 
   export let logout = false;
@@ -14,27 +11,16 @@
   const dispatch = createEventDispatcher();
 
   export const actions = {};
+  let firebase;
 
   onMount(async () => {
-    const firebaseConfig = {
-      apiKey: 'AIzaSyC75bagJGvDb5_2FJOT1yE2RV-97FGvYVs',
-      authDomain: 'the-faithful.firebaseapp.com',
-      projectId: 'the-faithful',
-      storageBucket: 'the-faithful.appspot.com',
-      messagingSenderId: '505590894387',
-      appId: '1:505590894387:web:a97bd5deb4356a5ce569c3',
-      databaseURL: 'https://the-faithful.firebaseio.com',
-      //    measurementId: "G-3DLYVQYGW1",
-    };
+    if (!browser) {
+      return;
+    }
+    
+    firebase = await firebasePromise;
 
     if (firebase.apps.length === 0) {
-      await firebase.initializeApp(firebaseConfig);
-      await import('firebase/functions');
-      if (window && window.location.href.indexOf('localhost') !== -1) {
-        // dev mode
-        firebase.functions().useEmulator('localhost', 15001);
-      }
-
       dispatch('init', { firebase });
     }
     try {

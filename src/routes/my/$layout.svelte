@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { browser } from '$app/env';
 
   import AccessDenied from '$lib/AccessDenied.svelte';
   import FirebaseProvider from '$lib/FirebaseProvider.svelte';
@@ -120,6 +121,10 @@
 
   onMount(() => {
     // loaded = 0;
+    if (!browser) {
+      return;
+    }
+
     page.path = window.location.pathname;
     nextUrl = window.location.href;
     let cookies = getCookies(document.cookie);

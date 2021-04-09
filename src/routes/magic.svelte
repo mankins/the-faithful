@@ -1,15 +1,14 @@
 <script>
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
-  import * as firebase from 'firebase/app';
-  import 'firebase/auth';
-  import 'firebase/firestore';
-  import { firebaseConfig } from '$lib/config/index.js';
+  import firebasePromise from '$lib/utils/firebase';
+  import { browser } from '$app/env';
 
   import { sendEvent } from '$lib/utils/events';
   import Footer from '$lib/nav/Footer.svelte';
   import Toast from '$lib/Toast.svelte';
 
+  let firebase;
   let authActions;
   let processing = true;
   let requireEmail = false;
@@ -96,18 +95,13 @@
   };
 
   onMount(async () => {
+    if (!browser) {
+      return;
+    }
+    firebase = await firebasePromise;
+
     const urlParams = new URLSearchParams(window.location.search);
     nextUrl = urlParams.get('next');
-
-    if (firebase.apps.length === 0) {
-      await firebase.initializeApp(firebaseConfig);
-    }
-
-    await import('firebase/functions');
-    if (window && window.location.href.indexOf('localhost') !== -1) {
-      // dev mode
-      firebase.functions().useEmulator('localhost', 15001);
-    }
 
     if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
       // Additional state parameters can also be passed via URL.

@@ -1,8 +1,7 @@
 <script>
   import Toast from '$lib/Toast.svelte';
-  import * as firebase from 'firebase/app';
-  import 'firebase/auth';
-  import 'firebase/firestore';
+  import firebasePromise from '$lib/utils/firebase';
+  import { browser } from '$app/env';
 
   import WebMonCounter from '$lib/WebMonCounter.svelte';
   import Visibility from '$lib/Visibility.svelte';
@@ -15,7 +14,6 @@
 
   import Cart from '$lib/cart/Cart.svelte';
   import { getProduct } from '$lib/data.js';
-  import { firebaseConfig } from '$lib/config/index.js';
 
   import { onMount, createEventDispatcher } from 'svelte';
   import { fade, crossfade } from 'svelte/transition';
@@ -30,6 +28,7 @@
   let cartOpened = false;
   let items = [];
   let query = {};
+  let firebase;
 
   const handleAddCart = (item) => {
     cartOpened = true;
@@ -52,15 +51,10 @@
   let hero = Math.floor(Math.random() * icons.length);
   let email = '';
   onMount(async () => {
-    if (firebase.apps.length === 0) {
-      await firebase.initializeApp(firebaseConfig);
+    if (!browser) {
+      return;
     }
-
-    await import('firebase/functions');
-    if (window && window.location.href.indexOf('localhost') !== -1) {
-      // dev mode
-      firebase.functions().useEmulator('localhost', 15001);
-    }
+    firebase = await firebasePromise;
 
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     firebase.auth().onAuthStateChanged(function (u) {

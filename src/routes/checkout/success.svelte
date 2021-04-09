@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import * as Sentry from '@sentry/browser';
+  import { browser } from '$app/env';
 
   import Footer from '$lib/nav/Footer.svelte';
   import Nav from '$lib/nav/Nav.svelte';
@@ -12,15 +13,13 @@
   import { productsEntitle } from '$lib/utils/entitles.js';
 
   import get from 'lodash.get';
-  import * as firebase from 'firebase/app';
-  import 'firebase/auth';
-  import 'firebase/firestore';
-  import { firebaseConfig } from '$lib/config/index.js';
+  import firebasePromise from '$lib/utils/firebase';
 
   let sessionId = '';
   let processing = true;
   let testMode = false;
   let immediate = false;
+  let firebase;
 
   let waiter = 'Almost there...';
   const waits = [
@@ -30,22 +29,18 @@
   ];
 
   onMount(async () => {
+    firebase = await firebasePromise;
+
+    if (!browser) {
+      return;
+    }
+
     const waitTimer = setInterval(() => {
       waiter = waits[Math.floor(Math.random() * waits.length)];
     }, 1500);
 
     const urlParams = new URLSearchParams(window.location.search);
     sessionId = urlParams.get('session_id');
-
-    if (firebase.apps.length === 0) {
-      await firebase.initializeApp(firebaseConfig);
-    }
-
-    await import('firebase/functions');
-    if (window && window.location.href.indexOf('localhost') !== -1) {
-      // dev mode
-      firebase.functions().useEmulator('localhost', 15001);
-    }
 
     let cookies = getCookies(document.cookie);
     if (cookies._test_mode) {
@@ -55,84 +50,92 @@
 
     try {
       // empty cart
-      window &&
+        window &&
         window.localStorage &&
         window.localStorage.setItem('cart', JSON.stringify([]));
     } catch (e) {}
 
-    if (sessionId) {
-      const stripeCheckoutSuccess = firebase
-        .functions()
-        .httpsCallable('stripeCheckoutSuccess');
-      try {
-        const reply = await stripeCheckoutSuccess({ sessionId, testMode });
-        const session = reply.data;
-        console.log({ session });
+      if (sessionId) {
+        const stripeCheckoutSuccess = firebase
+          .functions()
+          .httpsCallable('stripeCheckoutSuccess');
+        try {
+          const reply = await stripeCheckoutSuccess({ sessionId, testMode });
+          const session = reply.data;
+          console.log({ session });
 
-        if (session && session.firebaseToken) {
-          // try {
-          //   await firebase.auth().signOut();
-          //   // signed out
-          // } catch (e) {
-          //   // an error
-          //   console.log({ e });
-          // }
-          await firebase.auth().signInWithCustomToken(session.firebaseToken);
-          // console.log(JSON.stringify({ userCredential: JSON.stringify(userCredential) }));
-          let email = get(session, 'customer.email');
-          if (email) {
-            sendEvent({ topic: 'user.login.success', email, type: 'purchase' });
-          }
-        }
-
-        // see if this is a streaming purchase. If so, redirect them immediately
-        let products = get(session, 'products', []);
-        if (productsEntitle(products, 'video:thefaithful:streaming')) {
-          immediate = true;
-        }
-        if (productsEntitle(products, 'video:thefaithful:live')) {
-          // TODO: some sort of entitlements override forcing streaming, this undoes it. :|
-          immediate = false;
-        }
-
-        setTimeout(() => {
-          sendEvent({
-            topic: 'cart.checkout.completed',
-            livemode: session.livemode,
-            amount: session.amount,
-            currency: session.currency,
-          });
-
-          if (
-            session.livemode &&
-            session.amount &&
-            session.currency === 'usd'
-          ) {
-            try {
-              fireGoal('YJQPVOAW', session.amount || 0);
-              window.fbq('track', 'Purchase', {
-                currency: session.currency.toUpperCase(),
-                value: parseFloat(session.amount_decimal),
+          if (session && session.firebaseToken) {
+            // try {
+            //   await firebase.auth().signOut();
+            //   // signed out
+            // } catch (e) {
+            //   // an error
+            //   console.log({ e });
+            // }
+            await firebase.auth().signInWithCustomToken(session.firebaseToken);
+            // console.log(JSON.stringify({ userCredential: JSON.stringify(userCredential) }));
+            let email = get(session, 'customer.email');
+            if (email) {
+              sendEvent({
+                topic: 'user.login.success',
+                email,
+                type: 'purchase',
               });
-            } catch (ee) {
-              console.log('fb-goal', { ee });
             }
           }
-        }, 5);
-        processing = false;
-      } catch (e) {
-        window.pushToast(`Error completing transaction. ${e.message}`, 'alert');
-        waiter = `Bummer: error completing your request. [${e.message}] Email support?`;
 
-        sendEvent({ topic: 'cart.checkout.error', message: e.message });
+          // see if this is a streaming purchase. If so, redirect them immediately
+          let products = get(session, 'products', []);
+          if (productsEntitle(products, 'video:thefaithful:streaming')) {
+            immediate = true;
+          }
+          if (productsEntitle(products, 'video:thefaithful:live')) {
+            // TODO: some sort of entitlements override forcing streaming, this undoes it. :|
+            immediate = false;
+          }
 
-        Sentry.captureException(e);
+          setTimeout(() => {
+            sendEvent({
+              topic: 'cart.checkout.completed',
+              livemode: session.livemode,
+              amount: session.amount,
+              currency: session.currency,
+            });
+
+            if (
+              session.livemode &&
+              session.amount &&
+              session.currency === 'usd'
+            ) {
+              try {
+                fireGoal('YJQPVOAW', session.amount || 0);
+                window.fbq('track', 'Purchase', {
+                  currency: session.currency.toUpperCase(),
+                  value: parseFloat(session.amount_decimal),
+                });
+              } catch (ee) {
+                console.log('fb-goal', { ee });
+              }
+            }
+          }, 5);
+          processing = false;
+        } catch (e) {
+          window.pushToast(
+            `Error completing transaction. ${e.message}`,
+            'alert'
+          );
+          waiter = `Bummer: error completing your request. [${e.message}] Email support?`;
+
+          sendEvent({ topic: 'cart.checkout.error', message: e.message });
+
+          Sentry.captureException(e);
+        }
+
+        clearInterval(waitTimer);
+      } else {
+        window.location.href = '/';
       }
 
-      clearInterval(waitTimer);
-    } else {
-      window.location.href = '/';
-    }
   });
 </script>
 
@@ -174,32 +177,30 @@
       </div>
     {:else}
       <div class="w-5/6 md:w-4/6 ml-0 mt-8 mb-8">
-
         <button
-        type="button"
-        on:click={() => {
-          window.location.href = '/my';
-        }}
-        class="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 mt-4"
-      >
-        <svg
-          class="-ml-1 mr-2 h-5 w-5 text-gray-50"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true"
+          type="button"
+          on:click={() => {
+            window.location.href = '/my';
+          }}
+          class="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 mt-4"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-          />
-        </svg>
-   <span class="pt-1 pb-1 text-gray-50">Join us in the Lobby</span>
-      </button>
-
+          <svg
+            class="-ml-1 mr-2 h-5 w-5 text-gray-50"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            />
+          </svg>
+          <span class="pt-1 pb-1 text-gray-50">Join us in the Lobby</span>
+        </button>
       </div>
     {/if}
   </div>
