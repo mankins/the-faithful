@@ -118,11 +118,13 @@
 
   let labsMode = false;
 
+
   onMount(() => {
     // loaded = 0;
     if (!browser) {
       return;
     }
+
     page.path = window.location.pathname;
     nextUrl = window.location.href;
     let cookies = getCookies(document.cookie);
@@ -145,11 +147,7 @@
         } else {
           labsMode = false;
         }
-        if (
-          page.path &&
-          page.path.indexOf('/theatre') !== -1 &&
-          page.path.indexOf('/admin/rooms/theatre') === -1
-        ) {
+        if (page.path && page.path.indexOf('/theatre') !== -1 && page.path.indexOf('/admin/rooms/theatre') === -1)  {
           theatreMode = true;
         } else {
           theatreMode = false;
@@ -164,13 +162,12 @@
         await checkPageEntitlement(page.path);
       }
     });
-    checkPageEntitlement(window.location.pathname);
-
   });
 </script>
-
 <svelte:head>
-  <title>Tickets : The Faithful</title>
+  <title
+    >Tickets : The Faithful</title
+  >
   <meta
     property="og:image"
     content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
@@ -182,6 +179,7 @@
   />
   <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
+
 <div>
   <FirebaseProvider
     on:init={handleDbInit}
@@ -189,7 +187,6 @@
     on:auth-failure={handleAuthFailure}
     on:auth-success-anonymous={handleAuthAnonymous}
   >
-    loaded:{loaded} ent: {entitled}
     {#if loaded >= 2}
       {#if entitled}
         <div class="h-screen flex overflow-hidden bg-gray-100">
@@ -206,7 +203,7 @@
 
           <div class="flex-1 overflow-auto focus:outline-none" tabindex="0">
             <div
-              class={labsMode | theatreMode
+              class={(labsMode | theatreMode)
                 ? 'relative bg-black z-0 flex-shrink-0 flex h-16 border-b border-transparent xl:border-none'
                 : 'relative bg-white z-0 flex-shrink-0 flex h-16 border-b border-gray-200 xl:border-none'}
               class:z-10={navOpen}
@@ -216,7 +213,7 @@
                   ui.sideMenuOpen = !ui.sideMenuOpen;
                   ui = { ...ui };
                 }}
-                class={labsMode | theatreMode
+                class={(labsMode | theatreMode)
                   ? 'px-4 border-r border-transparent text-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-faithful-500 xl:hidden'
                   : 'px-4 border-r border-gray-200 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-faithful-500 xl:hidden'}
               >
@@ -306,9 +303,10 @@
                 <div class="ml-4 flex items-center md:ml-6">
                   {#if labsMode}
                     <NavRoomControls />
-                  {:else if false}
-                    <button
-                      class={labsMode | theatreMode
+                  {:else}
+{#if false}
+                  <button
+                      class={(labsMode | theatreMode)
                         ? 'bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                         : 'bg-transparent p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
                     >
@@ -331,6 +329,7 @@
                         />
                       </svg>
                     </button>
+                    {/if}
                   {/if}
 
                   <!-- Profile dropdown -->
@@ -342,20 +341,20 @@
             </div>
             <main
               class="flex-1 relative pb-8 z-0 overflow-y-auto h-full"
-              class:bg-gray-700={labsMode | theatreMode}
-              class:border-b={labsMode | theatreMode}
-              class:border-red-100={labsMode | theatreMode}
+              class:bg-gray-700={(labsMode | theatreMode)}
+              class:border-b={(labsMode | theatreMode)}
+              class:border-red-100={(labsMode | theatreMode)}
             >
               <slot />
             </main>
           </div>
         </div>
       {:else if user && user.email}
-      <AccessDenied
+        <AccessDenied
           message={`Sorry you don't have access to this as ${user.email}`}
         />
       {:else}
-      <LoginModal {nextUrl} {email} />
+        <LoginModal {nextUrl} {email} />
       {/if}
     {/if}
   </FirebaseProvider>

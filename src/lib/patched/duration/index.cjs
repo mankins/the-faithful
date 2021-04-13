@@ -1,5 +1,8 @@
 "use strict";
 
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
 var d           = require("d")
   , pad         = require("es5-ext/number/hash/pad")
   , date        = require("es5-ext/date/valid-date")

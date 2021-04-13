@@ -1,12 +1,14 @@
 // import shiro from '$lib/patched/shiro-trie';
-import * as shiro from 'shiro-trie';
+//import shiro from 'shiro-trie';
 
 // given an array of productIds and a shiro permission calculate if user has entitlement
 const productsEntitle = async (productIds = [], requiredPermissions = '*') => {
-  const userProducts = shiro.newTrie();
-  userProducts.add(productIds);
+  return true;
+  // console.log({ shiro });
+  // const userProducts = shiro.newTrie();
+  // userProducts.add(productIds);
 
-  return userProducts.check(requiredPermissions); // content:*
+  // return userProducts.check(requiredPermissions); // content:*
 };
 
 export { productsEntitle };

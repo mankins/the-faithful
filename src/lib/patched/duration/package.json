@@ -76,5 +76,8 @@
     "lint": "eslint --ignore-path=.gitignore .",
     "test": "node ./node_modules/tad/bin/tad"
   },
+  "exports": {
+    "require": "./index.cjs"
+},
   "version": "0.2.2"
 }
