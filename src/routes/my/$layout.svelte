@@ -144,10 +144,12 @@
 
     pageStore.subscribe(async (newPage) => {
 
-      console.log('----page', page, newPage);
-debugger;
-      page = newPage;
+      // console.log('----page?', page, newPage, Object.keys(newPage));
+      if (Object.keys(newPage).length) {
+        page = newPage;
+      }
       if (page && page.path) {
+
         if (page.path && page.path.indexOf('/labs') !== -1) {
           labsMode = true;
         } else {
@@ -162,7 +164,6 @@ debugger;
         } else {
           theatreMode = false;
         }
-        console.log('abc');
         await checkPageEntitlement(page.path);
       }
     });
