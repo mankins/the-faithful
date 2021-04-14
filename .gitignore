@@ -8,3 +8,4 @@ tmp
 credentials
 .env
 utils/.env
+.idea
