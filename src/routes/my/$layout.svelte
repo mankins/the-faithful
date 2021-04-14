@@ -199,7 +199,6 @@
     on:auth-failure={handleAuthFailure}
     on:auth-success-anonymous={handleAuthAnonymous}
   >
-    loaded:{loaded} ent: {entitled}
     {#if loaded >= 2}
       {#if entitled}
         <div class="h-screen flex overflow-hidden bg-gray-100">

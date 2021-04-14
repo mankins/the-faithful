@@ -1,5 +1,7 @@
 <script>
   import { onMount } from 'svelte';
+  import { browser } from '$app/env';
+
   import FirebaseProvider from '$lib/FirebaseProvider.svelte';
   import { parseParams } from '$lib/utils/query';
   import { parseMilliseconds } from '$lib/utils/duration';
@@ -184,6 +186,9 @@
     return '/my/theatre/theatre';
   };
   onMount(() => {
+    if (!browser) {
+      return;
+    }
     query = parseParams(window.location.search);
 
     showTimes = [];
@@ -214,6 +219,8 @@
   />
   <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
+hello
+{#if false}
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   {#if loaded}
     <div class="m-6">
@@ -539,3 +546,5 @@
     </div>
   {/if}
 </FirebaseProvider>
+{/if}
+<h2>hi</h2>
