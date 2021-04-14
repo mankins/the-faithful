@@ -48,11 +48,6 @@ module.exports = {
     router: true,
     ssr: true,
     vite: () => ({
-        alias: {
-          // 'firebase/app': Promise.resolve('firebase/app/dist/index.cjs.js'),
-          // 'firebase/auth': Promise.resolve('firebase/auth/dist/index.cjs.js'),
-          // 'firebase/firestore': Promise.resolve('firebase/firestore/dist/index.cjs.js'),
-        },  
       optimizeDeps: {
         include: [], // 'duration','es5-ext'
         exclude: [],
