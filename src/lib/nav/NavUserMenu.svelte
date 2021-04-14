@@ -1,7 +1,7 @@
 <script>
   import { fade } from "svelte/transition";
 
-  import * as md5 from 'md5';
+  import md5 from 'md5';
 import { webmon } from "../stores/webmon";
 
 const gravatar = (em) => {

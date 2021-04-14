@@ -1,5 +1,6 @@
 // const bigInt = require('big-integer');
-import * as bigInt from 'big-integer';
+import * as _bigInt from 'big-integer';
+const bigInt = _bigInt.default;
 
 const knownBases = {
   base64url: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_',

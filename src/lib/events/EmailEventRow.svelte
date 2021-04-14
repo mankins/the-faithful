@@ -6,7 +6,7 @@
 
   import get from 'lodash.get';
 
-  import * as md5 from 'md5';
+  import md5 from 'md5';
 
   const gravatar = (em) => {
     return `https://www.gravatar.com/avatar/${md5(em.toLowerCase())}?d=mp`;
