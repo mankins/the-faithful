@@ -1,8 +1,8 @@
 <script>
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import EventRow from '$components/EventRow.svelte';
-  import { parseParams } from '$components/utils/query';
-  import Visibility from '$components/Visibility.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import EventRow from '$lib/EventRow.svelte';
+  import { parseParams } from '$lib/utils/query';
+  import Visibility from '$lib/Visibility.svelte';
 
   import { onMount } from 'svelte';
 
@@ -235,8 +235,6 @@
           Events
         </h3>
       </div>
-      <!-- <div>
-        <ul class="divide-y divide-gray-200"> -->
 
       <div class="flow-root overflow-auto">
         <ul class="-mb-8">

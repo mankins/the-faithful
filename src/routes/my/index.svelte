@@ -1,8 +1,8 @@
 <script>
-  import Duration from 'duration';
   import { onMount } from 'svelte';
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import { parseParams } from '$components/utils/query';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import { parseParams } from '$lib/utils/query';
+  import { parseMilliseconds } from '$lib/utils/duration';
 
   let hours = 0;
   let min = 0;
@@ -27,11 +27,12 @@
     now = new Date();
     nextShowDate = new Date(nextShow.startTs.toDate());
     // doorsOpen = nextShowDate;
-    const duration = new Duration(now, nextShowDate);
-    days = duration.day;
-    hours = duration.hour;
-    min = duration.minute;
-    sec = duration.second;
+    const duration = parseMilliseconds(nextShowDate);
+    // const duration = new Duration(now, nextShowDate);
+    days = duration.days;
+    hours = duration.hours;
+    min = duration.minutes;
+    sec = duration.seconds;
 
     if (now < doorsOpen) {
       doors = 'closed';
@@ -213,7 +214,6 @@
   />
   <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
-
 <FirebaseProvider on:init={handleDbInit} on:auth-success={handleLogin}>
   {#if loaded}
     <div class="m-6">

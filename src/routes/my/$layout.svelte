@@ -1,23 +1,24 @@
 <script>
   import { onMount } from 'svelte';
+  import { browser } from '$app/env';
 
-  import AccessDenied from '$components/AccessDenied.svelte';
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import LoginModal from '$components/modals/LoginModal.svelte';
-  import NavDesktopSidebar from '$components/nav/NavDesktopSidebar.svelte';
-  import NavSideMenu from '$components/nav/NavSideMenu.svelte';
-  import NavUserMenu from '$components/nav/NavUserMenu.svelte';
-  import Processing from '$components/Processing.svelte';
-  import Toast from '$components/Toast.svelte';
+  import AccessDenied from '$lib/AccessDenied.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import LoginModal from '$lib/modals/LoginModal.svelte';
+  import NavDesktopSidebar from '$lib/nav/NavDesktopSidebar.svelte';
+  import NavSideMenu from '$lib/nav/NavSideMenu.svelte';
+  import NavUserMenu from '$lib/nav/NavUserMenu.svelte';
+  import Processing from '$lib/Processing.svelte';
+  import Toast from '$lib/Toast.svelte';
 
-  import { parseParams } from '$components/utils/query';
-  import { getCookies } from '$components/utils/cookies';
-  import { productsEntitle } from '$components/utils/entitles.js';
-  import { baseProducts } from '$components/utils/auth.js';
+  import { parseParams } from '$lib/utils/query';
+  import { getCookies } from '$lib/utils/cookies';
+  import { productsEntitle } from '$lib/utils/entitles.js';
+  import { baseProducts } from '$lib/utils/auth.js';
 
-  import { userEntitlements } from '$components/stores/entitlements.js';
-  import { page as pageStore } from '$components/stores';
-  import NavRoomControls from '../../components/nav/NavRoomControls.svelte';
+  import { userEntitlements } from '$lib/stores/entitlements.js';
+  import { page as pageStore } from '$lib/stores';
+  import NavRoomControls from '$lib/nav/NavRoomControls.svelte';
 
   let ui = {
     sideMenuOpen: false,
@@ -49,7 +50,7 @@
 
   export let user = {};
   let handleLogin = async (profile) => {
-    // console.log({ profile });
+    console.log({ profile });
     if (
       !profile.detail ||
       (profile.detail.user && profile.detail.user.isAnonymous)
@@ -64,6 +65,8 @@
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
+    console.log('dbinit', {firebase});
+
     const userProductsFn = firebase
       .functions()
       .httpsCallable('userEntitlements');
@@ -88,19 +91,23 @@
       console.log(e);
     }
     loaded++;
+    console.log('dbinit 2');
   };
 
   let handleAuthAnonymous = () => {
     loaded++;
+    console.log('auth anon');
     setEntitled(false);
   };
 
   let handleAuthFailure = () => {
+    console.log('auth fail');
     setEntitled(false);
     loaded++;
   };
 
   const checkPageEntitlement = async (pathname) => {
+    console.log('check page', pathname);
     const sitePath = pathname.replace(/\W/g, ':');
     let requiredEntitlement = `site:user${sitePath}`;
     if (pathname.indexOf('/admin') !== -1) {
@@ -110,16 +117,18 @@
     //   requiredEntitlement = `site:admin${sitePath}`;
     // }
     const ent = await productsEntitle(userProducts, requiredEntitlement);
-    // console.log({ pathname, sitePath, requiredEntitlement, ent });
+    console.log({ pathname, sitePath, requiredEntitlement, ent });
     setEntitled(ent);
     return ent;
   };
 
   let labsMode = false;
 
-
   onMount(() => {
     // loaded = 0;
+    if (!browser) {
+      return;
+    }
     page.path = window.location.pathname;
     nextUrl = window.location.href;
     let cookies = getCookies(document.cookie);
@@ -134,15 +143,23 @@
     }
 
     pageStore.subscribe(async (newPage) => {
-      //   console.log('----page', page, newPage);
-      page = newPage;
+
+      // console.log('----page?', page, newPage, Object.keys(newPage));
+      if (Object.keys(newPage).length) {
+        page = newPage;
+      }
       if (page && page.path) {
+
         if (page.path && page.path.indexOf('/labs') !== -1) {
           labsMode = true;
         } else {
           labsMode = false;
         }
-        if (page.path && page.path.indexOf('/theatre') !== -1 && page.path.indexOf('/admin/rooms/theatre') === -1)  {
+        if (
+          page.path &&
+          page.path.indexOf('/theatre') !== -1 &&
+          page.path.indexOf('/admin/rooms/theatre') === -1
+        ) {
           theatreMode = true;
         } else {
           theatreMode = false;
@@ -157,12 +174,13 @@
         await checkPageEntitlement(page.path);
       }
     });
+    // checkPageEntitlement(window.location.pathname);
+
   });
 </script>
+
 <svelte:head>
-  <title
-    >Tickets : The Faithful</title
-  >
+  <title>Tickets : The Faithful</title>
   <meta
     property="og:image"
     content="https://www.the-faithful.com/img/the-faithful-poster-3.jpg"
@@ -174,7 +192,6 @@
   />
   <meta property="twitter:card" content="summary_large_image" />
 </svelte:head>
-
 <div>
   <FirebaseProvider
     on:init={handleDbInit}
@@ -198,7 +215,7 @@
 
           <div class="flex-1 overflow-auto focus:outline-none" tabindex="0">
             <div
-              class={(labsMode | theatreMode)
+              class={labsMode | theatreMode
                 ? 'relative bg-black z-0 flex-shrink-0 flex h-16 border-b border-transparent xl:border-none'
                 : 'relative bg-white z-0 flex-shrink-0 flex h-16 border-b border-gray-200 xl:border-none'}
               class:z-10={navOpen}
@@ -208,7 +225,7 @@
                   ui.sideMenuOpen = !ui.sideMenuOpen;
                   ui = { ...ui };
                 }}
-                class={(labsMode | theatreMode)
+                class={labsMode | theatreMode
                   ? 'px-4 border-r border-transparent text-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-faithful-500 xl:hidden'
                   : 'px-4 border-r border-gray-200 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-faithful-500 xl:hidden'}
               >
@@ -298,10 +315,9 @@
                 <div class="ml-4 flex items-center md:ml-6">
                   {#if labsMode}
                     <NavRoomControls />
-                  {:else}
-{#if false}
-                  <button
-                      class={(labsMode | theatreMode)
+                  {:else if false}
+                    <button
+                      class={labsMode | theatreMode
                         ? 'bg-transparent p-1 rounded-full text-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                         : 'bg-transparent p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
                     >
@@ -324,7 +340,6 @@
                         />
                       </svg>
                     </button>
-                    {/if}
                   {/if}
 
                   <!-- Profile dropdown -->
@@ -336,20 +351,20 @@
             </div>
             <main
               class="flex-1 relative pb-8 z-0 overflow-y-auto h-full"
-              class:bg-gray-700={(labsMode | theatreMode)}
-              class:border-b={(labsMode | theatreMode)}
-              class:border-red-100={(labsMode | theatreMode)}
+              class:bg-gray-700={labsMode | theatreMode}
+              class:border-b={labsMode | theatreMode}
+              class:border-red-100={labsMode | theatreMode}
             >
               <slot />
             </main>
           </div>
         </div>
       {:else if user && user.email}
-        <AccessDenied
+      <AccessDenied
           message={`Sorry you don't have access to this as ${user.email}`}
         />
       {:else}
-        <LoginModal {nextUrl} {email} />
+      <LoginModal {nextUrl} {email} />
       {/if}
     {/if}
   </FirebaseProvider>

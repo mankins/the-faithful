@@ -7,17 +7,17 @@
 
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
+  import VideoPlayer from '$lib/VideoPlayerTheatre.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
   // import { fade, fly } from 'svelte/transition';
-  import JSPretty from '$components/JSPretty.svelte';
-  import WebMonCounter from '$components/WebMonCounter.svelte';
-  import { webmon } from '$components/stores/webmon.js';
-  import { productsEntitle } from '$components/utils/entitles.js';
-  import { userEntitlements } from '$components/stores/entitlements.js';
-  import { fireGoal } from '$components/utils/analytics';
-  import AccessDenied from '$components/AccessDenied.svelte';
-  import { sendEvent } from '$components/utils/events';
+  import JSPretty from '$lib/JSPretty.svelte';
+  import WebMonCounter from '$lib/WebMonCounter.svelte';
+  import { webmon } from '$lib/stores/webmon.js';
+  import { productsEntitle } from '$lib/utils/entitles.js';
+  import { userEntitlements } from '$lib/stores/entitlements.js';
+  import { fireGoal } from '$lib/utils/analytics';
+  import AccessDenied from '$lib/AccessDenied.svelte';
+  import { sendEvent } from '$lib/utils/events';
 
   let userProducts = [];
 

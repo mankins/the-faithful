@@ -2,7 +2,7 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "serve": "COMMIT_SHA=$(git rev-parse HEAD) firebase emulators:start --project the-faithful",
+    "serve": "firebase use the-faithful && GCLOUD_PROJECT=the-faithful COMMIT_SHA=$(git rev-parse HEAD) firebase emulators:start --project the-faithful",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",

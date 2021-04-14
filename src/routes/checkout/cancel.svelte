@@ -1,11 +1,11 @@
 <script>
   import { onMount } from 'svelte';
 
-  import Footer from '$components/nav/Footer.svelte';
-  import Nav from '$components/nav/Nav.svelte';
-  import Toast from '$components/Toast.svelte';
-  import { fireGoal } from '$components/utils/analytics';
-  import { sendEvent } from '$components/utils/events';
+  import Footer from '$lib/nav/Footer.svelte';
+  import Nav from '$lib/nav/Nav.svelte';
+  import Toast from '$lib/Toast.svelte';
+  import { fireGoal } from '$lib/utils/analytics';
+  import { sendEvent } from '$lib/utils/events';
 
   onMount(async () => {
     sendEvent({topic:'cart.checkout.cancelled' });

@@ -1,8 +1,8 @@
 <script>
   // import { onMount } from 'svelte';
-  import GuestRow from '$components/GuestRow.svelte';
-  import ConfirmGuestModal from '$components/modals/ConfirmGuestModal.svelte';
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
+  import GuestRow from '$lib/GuestRow.svelte';
+  import ConfirmGuestModal from '$lib/modals/ConfirmGuestModal.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
 
   let openConfirmGuest = false;
   let confirmEmail = '';

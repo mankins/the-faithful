@@ -1,5 +1,11 @@
 # Functions
 
+For development, install firebase locally:
+
+```
+npm install -g firebase-tools
+```
+
 ### Production / Development Config
 
 Via `dotenv` and `.env`, although don't check in secrets to `.env`.

@@ -7,20 +7,18 @@
 
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import VideoPlayer from '$components/VideoPlayerTheatre.svelte';
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import { gal, talker, talking, downs, me } from '$components/stores/gal';
-  import { fade, fly } from 'svelte/transition';
-  import { heroMode } from '$components/stores/room.js';
-  import JSPretty from '$components/JSPretty.svelte';
+  import VideoPlayer from '$lib/VideoPlayerTheatre.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import { gal, talker, talking, downs } from '$lib/stores/gal';
+  import { fade } from 'svelte/transition';
+  import { heroMode } from '$lib/stores/room.js';
+  import JSPretty from '$lib/JSPretty.svelte';
 
   import get from 'lodash.get';
   import timecodes from 'node-timecodes';
 
-  import Seating from '$components/room/Seating.svelte';
-  import UserVideo from '$components/user/UserVideo.svelte';
-import Footer from '../../../components/nav/Footer.svelte';
-import Index from '../index.svelte';
+  import Seating from '$lib/room/Seating.svelte';
+  import UserVideo from '$lib/user/UserVideo.svelte';
 
   export let room = 'waiting';
   let theatre = {};

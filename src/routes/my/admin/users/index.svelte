@@ -1,8 +1,8 @@
 <script>
-  import FirebaseProvider from '$components/FirebaseProvider.svelte';
-  import UserRow from '$components/UserRow.svelte';
-  import { parseParams } from '$components/utils/query';
-  import Visibility from '$components/Visibility.svelte';
+  import FirebaseProvider from '$lib/FirebaseProvider.svelte';
+  import UserRow from '$lib/UserRow.svelte';
+  import { parseParams } from '$lib/utils/query';
+  import Visibility from '$lib/Visibility.svelte';
   // import { stringify } from 'querystring';
 
   import { onMount } from 'svelte';
