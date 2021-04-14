@@ -31,10 +31,12 @@ firebase deploy --only hosting
 
 ## Cloud Run
 
-Cloud Run has two main containers: an ingress controller (nginx) that maps to `origin.the-faithful.com` which is another Cloud Run container called `the-faithful ssr`.
+Cloud Run has three main containers: `the-faithful-ssr` (server side render), `the-faithful-ssr-ingress` (reverse proxy), `the-faithful-tracking-proxy` (mailgun analytics https proxy)
+
+The SSR ingress controller (nginx) maps to `origin.the-faithful.com` which is another Cloud Run container called `the-faithful-ssr`.
 
 ```
 Firebase -> firebase.json -> Cloud Run SSR Ingress -> Cloud Run SSR
 ```
 
-The ingress does gzip. 
+The ingress seemed to be needed to do gzip.
