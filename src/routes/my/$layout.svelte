@@ -50,7 +50,7 @@
 
   export let user = {};
   let handleLogin = async (profile) => {
-    // console.log({ profile });
+    console.log({ profile });
     if (
       !profile.detail ||
       (profile.detail.user && profile.detail.user.isAnonymous)
@@ -65,6 +65,8 @@
 
   const handleDbInit = async (ev) => {
     firebase = ev.detail.firebase;
+    console.log('dbinit', {firebase});
+
     const userProductsFn = firebase
       .functions()
       .httpsCallable('userEntitlements');
@@ -89,19 +91,23 @@
       console.log(e);
     }
     loaded++;
+    console.log('dbinit 2');
   };
 
   let handleAuthAnonymous = () => {
     loaded++;
+    console.log('auth anon');
     setEntitled(false);
   };
 
   let handleAuthFailure = () => {
+    console.log('auth fail');
     setEntitled(false);
     loaded++;
   };
 
   const checkPageEntitlement = async (pathname) => {
+    console.log('check page', pathname);
     const sitePath = pathname.replace(/\W/g, ':');
     let requiredEntitlement = `site:user${sitePath}`;
     if (pathname.indexOf('/admin') !== -1) {
@@ -111,7 +117,7 @@
     //   requiredEntitlement = `site:admin${sitePath}`;
     // }
     const ent = await productsEntitle(userProducts, requiredEntitlement);
-    // console.log({ pathname, sitePath, requiredEntitlement, ent });
+    console.log({ pathname, sitePath, requiredEntitlement, ent });
     setEntitled(ent);
     return ent;
   };
@@ -137,7 +143,9 @@
     }
 
     pageStore.subscribe(async (newPage) => {
-      //   console.log('----page', page, newPage);
+
+      console.log('----page', page, newPage);
+debugger;
       page = newPage;
       if (page && page.path) {
         if (page.path && page.path.indexOf('/labs') !== -1) {
@@ -154,6 +162,7 @@
         } else {
           theatreMode = false;
         }
+        console.log('abc');
         await checkPageEntitlement(page.path);
       }
     });
@@ -164,7 +173,7 @@
         await checkPageEntitlement(page.path);
       }
     });
-    checkPageEntitlement(window.location.pathname);
+    // checkPageEntitlement(window.location.pathname);
 
   });
 </script>

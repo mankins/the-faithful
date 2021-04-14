@@ -17,12 +17,10 @@
     if (!browser) {
       return;
     }
-    
+
     firebase = await firebasePromise;
 
-    if (firebase.apps.length === 0) {
-      dispatch('init', { firebase });
-    }
+    dispatch('init', { firebase });
     try {
       firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     } catch (e) {
