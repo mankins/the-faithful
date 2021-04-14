@@ -51,15 +51,15 @@
 		"time-ago": "^0.2.1",
 		"uuid": "^8.3.2",
 		"vite": "^2.1.5",
-		"voice-activity-detection": "0.0.5"
+		"voice-activity-detection": "0.0.5",
+		"node-timecodes": "^2.5.0"
 	},
 	"dependencies": {
 		"@stripe/stripe-js": "^1.13.2",
 		"audio-stream-meter": "^1.0.5",
 		"base58": "^2.0.1",
 		"firebase": "8.2.2",
-		"node-fetch": "^2.6.1",
-		"node-timecodes": "^2.5.0"
+		"node-fetch": "^2.6.1"
 	},
 	"type": "module"
 }
