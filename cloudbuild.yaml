@@ -156,6 +156,8 @@ steps:
         "${_SERVICE_NAME}",
         "--platform",
         "managed",
+        "--port",
+        "3000",
         "--region",
         "${_REGION}",
         "--allow-unauthenticated",
