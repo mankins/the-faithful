@@ -16,6 +16,5 @@ ARG COMMIT_SHA=$COMMIT_SHA
 RUN NODE_ENV=production COMMIT_SHA=$COMMIT_SHA npm run build
 
 ENV HOST 0.0.0.0
-EXPOSE $PORT
-# EXPOSE 3000
+EXPOSE 3000
 CMD ["npm", "run", "start"]
