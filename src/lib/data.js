@@ -76,7 +76,7 @@ const PRODUCTS = {
       {
         id: 'video:thefaithful:streaming',
         name: 'Streaming Access - The Faithful',
-        description: 'March 23 to April 30, 2021',
+        description: ' ',
       },
     ],
     price: { currency: 'usd', amount: 500 },
