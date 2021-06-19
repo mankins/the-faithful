@@ -9,3 +9,4 @@ credentials
 .env
 utils/.env
 .idea
+.svelte-kit

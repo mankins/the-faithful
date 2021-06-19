@@ -1,10 +1,19 @@
-const sveltePreprocess = require('svelte-preprocess');
-const node = require('@sveltejs/adapter-node');
-const pkg = require('./package.json');
-const firebase = require('firebase/package.json');
-const deps = Object.keys(pkg.dependencies || {}).sort();
+// const sveltePreprocess = require('svelte-preprocess');
+// const node = require('@sveltejs/adapter-node');
+// const pkg = require('./package.json');
+// const firebase = require('firebase/package.json');
+// const deps = Object.keys(pkg.dependencies || {}).sort();
 
-module.exports = {
+import sveltePreprocess from 'svelte-preprocess';
+import node from '@sveltejs/adapter-node';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
+const pkg = require('./package.json');
+const deps = Object.keys(pkg.dependencies || {}).sort();
+const firebase = require('firebase/package.json');
+
+const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
   // for more information about preprocessors
   preprocess: sveltePreprocess({
@@ -63,3 +72,4 @@ module.exports = {
     target: '#svelte',
   },
 };
+export default config;

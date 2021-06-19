@@ -36,8 +36,6 @@
     items = items;
   };
 
-  export let logout = false;
-
   const [send, receive] = crossfade({
     duration: 250,
     fallback: fade,
@@ -644,7 +642,7 @@
 
 <div class="bg-white absolute top-0 mb h-full z-10">
   <Nav {loggedIn} {user}>
-    {#if !loggedIn}
+    {#if !loggedIn && false}
     <button
       on:click={() => {
         if (items.length) {

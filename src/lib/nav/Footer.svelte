@@ -127,7 +127,7 @@
       </a>
 
       {#if false}
-        <a href="#" class="text-gray-400 hover:text-gray-300">
+        <a href="https://www.github.com" class="text-gray-400 hover:text-gray-300">
           <span class="sr-only">GitHub</span>
           <svg
             class="h-12 w-12"

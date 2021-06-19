@@ -98,7 +98,7 @@
           >
             Home
           </a>
-          {#if true}
+          {#if false}
           <a
             href="/my"
             rel="external"
@@ -109,6 +109,7 @@
             Watch
           </a>
           {/if}
+          {#if false}
           <a
             href="/tickets"
             class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
@@ -117,6 +118,7 @@
           >
             Tickets
           </a>
+          {/if}
         </div>
       </div>
       <div class="flex items-center">
@@ -153,12 +155,14 @@
             {#if loggedIn}
                 <NavUserMenu {user} />
               {:else}
+              {#if false}
               <a
                   href="/login"
                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700"
                 >
                   Sign in
                 </a>
+                {/if}
               {/if}
               {/if}
             </div>
@@ -181,7 +185,7 @@
         class:text-faithful-700={section === 'home'}
         >Home</a
       >
-      {#if true}
+      {#if false}
       <a
         href="/my"
         rel="external"
@@ -192,7 +196,7 @@
         >Watch</a
       >
       {/if}
-      {#if !loggedIn}
+      {#if !loggedIn && false}
       <a
         href="/tickets"
         class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6"
