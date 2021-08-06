@@ -109,9 +109,9 @@
             Watch
           </a>
           {/if}
-          {#if false}
+          {#if true}
           <a
-            href="/tickets"
+            href="https://thefaithful.notion.site/thefaithful/IN-THEATERS-401ba3c135d841c9a5ce7d0f32f084b6"
             class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
             class:border-b-4={section === 'tickets'}
             class:border-faithful-500={section === 'tickets'}
@@ -119,6 +119,15 @@
             Tickets
           </a>
           {/if}
+          {#if true}
+          <a
+            href="https://forms.gle/ueuL7K6uXM84z3He6"
+            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+          >
+            Host a Screening
+          </a>
+          {/if}
+          
         </div>
       </div>
       <div class="flex items-center">
@@ -196,14 +205,22 @@
         >Watch</a
       >
       {/if}
-      {#if !loggedIn && false}
+      {#if !loggedIn && true}
       <a
-        href="/tickets"
+        href="https://thefaithful.notion.site/thefaithful/IN-THEATERS-401ba3c135d841c9a5ce7d0f32f084b6"
         class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6"
         class:border-faithful-500={section === 'tickets'}
         class:text-faithful-700={section === 'tickets'}
         >Tickets</a
       >
+      <a
+href="https://forms.gle/ueuL7K6uXM84z3He6"
+rel="external"
+class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6"
+>
+Host a Screening
+</a>
+
     <a
         href="/login"
         class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6"
@@ -212,17 +229,33 @@
       </a>
 {:else}
 <a
+href="https://thefaithful.notion.site/thefaithful/IN-THEATERS-401ba3c135d841c9a5ce7d0f32f084b6"
+rel="external"
+class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6"
+>
+Tickets
+</a>
+<a
+href="https://forms.gle/ueuL7K6uXM84z3He6"
+rel="external"
+class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6"
+>
+Host a Screening
+</a>
+<a
 rel="external"
 href="/my"
 class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6"
 >Lobby</a
 >
+{#if loggedIn}
 <a
 href="/logout"
 class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6"
 >
 Sign out
 </a>
+{/if}
 
       {/if}
 
