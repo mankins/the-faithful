@@ -127,6 +127,15 @@
             Host a Screening
           </a>
           {/if}
+          {#if true}
+          <a
+            href="https://thefaithful.notion.site/thefaithful/PRESS-1e6effd447b2445ea6a4d05eb52bc82c"
+            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+          >
+            Press
+          </a>
+          {/if}
+          
           
         </div>
       </div>
@@ -220,6 +229,12 @@ class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 h
 >
 Host a Screening
 </a>
+<a
+href="https://thefaithful.notion.site/thefaithful/PRESS-1e6effd447b2445ea6a4d05eb52bc82c"
+rel="external"
+class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6"
+>
+Press</a>
 
     <a
         href="/login"
@@ -241,6 +256,13 @@ rel="external"
 class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6"
 >
 Host a Screening
+</a>
+<a
+href="https://thefaithful.notion.site/thefaithful/PRESS-1e6effd447b2445ea6a4d05eb52bc82c"
+rel="external"
+class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6"
+>
+Press
 </a>
 <a
 rel="external"
