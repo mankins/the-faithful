@@ -1,7 +1,7 @@
 # This stage builds the svelte application.
 # Use the official lightweight Node.js 14 image.
 # https://hub.docker.com/_/node
-FROM node:14-slim as build-app
+FROM node:19-slim as build-app
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install build-essential python -y
 
 WORKDIR /app
