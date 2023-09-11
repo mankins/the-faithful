@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher, onMount } from 'svelte';
-  import { browser } from '$app/env';
+  import { browser } from '$app/environment';
 
   import firebasePromise from '$lib/utils/firebase';
   import { shortId } from '$lib/utils/short-uuid';

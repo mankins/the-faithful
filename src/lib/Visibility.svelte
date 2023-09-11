@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { browser } from '$app/env';
+  import { browser } from '$app/environment';
 
   export let top = 0;
   export let bottom = 0;

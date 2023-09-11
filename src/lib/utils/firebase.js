@@ -1,4 +1,4 @@
-import { browser } from '$app/env';
+import { browser } from '$app/environment';
 import { firebaseConfig } from '$lib/config/index.js';
 
 const firebasePromise = new Promise(async (resolve) => {
