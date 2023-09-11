@@ -1,10 +1,3 @@
-<script context="module">
-  export async function load({ page }) {
-    const { roomId } = page.params;
-    return { props: { roomId } };
-  }
-</script>
-
 <script>
   import { fade } from 'svelte/transition';
   import { onMount } from 'svelte';
@@ -30,7 +23,9 @@
   let pageSize = 25;
   let saveState = 'ready';
 
-  export let roomId;
+  export let data = {};
+
+  let { roomId } = data;
   let roomFound = false;
 
   const handleDbInit = async (ev) => {
@@ -429,11 +424,9 @@
                     d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
                   />
                 </svg>
-    
+
                 <span class="truncate"> Tickets </span>
               </a>
-
-    
 
               <a
                 on:click|preventDefault={() => {
@@ -508,7 +501,9 @@
                   <button
                     type="button"
                     on:click={() => {
-                      let confirm = prompt('Rewind to start? "y" to confirm. Takes effect immediately.');
+                      let confirm = prompt(
+                        'Rewind to start? "y" to confirm. Takes effect immediately.'
+                      );
                       if (confirm === 'y') {
                         setTime(1);
                         room.startTs = 1;
@@ -522,12 +517,13 @@
                   <button
                     type="button"
                     on:click={() => {
-                      let confirm = prompt('End playback? "y" to confirm. Takes effect immediately.');
+                      let confirm = prompt(
+                        'End playback? "y" to confirm. Takes effect immediately.'
+                      );
                       if (confirm === 'y') {
                         setTime(99999);
                         room.startTs = 99999;
                         window.location.href = window.location.href; // reload to get new values
-
                       }
                     }}
                     class="ml-3 mr-3 relative inline-flex items-center px-4 py-2 rounded-l-md rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
@@ -551,8 +547,7 @@
             {#if active === 'debug'}
               <div class="shadow sm:rounded-md sm:overflow-hidden">
                 <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
-                  <pre
-                    class="text-xs">        
+                  <pre class="text-xs">        
                     <JSPretty obj={room} />
                   </pre>
                 </div>

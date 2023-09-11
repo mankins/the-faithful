@@ -1,10 +1,3 @@
-<script context="module">
-  export async function load({ page }) {
-    const { videoId } = page.params;
-    return { props: { videoId } };
-  }
-</script>
-
 <script>
   import FirebaseProvider from '$lib/FirebaseProvider.svelte';
 
@@ -40,7 +33,9 @@
   let poster = '/img/trailer-cover-1b.jpg';
 
   let previewId = 'pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ';
-  export let videoId = previewId; // 'f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE';
+  export let data = {};
+  let { videoId = previewId } = data;
+
   let cartOpened = false;
   let items = [];
   let query = {};

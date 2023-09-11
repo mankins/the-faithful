@@ -1,10 +1,3 @@
-<script context="module">
-  export async function load({ page }) {
-    const { ticketId } = page.params;
-    return { props: { ticketId } };
-  }
-</script>
-
 <script>
   import { fade } from 'svelte/transition';
   import { onMount } from 'svelte';
@@ -20,7 +13,9 @@ import { update_slot_spread } from 'svelte/internal';
   let user = {};
   let ticket = {};
   let stripeData = {};
-  export let ticketId;
+  export let data = {};
+  let { ticketId } = data;
+
   let ticketFound = false;
 
   const handleDbInit = async (ev) => {

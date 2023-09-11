@@ -1,10 +1,3 @@
-<script context="module">
-  export async function load({ page }) {
-    const { focusType } = page.params;
-    return { props: { focusType } };
-  }
-</script>
-
 <script>
   import Toast from '$lib/Toast.svelte';
 
@@ -26,7 +19,8 @@
   let user = {};
   let loggedIn = false; // only appears on home page
 
-  export let focusType = 'stream,cinnamon';
+  export let data = {};
+  let { focusType = 'stream,cinnamon' } = data;
 
   let cartOpened = false;
   let items = [];

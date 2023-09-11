@@ -1,12 +1,8 @@
-export async function get(req, res) {
-    const FAQ = 'https://www.notion.so/The-Faithful-FAQ-s-05fe7a8a5566447e82181a4068198ac4';
+import { redirect } from '@sveltejs/kit';
 
-    return Promise.resolve({
-        status: 302,
-        headers: {
-            "location": FAQ,
-            "cache-control": "no-cache; max-age=30",
-        },
-        body: ''
-    });    
+export async function GET(req, res) {
+  const FAQ =
+    'https://www.notion.so/The-Faithful-FAQ-s-05fe7a8a5566447e82181a4068198ac4';
+
+  throw redirect(302, FAQ);
 }

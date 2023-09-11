@@ -1,11 +1,5 @@
-export async function get(req, res) {
+import { redirect } from '@sveltejs/kit';
 
-    return Promise.resolve({
-        status: 302,
-        headers: {
-            "location": '/my/theatre/theatre',
-            "cache-control": "no-cache; max-age=30",
-        },
-        body: ''
-    });    
+export async function GET(req, res) {
+  throw redirect(302, '/my/labs/theatre');
 }

@@ -1,12 +1,7 @@
-export async function get(req, res) {
-    const TRAILER = `/preview/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ?${req.query.toString()}`;
+import { redirect } from '@sveltejs/kit';
 
-    return Promise.resolve({
-        status: 302,
-        headers: {
-            "location": TRAILER,
-            "cache-control": "no-cache; max-age=30",
-        },
-        body: ''
-    });    
+export async function GET(req, res) {
+    const TRAILER = `/preview/pJ8ZLyX6GQy2gR6K72Np3iPhGJU00yYwMP01K3elY02NOQ?${req.query.toString()}`;
+    
+    throw redirect(302, TRAILER);
 }

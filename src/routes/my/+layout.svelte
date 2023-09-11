@@ -48,7 +48,8 @@
     return entitled;
   };
 
-  export let user = {};
+  export let data = {};
+  let { user } = data;
   let handleLogin = async (profile) => {
     console.log({ profile });
     if (

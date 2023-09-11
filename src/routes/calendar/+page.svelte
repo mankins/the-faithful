@@ -3,13 +3,14 @@
   import Arrow from '$lib/nav/Arrow.svelte';
   import Nav from '$lib/nav/Nav.svelte';
 
-  export let year = 2021;
-  export let offset = 0; // Sun
-  export let today = new Date(); // Date
-  export let month = today.getMonth(); // Mar
+  export let data = {};
 
-  export let labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  export let months = [
+  let { year = 2021, offset = 0, today = new Date() } = data;
+
+  let { month = today.getMonth() } = data;
+
+  let labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  let months = [
     'Jan',
     'Feb',
     'Mar',
@@ -99,47 +100,52 @@
                 class="h-full w-full zmax-h-32 p-2 m-auto border bg-white text-xs"
                 class:bg-faithful-800={isEvent(current[idxw][idxd])}
               >
-			  <div class:text-gray-200={isEvent(current[idxw][idxd])}>{current[idxw][idxd]}</div>
-			  <div class="h-full w-full m-auto text-xs flex flex-col items-center justify-center">
-                {#if isEvent(current[idxw][idxd])}
-                  {#each isEvent(current[idxw][idxd]) as ev}
-                    <div class="w-full text-left font-bold text-gray-50">
-                      <div class="cursor-pointer flex items-center justify-center">
-                        <div title="live q&a">
-                          <svg
-                            class="w-4 h-4 mr-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path
-                              d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"
-                            />
-                            <path
-                              d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"
-                            />
-                          </svg>
-                        </div>
-                        <div title="tickets available">
-                          <svg
-                            class="w-4 h-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path
-                              d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"
-                            />
-                          </svg>
+                <div class:text-gray-200={isEvent(current[idxw][idxd])}>
+                  {current[idxw][idxd]}
+                </div>
+                <div
+                  class="h-full w-full m-auto text-xs flex flex-col items-center justify-center"
+                >
+                  {#if isEvent(current[idxw][idxd])}
+                    {#each isEvent(current[idxw][idxd]) as ev}
+                      <div class="w-full text-left font-bold text-gray-50">
+                        <div
+                          class="cursor-pointer flex items-center justify-center"
+                        >
+                          <div title="live q&a">
+                            <svg
+                              class="w-4 h-4 mr-1"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path
+                                d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"
+                              />
+                              <path
+                                d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"
+                              />
+                            </svg>
+                          </div>
+                          <div title="tickets available">
+                            <svg
+                              class="w-4 h-4"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path
+                                d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"
+                              />
+                            </svg>
+                          </div>
                         </div>
                       </div>
-                    </div>
-					<div><button class="mt-4">hey</button></div>
-                  {/each}
-               {/if}
-			</div>
-
-				</div>
+                      <div><button class="mt-4">hey</button></div>
+                    {/each}
+                  {/if}
+                </div>
+              </div>
             {:else if idxw < 1}
               <span
                 class="h-full w-full p-2 m-auto border other bg-gray-100 text-xs"

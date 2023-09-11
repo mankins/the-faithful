@@ -1,6 +1,5 @@
 import timecodes from 'node-timecodes';
-
-export async function get(req, res, next) {
+export async function GET(req, res, next) {
   const query = {};
   for (const [key, value] of req.query) {
     // each 'entry' is a [key, value] tupple
@@ -17,15 +16,14 @@ export async function get(req, res, next) {
   } = query;
 
   let body = await getVtt(filename, cols, rows, length, width, height);
-//   console.log({ req });
+  //   console.log({ req });
 
-  return Promise.resolve({
+  return new Response(body, {
     status: 200,
     headers: {
       'content-type': 'text/vtt',
       'cache-control': 'no-cache; max-age=60',
     },
-    body,
   });
 }
 
@@ -54,7 +52,7 @@ const getVtt = async (filename, rows, cols, lengthTimecode, width, height) => {
       let startTimecode = timecodes.fromSeconds(pointerSec, {
         ms: true,
       });
-        startTimecode = startTimecode.replace(/\:(\d\d\d)$/, '.$1');
+      startTimecode = startTimecode.replace(/\:(\d\d\d)$/, '.$1');
 
       pointerSec = pointerSec + segmentSec;
 
@@ -63,21 +61,20 @@ const getVtt = async (filename, rows, cols, lengthTimecode, width, height) => {
       });
       endTimecode = endTimecode.replace(/\:(\d\d\d)$/, '.$1');
 
-    //   5
-    //   00:00:04.000 --> 00:00:05.000
+      //   5
+      //   00:00:04.000 --> 00:00:05.000
       // 00:00:00:000 --> 00:00:06:000
-    //   100p-00001.jpg#xywh=712,0,178,100
-           // file.zjpg#xywh=0,0,128,72
-   
-    // 1
-    // 00:00:00:000 --> 00:00:06:000
-    // file.zjpg#xywh=0,0,128,72
-    
-    
-    // 2
-    // 00:00:06:000 --> 00:00:12:000
-    // file.zjpg#xywh=0,72,128,72
-        
+      //   100p-00001.jpg#xywh=712,0,178,100
+      // file.zjpg#xywh=0,0,128,72
+
+      // 1
+      // 00:00:00:000 --> 00:00:06:000
+      // file.zjpg#xywh=0,0,128,72
+
+      // 2
+      // 00:00:06:000 --> 00:00:12:000
+      // file.zjpg#xywh=0,72,128,72
+
       count = count + 1;
       let x = w * col;
       let y = h * row;

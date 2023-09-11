@@ -4991,7 +4991,7 @@ const getIco = ({ icon = 'elvis', type = 'png', size = '180x180' }) => {
   return new Buffer.from(data, 'base64');  
 };
 
-export async function get(req, res, next) {
+export async function GET(req, res, next) {
   console.log({ req });
 
   let size = req.query.get('size') || '16x16';
@@ -5013,14 +5013,13 @@ export async function get(req, res, next) {
     contentType = 'image/x-icon';
  }
   console.log({ size, type, icon });
-  return Promise.resolve({
+  return new Response(getIco({ size, type, icon })), {
     status: 200,
     headers: {
       "content-type": contentType,
       "cache-control": "no-cache; max-age=0",
-    },
-    body: getIco({ size, type, icon })
-  });
+    }
+  };
 
   // after doing this these images make pretty horrible favicons
   // ¯\_(ツ)_/¯

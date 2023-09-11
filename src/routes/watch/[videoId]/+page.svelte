@@ -1,10 +1,3 @@
-<script context="module">
-  export async function load({ page }) {
-    const { videoId } = page.params;
-    return { props: { videoId } };
-  }
-</script>
-
 <script>
   import FirebaseProvider from '$lib/FirebaseProvider.svelte';
 
@@ -35,7 +28,8 @@
   let title = 'The Faithful: The King, The Pope, The Princess';
   let poster = '/img/trailer-cover-1b.jpg';
 
-  export let videoId = 't2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE'; // 'f8NFF01pyowaiq6H1jJxWnODzFFRFYMqRM0101U4RqYMqE';
+  export let data = {};
+  let { videoId = 't2jYTAKc71QbCfyTlau3GJfErwcJLmnLQS8xHWclWvE' } = data;
 
   let entitled = false;
 

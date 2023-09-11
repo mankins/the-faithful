@@ -1,10 +1,3 @@
-<script context="module">
-  export async function load({ page }) {
-    const { room } = page.params;
-    return { props: { room } };
-  }
-</script>
-
 <script>
   import { onMount, onDestroy } from 'svelte';
   import VideoPlayer from '$lib/VideoPlayerTheatre.svelte';
@@ -28,7 +21,9 @@
   // import Footer from '../../../components/nav/Footer.svelte';
   // import Index from '../index.svelte';
 
-  export let room = 'waiting';
+  export let data = {};
+  let { room = 'waiting' } = data;
+
   let theatre = {};
   let db;
   let firebase;
