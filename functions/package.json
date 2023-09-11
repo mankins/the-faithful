@@ -13,7 +13,7 @@
     "pubsub": "gcloud beta emulators pubsub start"
   },
   "engines": {
-    "node": "18"
+    "node": "19"
   },
   "main": "index.js",
   "dependencies": {
