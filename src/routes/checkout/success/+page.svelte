@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import * as Sentry from '@sentry/browser';
-  import { browser } from '$app/env';
+  import { browser } from '$app/environment';
 
   import Footer from '$lib/nav/Footer.svelte';
   import Nav from '$lib/nav/Nav.svelte';

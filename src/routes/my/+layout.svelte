@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { browser } from '$app/env';
+  import { browser } from '$app/environment';
 
   import AccessDenied from '$lib/AccessDenied.svelte';
   import FirebaseProvider from '$lib/FirebaseProvider.svelte';

@@ -145,7 +145,7 @@
       {/if}
     </div>
     <p class="mt-8 text-center text-base text-gray-400">
-      &copy; 2021 The Faithful, Llc.
+      &copy; The Faithful, Llc.
     </p>
   </div>
 </footer>

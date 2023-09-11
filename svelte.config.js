@@ -78,19 +78,21 @@
 
 //import adapter from '@sveltejs/adapter-auto';
 import adapter from '@sveltejs/adapter-vercel';
-import preprocess from 'svelte-preprocess';
+// import preprocess from 'svelte-preprocess';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  preprocess: preprocess({
-    replace: [
-      [
-        'import.meta.env.VERCEL_ANALYTICS_ID',
-        JSON.stringify(process.env.VERCEL_ANALYTICS_ID),
-      ],
-    ],
-    postcss: true,
-  }),
+  preprocess: vitePreprocess(),
+  // preprocess: preprocess({
+  //   replace: [
+  //     [
+  //       'import.meta.env.VERCEL_ANALYTICS_ID',
+  //       JSON.stringify(process.env.VERCEL_ANALYTICS_ID),
+  //     ],
+  //   ],
+  //   postcss: true,
+  // }),
   kit: {
     adapter: adapter(),
     alias: {

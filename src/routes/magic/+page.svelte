@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import firebasePromise from '$lib/utils/firebase';
-  import { browser } from '$app/env';
+  import { browser } from '$app/environment';
 
   import { sendEvent } from '$lib/utils/events';
   import Footer from '$lib/nav/Footer.svelte';

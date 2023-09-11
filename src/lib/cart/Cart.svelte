@@ -5,7 +5,7 @@
   import { fireGoal } from '$lib/utils/analytics';
   import { sendEvent } from '$lib/utils/events';
   import { getCookies } from '$lib/utils/cookies';
-  import { browser } from '$app/env';
+  import { browser } from '$app/environment';
 
   import firebasePromise from '$lib/utils/firebase';
 

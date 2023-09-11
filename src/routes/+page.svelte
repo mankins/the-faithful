@@ -1,7 +1,7 @@
 <script>
   import Toast from '$lib/Toast.svelte';
   import firebasePromise from '$lib/utils/firebase';
-  import { browser } from '$app/env';
+  import { browser } from '$app/environment';
 
   import WebMonCounter from '$lib/WebMonCounter.svelte';
   import Visibility from '$lib/Visibility.svelte';
@@ -376,6 +376,7 @@
                 </dd>
               </div>
 
+              {#if false}
               <div class="border-t-2 border-gray-100 pt-6">
                 <dt class="text-base font-medium text-faithful-800">
                   Cinematic Release
@@ -386,6 +387,7 @@
                   2021
                 </dd>
               </div>
+              {/if}
             </dl>
             <div class="mt-10 invisible">
               <a

@@ -10,3 +10,4 @@ credentials
 utils/.env
 .idea
 .svelte-kit
+.vercel
